@@ -1,0 +1,44 @@
+{
+  "name": "cs-toolkit",
+  "version": "0.0.1",
+  "description": "(Roughly) Minimalist framework for exploring code switching data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production ./react/src/index.js --output ./react/dist/main.js",
+    "dev": "webpack --mode development ./react/src/index.js --output ./react/dist/main.js",
+    "watch": "webpack --mode development ./react/src/index.js --output ./react/dist/main.js --watch --info-verbosity verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZechyW/cs-toolkit.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZechyW/cs-toolkit/issues"
+  },
+  "homepage": "https://github.com/ZechyW/cs-toolkit#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "@fortawesome/fontawesome-free": "^5.6.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "bulma": "^0.7.2",
+    "css-loader": "^2.1.0",
+    "eslint": "^5.12.0",
+    "eslint-plugin-react": "^7.12.3",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "sass-loader": "^7.1.0",
+    "weak-key": "^1.0.1",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
+  }
+}

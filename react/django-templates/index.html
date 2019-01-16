@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Code Switching Toolkit</title>
+  <link rel="stylesheet" href="{% static "frontend/main.css" %}">
+</head>
+<body>
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">
+        The Code Switching Toolkit
+      </p>
+      <p class="subtitle">
+        A (roughly) Minimalist framework for exploring code switching data
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div id="app"><!-- React --></div>
+  </div>
+</section>
+</body>
+<script src="{% static "frontend/main.js" %}"></script>
+</html>
