@@ -37,8 +37,8 @@ npm run build
 
 Alternatively, use `npm run dev` to build the bundles in development mode (https://webpack.js.org/concepts/mode/), or `npm run watch` to watch for changes to the sources and rebuild them automatically.
 
-For convenience, the shell script `start-dev` will spin up the Django development server and start watching for changes to the frontend sources at the same time.
+For convenience, the shell script `start-dev` will spin up the Django development server and start watching for changes to the frontend sources at the same time.  Set the `PORT` environment variable to use a non-default port: 
 
 ```
-./start-dev
+PORT=9000 ./start-dev
 ```

@@ -27,9 +27,13 @@ case "$(uname -s)" in
      ;;
 esac
 
-echo -e "${CYAN}Starting Webpack watch task and Django development server (port 8080)${NOCOLOR}"
+# ----------------------------------
+# Set default port
+PORT="${PORT:-8080}"
+
+echo -e "${CYAN}Starting Webpack watch task and Django development server (port ${PORT})${NOCOLOR}"
 
 npm run watch &
 
 cd django
-pipenv run python manage.py runserver 8080
+pipenv run python manage.py runserver ${PORT}
