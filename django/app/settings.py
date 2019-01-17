@@ -122,7 +122,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Frontend bundles are served from the root `react` folder
-STATICFILES_DIRS = [("frontend", "../react/dist")]
+STATICFILES_DIRS = [("frontend", "../react/static")]
 
 # For Channels
 ASGI_APPLICATION = "app.routing.application"

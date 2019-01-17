@@ -1,6 +1,6 @@
 {
   "name": "cs-toolkit",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "(Roughly) Minimalist framework for exploring code switching data",
   "main": "index.js",
   "scripts": {

@@ -36,4 +36,4 @@ echo -e "${CYAN}Starting Webpack watch task and Django development server (port 
 npm run watch &
 
 cd django
-pipenv run python manage.py runserver ${PORT}
+poetry run python manage.py runserver ${PORT}
