@@ -33,7 +33,7 @@ poetry install --extras "windows"
 In order for the Channels portion of the backend to work properly, the project expects a Redis server to be accessible (on `127.0.0.1:6379` by default).  An easy way to do this is to install Docker, then run:
 
 ```
-docker run -p 6379:6379 -d redis:2.8
+docker run -p 6379:6379 -d redis
 ```
 
 ### Start the development server
