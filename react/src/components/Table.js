@@ -1,5 +1,5 @@
 /**
- * Renders the given data as a HTML table
+ * Renders the given data as an HTML table
  */
 
 import React, {Component} from "react";
@@ -8,7 +8,12 @@ import key from "weak-key";
 
 class Table extends Component {
   static propTypes = {
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    narrow: PropTypes.bool
+  };
+
+  static defaultProps = {
+    narrow: false
   };
 
   render() {
@@ -28,7 +33,7 @@ class Table extends Component {
           <h2 className="subtitle">
             Showing <strong>{data.length} items</strong>
           </h2>
-          <table className="table is-striped">
+          <table className={"table is-striped " + (this.props.narrow ? "is-narrow" : "")}>
             <thead>
             <tr>
               {Object.entries(data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}

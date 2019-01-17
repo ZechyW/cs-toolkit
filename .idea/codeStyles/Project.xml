@@ -10,9 +10,6 @@
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
       <option name="FORCE_QUOTE_STYlE" value="true" />
     </JSCodeStyleSettings>
-    <Python>
-      <option name="DICT_WRAPPING" value="2" />
-    </Python>
     <codeStyleSettings language="HTML">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

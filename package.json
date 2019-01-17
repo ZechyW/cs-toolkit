@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production ./react/src/index.js --output ./react/dist/main.js",
-    "dev": "webpack --mode development ./react/src/index.js --output ./react/dist/main.js",
-    "watch": "webpack --mode development ./react/src/index.js --output ./react/dist/main.js --watch --info-verbosity verbose"
+    "build": "webpack --mode production ./react/src/index.js --output ./react/static/main.js",
+    "dev": "webpack --mode development ./react/src/index.js --output ./react/static/main.js",
+    "watch": "webpack --mode development ./react/src/index.js --output ./react/static/main.js --watch --info-verbosity verbose"
   },
   "repository": {
     "type": "git",
@@ -23,22 +23,28 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
-    "@fortawesome/fontawesome-free": "^5.6.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
+    "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "bulma": "^0.7.2",
     "css-loader": "^2.1.0",
     "eslint": "^5.12.0",
     "eslint-plugin-react": "^7.12.3",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "prop-types": "^15.6.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
     "sass-loader": "^7.1.0",
     "weak-key": "^1.0.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.6.3",
+    "bulma": "^0.7.2",
+    "gfynonce": "^1.0.1",
+    "howler": "^2.1.1",
+    "lodash": "^4.17.11",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   }
 }

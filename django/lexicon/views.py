@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from lexicon.models import LexicalItem
-from lexicon.serialisers import LexicalItemSerializer
+from lexicon.serializers import LexicalItemSerializer
 from rest_framework import generics
 
 
