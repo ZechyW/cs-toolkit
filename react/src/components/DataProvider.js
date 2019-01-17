@@ -13,6 +13,7 @@ class DataProvider extends Component {
     // Render function
     render: PropTypes.func.isRequired
   };
+
   state = {
     data: [],
     loaded: false,

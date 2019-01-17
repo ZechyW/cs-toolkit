@@ -7,16 +7,26 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='LexicalItem',
+            name="LexicalItem",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('orthographic_representation', models.CharField(max_length=100)),
-                ('language_code', models.CharField(max_length=2)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "orthographic_representation",
+                    models.CharField(max_length=100),
+                ),
+                ("language_code", models.CharField(max_length=2)),
             ],
-        ),
+        )
     ]

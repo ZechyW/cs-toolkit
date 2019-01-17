@@ -5,4 +5,4 @@ from lexicon.models import LexicalItem
 class LexicalItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = LexicalItem
-        fields = '__all__'
+        fields = "__all__"
