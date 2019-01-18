@@ -1,6 +1,12 @@
+const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
+  entry: "./react/src/index.js",
+  output: {
+    path: path.resolve(__dirname, "./react/static"),
+  },
+
   plugins: [
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
@@ -9,6 +15,7 @@ module.exports = {
       chunkFilename: "[id].css"
     })
   ],
+
   module: {
     rules: [
       {

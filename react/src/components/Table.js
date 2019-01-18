@@ -9,7 +9,8 @@ import key from "weak-key";
 class Table extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
-    narrow: PropTypes.bool
+    tableClass: PropTypes.string,
+    containerStyle: PropTypes.object
   };
 
   static defaultProps = {
@@ -29,11 +30,11 @@ class Table extends Component {
       );
     } else {
       content = (
-        <>
+        <div style={this.props.containerStyle}>
           <h2 className="subtitle">
             Showing <strong>{data.length} items</strong>
           </h2>
-          <table className={"table is-striped " + (this.props.narrow ? "is-narrow" : "")}>
+          <table className={"table is-striped " + this.props.tableClass}>
             <thead>
             <tr>
               {Object.entries(data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}
@@ -47,7 +48,7 @@ class Table extends Component {
             ))}
             </tbody>
           </table>
-        </>
+        </div>
       );
     }
 

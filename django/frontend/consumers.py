@@ -18,6 +18,7 @@ class EchoConsumer(JsonWebsocketConsumer):
 
     reserved_names = ["System"]
     usernames = []
+    timestamp_format = "{:%d %b, %H:%M}"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -124,7 +125,7 @@ class EchoConsumer(JsonWebsocketConsumer):
         self.send_json(
             {
                 "type": event["type"],
-                "timestamp": "{:%Y-%m-%d %H:%M:%S}".format(
+                "timestamp": EchoConsumer.timestamp_format.format(
                     datetime.datetime.now()
                 ),
                 "new_user": event["new_user"],
@@ -142,7 +143,7 @@ class EchoConsumer(JsonWebsocketConsumer):
         self.send_json(
             {
                 "type": event["type"],
-                "timestamp": "{:%Y-%m-%d %H:%M:%S}".format(
+                "timestamp": EchoConsumer.timestamp_format.format(
                     datetime.datetime.now()
                 ),
                 "del_user": event["del_user"],
@@ -160,7 +161,7 @@ class EchoConsumer(JsonWebsocketConsumer):
         self.send_json(
             {
                 "type": event["type"],
-                "timestamp": "{:%Y-%m-%d %H:%M:%S}".format(
+                "timestamp": EchoConsumer.timestamp_format.format(
                     datetime.datetime.now()
                 ),
                 "username": event["username"],

@@ -1,5 +1,9 @@
 import "./styles/index.scss";
-import "@fortawesome/fontawesome-free/js/all";
+
+import {dom, config} from "@fortawesome/fontawesome-svg-core";
+
+config.autoReplaceSvg = "nest";
+dom.watch();
 
 import React from "react";
 import ReactDOM from "react-dom";
