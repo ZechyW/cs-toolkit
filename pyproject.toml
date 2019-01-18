@@ -12,6 +12,7 @@ djangorestframework = "^3.9"
 channels = "^2.1"
 channels-redis = "^2.3"
 pywin32 = {version = "^224.0",optional = true}
+whitenoise = "^4.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.2"

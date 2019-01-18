@@ -36,13 +36,12 @@ In order for the Channels portion of the backend to work properly, the project e
 docker run -p 6379:6379 -d redis
 ```
 
-### Start the development server
+### Start the server
 
-Navigate to the `django` folder and start the development server (it runs on port `8080` by default, but you can add a custom port number after `runserver` in the command below):
+The shell script `start-server` will prepare and start the Django server on port `8080`.  You can Set the `PORT` environmental variable to use a non-default port:
 
 ```
-cd django
-poetry run python manage.py runserver
+PORT=<your port here> ./start-server
 ```
 
 Then point your browser to http://localhost:8080 to view the main interface.
@@ -63,8 +62,12 @@ npm run build
 
 Alternatively, use `npm run dev` to build the bundles in development mode (https://webpack.js.org/concepts/mode/), or `npm run watch` to watch for changes to the sources and rebuild them automatically.
 
-For convenience, the shell script `start-dev` will spin up the Django development server and start watching for changes to the frontend sources at the same time.  Set the `PORT` environment variable to use a non-default port: 
+For convenience, the shell script `start-dev` will spin up the Django server in debug mode and start watching for changes to the frontend sources at the same time.  Set the `PORT` environment variable to use a non-default port: 
 
 ```
 PORT=9000 ./start-dev
 ```
+
+### Profiling
+
+Use `npm run profile` to profile the contents/size of the main Webpack bundle.

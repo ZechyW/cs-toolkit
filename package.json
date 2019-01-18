@@ -2,12 +2,13 @@
   "name": "cs-toolkit",
   "version": "0.1.0",
   "description": "(Roughly) Minimalist framework for exploring code switching data",
-  "main": "index.js",
+  "main": "react/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production ./react/src/index.js --output ./react/static/main.js",
     "dev": "webpack --mode development ./react/src/index.js --output ./react/static/main.js",
-    "watch": "webpack --mode development ./react/src/index.js --output ./react/static/main.js --watch --info-verbosity verbose"
+    "watch": "webpack --mode development ./react/src/index.js --output ./react/static/main.js --watch --info-verbosity verbose",
+    "profile": "webpack --profile --json ./react/src/index.js > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "sass-loader": "^7.1.0",
     "weak-key": "^1.0.1",
     "webpack": "^4.28.4",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {

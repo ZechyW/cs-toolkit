@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 
 import _ from "lodash";
-import {Howl, Howler} from "howler";
+import {Howl} from "howler";
 import gfynonce from "gfynonce";
 
 import DataProvider from "./DataProvider";
@@ -252,7 +252,7 @@ class EchoSection extends Component {
 
     return (
       <div className="echo-section box">
-        <p className="title is-4">WebSocket Echo Test</p>
+        <p className="title is-4">WebSocket Echo Test <span className="icon"><i className="fas fa-home"/></span></p>
 
         {controls}
 

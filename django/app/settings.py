@@ -21,31 +21,37 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "ll(_n((i#1q@k!3#1@g)tebwh25*4nicwj7lm63aq181*7@b(j"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+if os.environ.get("DJANGO_DEBUG"):
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+else:
+    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    # App to manage the frontend sources
-    "frontend",
-    # Models
-    "lexicon",
-    # 3rd-party libraries: Django REST Framework and Channels for API/Async operations
-    "rest_framework",
-    "channels",
+    # Whitenoise
+    "whitenoise.runserver_nostatic",
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # 3rd-party libraries: Django REST Framework and Channels for API/Async operations
+    "rest_framework",
+    "channels",
+    # App to manage the frontend sources
+    "frontend",
+    # Models
+    "lexicon",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "app.middleware.WhiteNoisePathMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -119,10 +125,18 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-# Frontend bundles are served from the root `react` folder
+# Frontend bundles and other static files are saved/built into the `react` folder,
+# and they are served directly from there if `DEBUG` or `WHITENOISE_USE_FINDERS` is True
 STATICFILES_DIRS = [("frontend", "../react/static")]
 
-# For Channels
+# Whitenoise
+# To serve compressed static files, `DEBUG` or `WHITENOISE_USE_FINDERS` must be
+# False, and the static files must be available in `STATIC_ROOT` (i.e., by running
+# `collectstatic`)
+STATIC_ROOT = "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# Channels
 ASGI_APPLICATION = "app.routing.application"
 CHANNEL_LAYERS = {
     "default": {
