@@ -134,7 +134,7 @@ STATICFILES_DIRS = [("frontend", "../react/static")]
 # False, and the static files must be available in `STATIC_ROOT` (i.e., by running
 # `collectstatic`)
 STATIC_ROOT = "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Channels
 ASGI_APPLICATION = "app.routing.application"

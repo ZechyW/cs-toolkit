@@ -338,3 +338,6 @@ typings/
 .venv/
 
 # End of https://www.gitignore.io/api/node,python,django,intellij
+
+# Additional ignores
+.idea/pylint.xml

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import {Howl} from "howler";
 import gfynonce from "gfynonce";
+import moment from "moment";
 
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faVolumeUp, faVolumeMute} from "@fortawesome/free-solid-svg-icons";
@@ -17,11 +18,8 @@ import Table from "./Table";
  */
 class WSEcho extends Component {
   static propTypes = {
-    // Send a JS object to the WebSocket server
-    wsSend: PropTypes.func.isRequired,
-
-    // Receive a response
-    wsMessage: PropTypes.object.isRequired,
+    // Function for registering a listener with the WS provider
+    subscribe: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -50,6 +48,9 @@ class WSEcho extends Component {
 
     // For selecting text inputs that contain errors
     this.inputRef = React.createRef();
+
+    // Subscribe to the `echo` channel
+    this.publish = this.props.subscribe("echo", this.handleWSMessage);
   }
 
   render() {
@@ -144,91 +145,6 @@ class WSEcho extends Component {
   }
 
   /**
-   * One of our props/states has changed -- Probably a message from the WS server
-   * @param prevProps
-   */
-  componentDidUpdate(prevProps, /*prevState, snapshot*/) {
-    // Check WS messages
-    if (!_.isEqual(prevProps.wsMessage, this.props.wsMessage)) {
-      const data = this.props.wsMessage;
-
-      // A new user: It's either ourselves, or someone else
-      if (data.type === "echo_new_user") {
-        const newState = {
-          allUsers: data["all_users"]
-        };
-        const newRow = {
-          timestamp: data.timestamp,
-          username: "System"
-        };
-
-        if (data["new_user"] === this.state.username) {
-          newRow.message = <>Subscribed with username: <strong>{data["new_user"]}</strong></>;
-          newState.subscribed = true;
-        } else {
-          newRow.message = <>New user: <strong>{data["new_user"]}</strong></>;
-          this.playNotification();
-        }
-
-        return this.setState((state) => {
-          newState.tableData = [newRow, ...state.tableData];
-          return newState;
-        });
-      }
-
-      // A user left
-      if (data.type === "echo_del_user") {
-        const newState = {
-          allUsers: data["all_users"]
-        };
-        const newRow = {
-          timestamp: data.timestamp,
-          username: "System",
-          message: <>User left: <strong>{data["del_user"]}</strong></>
-        };
-
-        this.playNotification();
-
-        return this.setState((state) => {
-          newState.tableData = [newRow, ...state.tableData];
-          return newState;
-        });
-      }
-
-      // New broadcast message
-      if (data.type === "echo_message") {
-        const newRow = _.pick(data, ["timestamp", "username", "message"]);
-
-        // Notification if it was from someone else
-        if (data.username !== this.state.username) {
-          this.playNotification();
-        }
-
-        return this.setState((state) => {
-          return {
-            tableData: [newRow, ...state.tableData]
-          };
-        });
-      }
-
-      // Something went wrong
-      if (data.type === "echo_error") {
-
-        let errorText;
-        if (data.message === "username-in-use") {
-          errorText = "Username already in use.";
-        } else if (data.message === "invalid-data") {
-          errorText = "Invalid data.";
-        }
-
-        return this.setState({
-          errorText
-        });
-      }
-    }
-  }
-
-  /**
    * For controlled form components
    * @param event
    */
@@ -240,6 +156,90 @@ class WSEcho extends Component {
     this.setState({
       [name]: value
     });
+  };
+
+  /**
+   * Called when a new message is published on the `echo` topic by the server
+   * @param data
+   */
+  handleWSMessage = (data) => {
+    // A new user: It's either ourselves, or someone else
+    if (data.type === "new_user") {
+      const newState = {
+        allUsers: data["all_users"]
+      };
+      const newRow = {
+        timestamp: this.displayTimestamp(data.timestamp),
+        username: "System"
+      };
+
+      if (data["new_user"] === this.state.username) {
+        newRow.message = <>Subscribed with username: <strong>{data["new_user"]}</strong></>;
+        newState.subscribed = true;
+      } else {
+        newRow.message = <>New user: <strong>{data["new_user"]}</strong></>;
+        this.playNotification();
+      }
+
+      return this.setState((state) => {
+        newState.tableData = [newRow, ...state.tableData];
+        return newState;
+      });
+    }
+
+    // A user left
+    if (data.type === "del_user") {
+      const newState = {
+        allUsers: data["all_users"]
+      };
+      const newRow = {
+        timestamp: this.displayTimestamp(data.timestamp),
+        username: "System",
+        message: <>User left: <strong>{data["del_user"]}</strong></>
+      };
+
+      this.playNotification();
+
+      return this.setState((state) => {
+        newState.tableData = [newRow, ...state.tableData];
+        return newState;
+      });
+    }
+
+    // New broadcast message
+    if (data.type === "message") {
+      const newRow = {
+        timestamp: this.displayTimestamp(data.timestamp),
+        username: data.username,
+        message: data.message
+      };
+
+      // Notification if it was from someone else
+      if (data.username !== this.state.username) {
+        this.playNotification();
+      }
+
+      return this.setState((state) => {
+        return {
+          tableData: [newRow, ...state.tableData]
+        };
+      });
+    }
+
+    // Something went wrong
+    if (data.type === "error") {
+
+      let errorText;
+      if (data.message === "username-in-use") {
+        errorText = "Username already in use.";
+      } else if (data.message === "invalid-data") {
+        errorText = "Invalid data.";
+      }
+
+      return this.setState({
+        errorText
+      });
+    }
   };
 
   /**
@@ -286,8 +286,7 @@ class WSEcho extends Component {
    */
   submitUsername = (event) => {
     event.preventDefault();
-
-    this.props.wsSend({
+    this.publish({
       type: "subscribe",
       username: this.state.username
     });
@@ -299,8 +298,11 @@ class WSEcho extends Component {
   submitMessage = (event) => {
     event.preventDefault();
 
-    this.props.wsSend(
-      {message: this.state.message}
+    this.publish(
+      {
+        type: "message",
+        message: this.state.message
+      }
     );
 
     this.setState({
@@ -312,9 +314,21 @@ class WSEcho extends Component {
    * Sends a random test message over the WebSocket
    */
   testMessage = () => {
-    this.props.wsSend(
-      {message: `Test ${Math.floor((Math.random() * 1000) + 1)}`}
+    this.publish(
+      {
+        type: "message",
+        message: `Hello, this is a test message! (${Math.floor((Math.random() * 1000) + 1)})`
+      }
     );
+  };
+
+  /**
+   * Takes any dateString parsable by Date, and returns a string suitable for printing
+   * @param dateString
+   */
+  displayTimestamp = (dateString) => {
+    const date = moment(dateString);
+    return date.format("D MMM h:mma");
   };
 }
 

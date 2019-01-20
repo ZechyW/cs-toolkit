@@ -1,4 +1,7 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
+
+import withWSProvider from "./WebSocket";
 
 import DataProvider from "./DataProvider";
 import Table from "./Table";
@@ -10,17 +13,13 @@ import Config from "../config";
  * Main application component
  */
 class App extends Component {
+  static propTypes = {
+    // Passed in by the WebSocket provider
+    subscribe: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
-
-    // Prepare the main WebSocket connection
-    this.socket = new WebSocket(`${Config.wsHost}${Config.wsEndpoint}`);
-    this.socket.onmessage = this.wsReceive;
-
-    this.state = {
-      // WS messages for the Echo section
-      echoWsMessage: {}
-    };
   }
 
   render() {
@@ -38,8 +37,7 @@ class App extends Component {
               </div>
 
               <div className="column">
-                <WSEcho wsSend={this.wsSend}
-                        wsMessage={this.state.echoWsMessage}/>
+                <WSEcho subscribe={this.props.subscribe}/>
               </div>
             </div>
           </div>
@@ -47,32 +45,8 @@ class App extends Component {
       </div>
     );
   }
-
-  /**
-   * Sends the given data to the WS server as a JSON string
-   * @param data {Object}
-   */
-  wsSend = (data) => {
-    this.socket.send(JSON.stringify(data));
-  };
-
-  /**
-   * Processes data received from the WS server
-   * @param event
-   */
-  wsReceive = (event) => {
-    const data = JSON.parse(event.data);
-
-    // WS Echo messages
-    if (data.type.startsWith("echo")) {
-      return this.setState({
-        echoWsMessage: data
-      });
-    }
-
-    console.log("Non-delegated WS event", data);
-  };
 }
 
+const AppWithWS = withWSProvider(App, `${Config.wsHost}${Config.wsEndpoint}`);
 
-export default App;
+export default AppWithWS;

@@ -6,4 +6,4 @@ from django.conf.urls import url
 
 from . import consumers
 
-websocket_urlpatterns = [url(r"^ws/echo/$", consumers.EchoConsumer)]
+websocket_urlpatterns = [url(r"^ws/$", consumers.WebSocketConsumer)]

@@ -4,5 +4,5 @@
 export default {
   // WebSocket settings
   wsHost: `ws://${window.location.host}`,
-  wsEndpoint: "/ws/echo/"
+  wsEndpoint: "/ws/"
 };
