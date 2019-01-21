@@ -80,3 +80,14 @@ class WebSocketConsumer(JsonWebsocketConsumer):
         handler_name = re.sub(r"\s+", "", handler_name)
         # Add "Handler"
         return handler_name + "Handler"
+
+    def send_to_client(self, message):
+        """
+        Called by handlers to send messages directly on the client channel
+        :param message:
+        :return:
+        """
+        # Communication with a client requires a PubSub topic to be specified
+        assert "topic" in message
+
+        self.send_json(message)

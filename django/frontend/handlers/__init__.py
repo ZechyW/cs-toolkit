@@ -11,3 +11,4 @@ The Handler's `disconnect` method will also be called when the Consumer's connec
 is closed.
 """
 from .echo import *
+from .notify import *

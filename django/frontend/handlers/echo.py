@@ -1,5 +1,6 @@
 """
-Handles `echo` topic PubSub connections
+Handles `echo` topic PubSub connections.
+Generally, manages the WebSocket echo/chat system.
 """
 from asgiref.sync import async_to_sync
 
@@ -10,23 +11,24 @@ from ..serializers import EchoSubscribeSerializer, EchoMessageSerializer
 
 class EchoHandler:
     """
-    Takes messages and broadcasts it to all channels connected to the "echo" channel
+    Takes messages and broadcasts it to all channels connected to the `echo` channel
     layer group.
     """
 
-    reserved_names = ["System"]
+    # Reserved names should be listed in lowercase
+    reserved_names = ["system"]
     usernames = []
 
     def __init__(self, consumer):
+        self.consumer = consumer
         self.subscribed = False
         self.username = None
-        self.consumer = consumer
 
         setattr(self.consumer, "echo_new_user", self.echo_new_user)
         setattr(self.consumer, "echo_del_user", self.echo_del_user)
         setattr(self.consumer, "echo_message", self.echo_message)
 
-    def disconnect(self):
+    def disconnect(self, code):
         """
         The connection was closed.
         :return:
@@ -40,7 +42,7 @@ class EchoHandler:
 
     def handle(self, content):
         """
-        Received some content with topic "echo" specified
+        Received some content with topic `echo` specified
         :param content:
         :return:
         """
@@ -67,12 +69,12 @@ class EchoHandler:
         # Check the specified username
         username = serializer.validated_data["username"]
         if (
-            username in EchoHandler.usernames
-            or username in EchoHandler.reserved_names
+                username in EchoHandler.usernames
+                or username.lower() in EchoHandler.reserved_names
         ):
             # Sending to the consumer directly doesn't broadcast the message to
             # the entire group
-            self.send_to_client(
+            self.consumer.send_to_client(
                 {
                     "topic": "echo",
                     "type": "error",
@@ -105,7 +107,7 @@ class EchoHandler:
         """
         serializer = EchoMessageSerializer(data=content)
         if not serializer.is_valid():
-            self.send_to_client(
+            self.consumer.send_to_client(
                 {"topic": "echo", "type": "error", "message": "invalid-data"}
             )
         else:
@@ -128,17 +130,6 @@ class EchoHandler:
 
         async_to_sync(self.consumer.channel_layer.group_send)("echo", message)
 
-    def send_to_client(self, message):
-        """
-        Sends a message directly to the client channel
-        :param message:
-        :return:
-        """
-        # Communication with a client requires a PubSub topic to be specified
-        assert "topic" in message
-
-        self.consumer.send_json(message)
-
     # Channel layer group events
 
     def echo_new_user(self, event):
@@ -148,7 +139,7 @@ class EchoHandler:
         :return:
         """
         # Let the channel know
-        self.send_to_client(
+        self.consumer.send_to_client(
             {
                 "topic": "echo",
                 "type": "new_user",
@@ -165,7 +156,7 @@ class EchoHandler:
         :return:
         """
         # Let the channel know
-        self.send_to_client(
+        self.consumer.send_to_client(
             {
                 "topic": "echo",
                 "type": "del_user",
@@ -182,7 +173,7 @@ class EchoHandler:
         :return:
         """
         # Echo back to our consumer
-        self.send_to_client(
+        self.consumer.send_to_client(
             {
                 "topic": "echo",
                 "type": "message",

@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import _ from "lodash";
 import {Howl} from "howler";
 import gfynonce from "gfynonce";
 import moment from "moment";
@@ -49,7 +48,7 @@ class WSEcho extends Component {
     // For selecting text inputs that contain errors
     this.inputRef = React.createRef();
 
-    // Subscribe to the `echo` channel
+    // Subscribe to the `echo` topic
     this.publish = this.props.subscribe("echo", this.handleWSMessage);
   }
 
@@ -90,7 +89,8 @@ class WSEcho extends Component {
                          type="text"
                          placeholder="Send message"
                          value={this.state.message}
-                         onChange={this.handleInputChange}/>
+                         onChange={this.handleInputChange}
+                         ref={this.inputRef}/>
                   {this.renderErrorText()}
                 </p>
                 <div className="control">
@@ -123,7 +123,7 @@ class WSEcho extends Component {
     }
 
     return (
-      <div className="echo-section box">
+      <div className="echo-section">
         <div className="title is-4 flex-row align-items-center">
           <span className="has-padding-right-10">WebSocket Echo Test</span>
           <span className="icon has-text-primary is-size-6 has-cursor-pointer"
@@ -154,7 +154,8 @@ class WSEcho extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      errorText: ""
     });
   };
 
@@ -163,6 +164,9 @@ class WSEcho extends Component {
    * @param data
    */
   handleWSMessage = (data) => {
+    console.log("New WS Echo message:", data);
+    console.log("Current state:", this.state);
+
     // A new user: It's either ourselves, or someone else
     if (data.type === "new_user") {
       const newState = {
