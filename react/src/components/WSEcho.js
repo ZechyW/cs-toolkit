@@ -1,12 +1,12 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import {Howl} from "howler";
+import { Howl } from "howler";
 import gfynonce from "gfynonce";
 import moment from "moment";
 
-import {library} from "@fortawesome/fontawesome-svg-core";
-import {faVolumeUp, faVolumeMute} from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faVolumeUp, faVolumeMute);
 
@@ -27,7 +27,7 @@ class WSEcho extends Component {
     this.state = {
       // Room properties
       subscribed: false,
-      username: gfynonce({adjectives: 1}),
+      username: gfynonce({ adjectives: 1 }),
       allUsers: [],
 
       // Notification sounds
@@ -60,19 +60,19 @@ class WSEcho extends Component {
       controls = (
         <form className="field is-grouped" onSubmit={this.submitUsername}>
           <div className="control is-expanded">
-            <input name="username"
-                   className="input"
-                   type="text"
-                   value={this.state.username}
-                   onChange={this.handleInputChange}
-                   onFocus={this.selectText}
-                   ref={this.inputRef}/>
+            <input
+              name="username"
+              className="input"
+              type="text"
+              value={this.state.username}
+              onChange={this.handleInputChange}
+              onFocus={this.selectText}
+              ref={this.inputRef}
+            />
             {this.renderErrorText()}
           </div>
           <div className="control">
-            <button className="button is-primary">
-              Select username
-            </button>
+            <button className="button is-primary">Select username</button>
           </div>
         </form>
       );
@@ -84,38 +84,46 @@ class WSEcho extends Component {
             <div className="column">
               <form className="field is-grouped" onSubmit={this.submitMessage}>
                 <p className="control is-expanded">
-                  <input name="message"
-                         className="input"
-                         type="text"
-                         placeholder="Send message"
-                         value={this.state.message}
-                         onChange={this.handleInputChange}
-                         ref={this.inputRef}/>
+                  <input
+                    name="message"
+                    className="input"
+                    type="text"
+                    placeholder="Send message"
+                    value={this.state.message}
+                    onChange={this.handleInputChange}
+                    ref={this.inputRef}
+                  />
                   {this.renderErrorText()}
                 </p>
                 <div className="control">
-                  <button className="button is-primary">
-                    Send
-                  </button>
+                  <button className="button is-primary">Send</button>
                 </div>
               </form>
             </div>
 
             <div className="column is-narrow">
-              <button className="button is-info" onClick={this.testMessage}>Send test message</button>
+              <button className="button is-info" onClick={this.testMessage}>
+                Send test message
+              </button>
             </div>
 
             <div className="column is-full">
-              <h3>Current users: {
-                this.state.allUsers.map((name, index) => {
-                  const boldSelf = name === this.state.username
-                    ? <strong>{name}</strong>
-                    : name;
-                  return index < this.state.allUsers.length - 1
-                    ? <span key={name}>{boldSelf}, </span>
-                    : <span key={name}>{boldSelf}</span>;
-                })
-              }</h3>
+              <h3>
+                Current users:{" "}
+                {this.state.allUsers.map((name, index) => {
+                  const boldSelf =
+                    name === this.state.username ? (
+                      <strong>{name}</strong>
+                    ) : (
+                      name
+                    );
+                  return index < this.state.allUsers.length - 1 ? (
+                    <span key={name}>{boldSelf}, </span>
+                  ) : (
+                    <span key={name}>{boldSelf}</span>
+                  );
+                })}
+              </h3>
             </div>
           </div>
         </>
@@ -126,20 +134,29 @@ class WSEcho extends Component {
       <div className="echo-section">
         <div className="title is-4 flex-row align-items-center">
           <span className="has-padding-right-10">WebSocket Echo Test</span>
-          <span className="icon has-text-primary is-size-6 has-cursor-pointer"
-                onClick={this.toggleAudio}>
-            <i className={"fas fa-fw " + (this.state.playAudio ? "fa-volume-up" : "fa-volume-mute")}/>
+          <span
+            className="icon has-text-primary is-size-6 has-cursor-pointer"
+            onClick={this.toggleAudio}
+          >
+            <i
+              className={
+                "fas fa-fw " +
+                (this.state.playAudio ? "fa-volume-up" : "fa-volume-mute")
+              }
+            />
           </span>
         </div>
 
         {controls}
 
-        <Table data={this.state.tableData}
-               tableClass="is-narrow"
-               containerStyle={{
-                 maxHeight: "40vh",
-                 overflowY: "auto"
-               }}/>
+        <Table
+          data={this.state.tableData}
+          tableClass="is-narrow"
+          containerStyle={{
+            maxHeight: "40vh",
+            overflowY: "auto"
+          }}
+        />
       </div>
     );
   }
@@ -178,10 +195,18 @@ class WSEcho extends Component {
       };
 
       if (data["new_user"] === this.state.username) {
-        newRow.message = <>Subscribed with username: <strong>{data["new_user"]}</strong></>;
+        newRow.message = (
+          <>
+            Subscribed with username: <strong>{data["new_user"]}</strong>
+          </>
+        );
         newState.subscribed = true;
       } else {
-        newRow.message = <>New user: <strong>{data["new_user"]}</strong></>;
+        newRow.message = (
+          <>
+            New user: <strong>{data["new_user"]}</strong>
+          </>
+        );
         this.playNotification();
       }
 
@@ -199,7 +224,11 @@ class WSEcho extends Component {
       const newRow = {
         timestamp: this.displayTimestamp(data.timestamp),
         username: "System",
-        message: <>User left: <strong>{data["del_user"]}</strong></>
+        message: (
+          <>
+            User left: <strong>{data["del_user"]}</strong>
+          </>
+        )
       };
 
       this.playNotification();
@@ -232,7 +261,6 @@ class WSEcho extends Component {
 
     // Something went wrong
     if (data.type === "error") {
-
       let errorText;
       if (data.message === "username-in-use") {
         errorText = "Username already in use.";
@@ -302,12 +330,10 @@ class WSEcho extends Component {
   submitMessage = (event) => {
     event.preventDefault();
 
-    this.publish(
-      {
-        type: "message",
-        message: this.state.message
-      }
-    );
+    this.publish({
+      type: "message",
+      message: this.state.message
+    });
 
     this.setState({
       message: ""
@@ -318,12 +344,12 @@ class WSEcho extends Component {
    * Sends a random test message over the WebSocket
    */
   testMessage = () => {
-    this.publish(
-      {
-        type: "message",
-        message: `Hello, this is a test message! (${Math.floor((Math.random() * 1000) + 1)})`
-      }
-    );
+    this.publish({
+      type: "message",
+      message: `Hello, this is a test message! (${Math.floor(
+        Math.random() * 1000 + 1
+      )})`
+    });
   };
 
   /**

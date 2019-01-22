@@ -1,6 +1,13 @@
-# cs-toolkit
-A (Roughly) Minimalist framework for exploring code switching data.
+<h2 align="center">The Code Switching Toolkit</h2>
 
+<p align="center">
+A (Roughly) Minimalist framework for exploring code switching data.
+</p>
+
+<p align="center">
+<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://github.com/prettier/prettier"><img alt="Code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a>
+</p>
 
 ## Project Structure
 The project uses Django/Channels/Django REST Framework for its backend (in the `django` folder), and React/Babel/Webpack for its frontend (in the `react` folder).

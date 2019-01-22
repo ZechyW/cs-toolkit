@@ -8,7 +8,7 @@
  * warnings if more are attempted.
  */
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 
 const allUrls = [];
 
@@ -36,8 +36,7 @@ function withWSProvider(WrappedComponent, wsUrl) {
     }
 
     render() {
-      return <WrappedComponent subscribe={this.subscribe}
-                               {...this.props} />;
+      return <WrappedComponent subscribe={this.subscribe} {...this.props} />;
     }
 
     /**
@@ -47,7 +46,6 @@ function withWSProvider(WrappedComponent, wsUrl) {
       this.socket = new WebSocket(wsUrl);
       this.socket.onmessage = this._wsReceive;
     };
-
 
     /**
      * Sends some object as JSON data over the WS connection
@@ -115,12 +113,14 @@ function withWSProvider(WrappedComponent, wsUrl) {
     dispatchToListeners = (topic, data) => {
       const listeners = this.state.topicListeners[topic];
       if (listeners) {
-        listeners.forEach(listener => listener(data));
+        listeners.forEach((listener) => listener(data));
       }
     };
   }
 
-  WithWSProvider.displayName = `WithWSProvider(${getDisplayName(WrappedComponent)})`;
+  WithWSProvider.displayName = `WithWSProvider(${getDisplayName(
+    WrappedComponent
+  )})`;
 
   return WithWSProvider;
 }

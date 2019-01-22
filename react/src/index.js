@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 
-import {dom, config} from "@fortawesome/fontawesome-svg-core";
+import { dom, config } from "@fortawesome/fontawesome-svg-core";
 
 config.autoReplaceSvg = "nest";
 dom.watch();
@@ -10,4 +10,4 @@ import ReactDOM from "react-dom";
 
 import App from "./components/App";
 
-window.app = ReactDOM.render(<App/>, document.getElementById("root"));
+window.app = ReactDOM.render(<App />, document.getElementById("root"));

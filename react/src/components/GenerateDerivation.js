@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 class GenerateDerivation extends Component {
@@ -20,22 +20,28 @@ class GenerateDerivation extends Component {
     return (
       <div className="generate-derivation">
         <p className="title is-4">Generate Derivations</p>
-        <p>Build a (bottom-up) Lexical Array in the box below, then hit the <strong>Derive!</strong> button to attempt
-          to generate a corresponding derivation.</p>
-        <form className="field is-grouped has-padding-top-10" onSubmit={this.submitInputStream}>
+        <p>
+          Build a (bottom-up) Lexical Array in the box below, then hit the{" "}
+          <strong>Derive!</strong> button to attempt to generate a corresponding
+          derivation.
+        </p>
+        <form
+          className="field is-grouped has-padding-top-10"
+          onSubmit={this.submitInputStream}
+        >
           <div className="control is-expanded">
-            <input name="inputStream"
-                   className="input"
-                   type="text"
-                   value={this.state.inputStream}
-                   onChange={this.handleInputChange}
-                   ref={this.inputRef}/>
+            <input
+              name="inputStream"
+              className="input"
+              type="text"
+              value={this.state.inputStream}
+              onChange={this.handleInputChange}
+              ref={this.inputRef}
+            />
             {this.renderErrorText()}
           </div>
           <div className="control">
-            <button className="button is-primary">
-              Derive!
-            </button>
+            <button className="button is-primary">Derive!</button>
           </div>
         </form>
       </div>
