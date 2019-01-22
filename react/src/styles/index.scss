@@ -1,9 +1,92 @@
 @charset "utf-8";
 
+/******************************************************************************
+ * Bulma
+ ******************************************************************************/
 // Custom settings for Bulma CSS framework
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
 
 $family-sans-serif: "Nunito", sans-serif;
 
 @import "~bulma/bulma";
+
+/******************************************************************************
+ * Bulma-helpers
+ ******************************************************************************/
+// Trim the Bulma helpers library a bit, since we don't need all of it
+$enable-media-queries: false;
+$spacing-range-start: 5;
+$spacing-range-end: 100;
+$spacing-interval: 5;
+
 @import "~bulma-helpers/bulma-helpers";
+
+/******************************************************************************
+ * React-tag-input
+ ******************************************************************************/
+/* Container holding any selected tags + the tagInput*/
+div.ReactTags__selected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Styles for the input */
+div.ReactTags__tagInput {
+  flex-grow: 1;
+  min-width: 50px;
+}
+
+/* Styles for tags */
+div.ReactTags__selected span.ReactTags__tag {
+  border-color: transparent;
+  background-color: nth(map-get($colors, "light"), 1);
+  color: nth(map-get($colors, "light"), 2);
+  display: inline-block;
+  padding: 5px 0.5em;
+  margin: 0 5px 0 0;
+  cursor: move;
+  border-radius: 4px;
+}
+
+div.ReactTags__selected a.ReactTags__remove {
+  color: #aaa;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* Styles for suggestions */
+div.ReactTags__suggestions {
+  position: absolute;
+}
+
+div.ReactTags__suggestions ul {
+  list-style-type: none;
+  box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
+  background: white;
+  width: 200px;
+}
+
+div.ReactTags__suggestions li {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 0;
+}
+
+div.ReactTags__suggestions li mark {
+  text-decoration: underline;
+  background: none;
+  font-weight: 600;
+}
+
+div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+  background: #b7cfe0;
+  cursor: pointer;
+}
+
+/******************************************************************************
+ * Misc
+ ******************************************************************************/
+html {
+  overflow-x: auto;
+}

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { Howl } from "howler";
 import gfynonce from "gfynonce";
-import moment from "moment";
+import { format as dateFormat } from "date-fns";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
@@ -357,8 +357,10 @@ class WSEcho extends Component {
    * @param dateString
    */
   displayTimestamp = (dateString) => {
-    const date = moment(dateString);
-    return date.format("D MMM h:mma");
+    return dateFormat(
+      new Date(dateString),
+      "D MMM h:mma"
+    );
   };
 }
 

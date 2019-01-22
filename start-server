@@ -31,8 +31,8 @@ esac
 # Set default port
 PORT="${PORT:-8080}"
 
-echo -e "${CYAN}Collecting static files and starting Django server (port ${PORT})...${NOCOLOR}"
+echo -e "${CYAN}Collecting static files (deleting old ones) and starting Django server (port ${PORT})...${NOCOLOR}"
 
 cd django
-poetry run python manage.py collectstatic --noinput
+poetry run python manage.py collectstatic --clear --noinput
 poetry run python manage.py runserver ${PORT}
