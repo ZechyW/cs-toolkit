@@ -5,7 +5,9 @@ import { WithContext as ReactTags } from "react-tag-input";
 class GenerateDerivation extends Component {
   static propTypes = {
     // Function for registering a listener with the WS provider
-    subscribe: PropTypes.func.isRequired
+    subscribe: PropTypes.func.isRequired,
+
+    innerRef: PropTypes.func
   };
 
   constructor(props) {
@@ -24,45 +26,59 @@ class GenerateDerivation extends Component {
 
   render() {
     return (
-      <div className="generate-derivation">
-        <p className="title is-4">Generate Derivations</p>
-        <p className="has-margin-bottom-10">
+      <div
+        className="generate-derivation flex-column grid-child"
+        ref={this.props.innerRef}
+      >
+        <p className="grid-title">
+          Generate Derivations
+        </p>
+        <p style={{ flexGrow: 1, flexShrink: 1 }}>
           Build a (bottom-up) Lexical Array in the box below, then hit the{" "}
           <strong>Derive!</strong> button to attempt to generate a corresponding
           derivation.
         </p>
-        <form className="field is-grouped" onSubmit={this.submitInputStream}>
-          <div className="control is-expanded">
-            {/*<input*/}
-            {/*name="inputStream"*/}
-            {/*className="input"*/}
-            {/*type="text"*/}
-            {/*value={this.state.inputStream}*/}
-            {/*onChange={this.handleInputChange}*/}
-            {/*ref={this.inputRef}*/}
-            {/*/>*/}
-
-            <ReactTags
-              tags={this.state.lexicalArray}
-              placeholder="Add a new lexical item"
-              handleAddition={this.handleAddition}
-              handleDelete={this.handleDelete}
-              handleDrag={this.handleDrag}
-              handleInputChange={this.handleInputChange}
-              name="lexicalItem"
-              allowUnique={false}
-              classNames={{
-                tagInputField: "ReactTags__tagInputField input"
-              }}
-            />
-            {this.renderErrorText()}
+        <p className="has-margin-10" style={{ flexGrow: 1, flexShrink: 1 }}>
+          <strong>Add</strong> lexical items by typing and selecting from the
+          pop-up list.
+          <br/>
+          <strong>Delete</strong> items by pressing backspace, or by clicking on
+          the × icon in the item.
+          <br/>
+          <strong>Move</strong> items by dragging them around with the mouse.
+        </p>
+        <form onSubmit={this.submitInputStream}>
+          <div className="field">
+            <div className="control is-expanded">
+              <ReactTags
+                tags={this.state.lexicalArray}
+                placeholder="Add a new lexical item"
+                handleAddition={this.handleAddition}
+                handleDelete={this.handleDelete}
+                handleDrag={this.handleDrag}
+                handleInputChange={this.handleInputChange}
+                minQueryLength={1}
+                name="lexicalItem"
+                inline={false}
+                allowUnique={false}
+                classNames={{
+                  tagInputField: "ReactTags__tagInputField input"
+                }}
+              />
+              {this.renderErrorText()}
+            </div>
           </div>
-          <div className="control">
-            <button className="button is-primary">Derive!</button>
+
+          <div className="field">
+            <div className="control">
+              <button className="button is-primary">Derive!</button>
+            </div>
           </div>
         </form>
 
-        <span>{JSON.stringify(this.state.lexicalArray)}</span>
+        <p className="has-text-grey-light has-margin-top-10">
+          {JSON.stringify(this.state.lexicalArray)}
+        </p>
       </div>
     );
   }
@@ -128,7 +144,8 @@ class GenerateDerivation extends Component {
   };
 
   /**
-   * Submits the contents of the input stream to the server to attempt a derivation.
+   * Submits the contents of the input stream to the server to attempt a
+   * derivation.
    * @param event
    */
   submitInputStream = (event) => {
@@ -146,4 +163,8 @@ class GenerateDerivation extends Component {
   };
 }
 
-export default GenerateDerivation;
+const GenerateDerivationWithRef = React.forwardRef((props, ref) => (
+  <GenerateDerivation {...props} innerRef={ref}/>
+));
+GenerateDerivationWithRef.displayName = "GenerateDerivationWithRef";
+export default GenerateDerivationWithRef;

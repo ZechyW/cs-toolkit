@@ -1,4 +1,4 @@
-import "./styles/index.scss";
+import "./styles/theme.scss";
 
 import { dom, config } from "@fortawesome/fontawesome-svg-core";
 
@@ -10,4 +10,4 @@ import ReactDOM from "react-dom";
 
 import App from "./components/App";
 
-window.app = ReactDOM.render(<App />, document.getElementById("root"));
+window.app = ReactDOM.render(<App/>, document.getElementById("root"));

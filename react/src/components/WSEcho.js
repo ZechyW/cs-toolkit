@@ -18,7 +18,9 @@ import Table from "./Table";
 class WSEcho extends Component {
   static propTypes = {
     // Function for registering a listener with the WS provider
-    subscribe: PropTypes.func.isRequired
+    subscribe: PropTypes.func.isRequired,
+
+    innerRef: PropTypes.func
   };
 
   constructor(props) {
@@ -53,7 +55,8 @@ class WSEcho extends Component {
   }
 
   render() {
-    // The content of the input area changes depending on whether or not we are subscribed
+    // The content of the input area changes depending on whether or not we are
+    // subscribed
     let controls;
     if (!this.state.subscribed) {
       // Username selection input
@@ -131,8 +134,8 @@ class WSEcho extends Component {
     }
 
     return (
-      <div className="echo-section">
-        <div className="title is-4 flex-row align-items-center">
+      <div className="ws-echo grid-child" ref={this.props.innerRef}>
+        <div className="grid-title flex-row align-items-center">
           <span className="has-padding-right-10">WebSocket Echo Test</span>
           <span
             className="icon has-text-primary is-size-6 has-cursor-pointer"
@@ -353,15 +356,17 @@ class WSEcho extends Component {
   };
 
   /**
-   * Takes any dateString parsable by Date, and returns a string suitable for printing
+   * Takes any dateString parsable by Date, and returns a string suitable for
+   * printing
    * @param dateString
    */
   displayTimestamp = (dateString) => {
-    return dateFormat(
-      new Date(dateString),
-      "D MMM h:mma"
-    );
+    return dateFormat(new Date(dateString), "d MMM h:mma");
   };
 }
 
-export default WSEcho;
+const WSEchoWithRef = React.forwardRef((props, ref) => (
+  <WSEcho {...props} innerRef={ref} />
+));
+WSEchoWithRef.displayName = "WSEchoWithRef";
+export default WSEchoWithRef;

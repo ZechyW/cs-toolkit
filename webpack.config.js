@@ -28,7 +28,7 @@ module.exports = {
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: "[name].css",
-      chunkFilename: "[id].css"
+      chunkFilename: "[name].css"
     })
   ],
 
@@ -40,6 +40,15 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          "css-loader"
+        ]
       },
       {
         test: /\.scss$/,
