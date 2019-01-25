@@ -47,7 +47,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-draggable": "github:ZechyW/react-draggable",
+    "react-draggable": "^3.1.1",
     "react-grid-layout": "^0.16.6",
     "react-resize-detector": "^3.4.0",
     "react-tag-input": "^6.2.0",

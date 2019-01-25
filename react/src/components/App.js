@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import withWSProvider from "./WebSocket";
 
 import GridLayout from "./GridLayout";
-import ResizeDetector from "react-resize-detector";
 
 import GenerateDerivation from "./GenerateDerivation";
 import WSEcho from "./WSEcho";
@@ -39,14 +38,17 @@ class App extends Component {
     // RGL options (also relevant for calculating item heights, etc.)
     this.margin = [10, 10];
     this.containerPadding = [0, 0];
-    this.rowHeight = 1;
+    this.rowHeight = 30;
 
     // Updated whenever the GridLayout is updated
     this.currentBreakpoint = "";
     this.width = 0;
 
-    // Will hold refs to each grid child's inner container
+    // Will hold refs to each grid item's inner container
     this.items = {};
+
+    // Which grid items to autosize (compacting when possible)
+    this.autosize = getFromLS("autosize") || { generateDerivation: true };
   }
 
   render() {
@@ -70,10 +72,11 @@ class App extends Component {
             <div
               className="box grid-box"
               key="generateDerivation"
-              data-grid={{ x: 0, y: 0, w: 12, h: 1 }}
+              data-grid={{ x: 0, y: 0, w: 10, h: 1 }}
             >
               <GenerateDerivation
                 subscribe={this.props.subscribe}
+                onUpdate={() => this.handleChildUpdate("generateDerivation")}
                 ref={(element) => {
                   this.items.generateDerivation = element;
                 }}
@@ -83,10 +86,11 @@ class App extends Component {
             <div
               className="box grid-box"
               key="wsEcho"
-              data-grid={{ x: 0, y: 1, w: 6, h: 1 }}
+              data-grid={{ x: 0, y: 1, w: 5, h: 1 }}
             >
               <WSEcho
                 subscribe={this.props.subscribe}
+                onUpdate={() => this.handleChildUpdate("wsEcho")}
                 ref={(element) => {
                   this.items.wsEcho = element;
                 }}
@@ -96,7 +100,7 @@ class App extends Component {
             <div
               className="box grid-box"
               key="lexicalItems"
-              data-grid={{ x: 7, y: 1, w: 6, h: 1 }}
+              data-grid={{ x: 6, y: 1, w: 5, h: 1 }}
             >
               <div
                 className="lexical-items grid-child"
@@ -124,6 +128,11 @@ class App extends Component {
     );
   }
 
+  componentDidUpdate() {
+    console.log("Check: Shouldn't be needing to call this here");
+    this.autosizeGridItems();
+  }
+
   /**
    * Receive pertinent layout-related data when the grid component updates
    * @param width
@@ -131,7 +140,7 @@ class App extends Component {
    */
   handleGridUpdate = (width, currentBreakpoint) => {
     if (width !== this.width) {
-      this.autoSizeGridItems();
+      this.autosizeGridItems();
     }
     this.width = width;
     this.currentBreakpoint = currentBreakpoint;
@@ -148,7 +157,7 @@ class App extends Component {
       console.log("Setting state: onLayoutChange");
       saveToLS("layouts", layouts);
       this.setState({ layouts }, () => {
-        this.autoSizeGridItems();
+        this.autosizeGridItems();
       });
     }
   };
@@ -159,43 +168,42 @@ class App extends Component {
    * @param oldItem
    * @param newItem - The new gridItem (not its contents)
    * @param placeholder
-   * @param e
-   * @param element - One would think it would be the contents of the gridItem,
-   *   but it's actually the span containing the resize handle, for some reason
    */
-  onGridItemResize = (layout, oldItem, newItem, placeholder, e, element) => {
-    // `element` is the span containing the resize handle, not the actual grid
-    // item, for some reason
-    element = element.parentNode;
-
-    // Make sure that the new item is at least as tall as the content needs
-    // it to be
+  onGridItemResize = (layout, oldItem, newItem, placeholder) => {
+    // Start by determining minimum scroll height for the item
     const id = newItem.i;
     const content = this.items[id];
-    const scrollHeight = content.scrollHeight;
-    const minGridHeight = this.calculateGridHeight(
-      scrollHeight + Config.gridVerticalPadding
-    );
-    if (newItem.h < minGridHeight) {
-      newItem.h = minGridHeight;
-      placeholder.h = minGridHeight;
-    }
-
-    // In addition, calculate and set .minH for the grid item at the current
-    // width
     content.style.height = 0;
     const minScrollHeight = content.scrollHeight;
     content.style.height = "100%";
-    newItem.minH = this.calculateGridHeight(
+
+    // Set .minH, and either .h (for non-autosized items) or .maxH (for
+    // autosized items)
+    const minGridHeight = this.calculateGridHeight(
       minScrollHeight + Config.gridVerticalPadding
     );
+    newItem.minH = minGridHeight;
+    newItem.h = Math.max(newItem.minH, newItem.h);
+
+    if (this.autosize[id]) {
+      newItem.maxH = minGridHeight;
+      newItem.h = minGridHeight;
+      placeholder.h = minGridHeight;
+    }
+  };
+
+  handleChildUpdate = (id) => {
+    console.log("Child updated:", id);
+    this.autosizeGridItems([id]);
   };
 
   /**
    * Reads the current layout in `this.state.layouts`, and makes sure that all
    * items have a height >= the scrollHeight of their contents
+   * @param {...String[]} itemsToCheck - An array containing the IDs of the
+   *   items to autosize. Will autosize all items if undefined.
    */
-  autoSizeGridItems = () => {
+  autosizeGridItems = (itemsToCheck) => {
     // // Grid items might not be fully redrawn yet
     window.requestAnimationFrame(() => {
       // Figure out whether or not we need to resize any items.
@@ -203,20 +211,45 @@ class App extends Component {
       // layouts are arrays of objects; if we shallow clone the array, we get
       // the same object references back
       const layout = _.cloneDeep(this.state.layouts[this.currentBreakpoint]);
+      itemsToCheck = itemsToCheck || layout.map((item) => item.i);
       let changed = false;
       for (const item of layout) {
         const id = item.i;
-        const heightUnits = this.calculateGridHeight(
-          this.items[id].scrollHeight + Config.gridVerticalPadding
+        if (itemsToCheck.indexOf(id) < 0) {
+          continue;
+        }
+
+        // Determine minimum scroll height
+        const content = this.items[id];
+        content.style.height = 0;
+        const minScrollHeight = content.scrollHeight;
+        content.style.height = "100%";
+
+        // Set .minH, and either .h (for non-autosized items) or .maxH (for
+        // autosized items)
+        const minGridHeight = this.calculateGridHeight(
+          minScrollHeight + Config.gridVerticalPadding
         );
-        if (item.h < heightUnits) {
-          item.h = heightUnits;
+        if (item.minH !== minGridHeight) {
+          item.minH = minGridHeight;
           changed = true;
+        }
+        if (item.h < item.minH) {
+          item.h = item.minH;
+          changed = true;
+        }
+
+        if (this.autosize[id]) {
+          if (item.maxH !== minGridHeight || item.h !== minGridHeight) {
+            changed = true;
+          }
+          item.maxH = minGridHeight;
+          item.h = minGridHeight;
         }
       }
 
       if (changed) {
-        console.log("Setting state: autoSizeGridItems");
+        console.log("Setting state: autosizeGridItems");
         this.setState((state) => {
           return {
             layouts: { ...state.layouts, [this.currentBreakpoint]: layout }
@@ -250,7 +283,6 @@ class App extends Component {
 }
 
 const AppWithWS = withWSProvider(App, `${Config.wsHost}${Config.wsEndpoint}`);
-
 export default AppWithWS;
 
 /**
@@ -260,10 +292,9 @@ export default AppWithWS;
  */
 function getFromLS(key) {
   let ls = {};
-  if (window.localStorage) {
+  if (localStorage) {
     try {
-      ls =
-        JSON.parse(window.localStorage.getItem(Config.localStorageKey)) || {};
+      ls = JSON.parse(localStorage.getItem(Config.localStorageNamespace)) || {};
     } catch (e) {
       /*Ignore*/
     }
@@ -278,12 +309,10 @@ function getFromLS(key) {
  * @param value
  */
 function saveToLS(key, value) {
-  if (window.localStorage) {
-    window.localStorage.setItem(
-      Config.localStorageKey,
-      JSON.stringify({
-        [key]: value
-      })
-    );
+  if (localStorage) {
+    const ls =
+      JSON.parse(localStorage.getItem(Config.localStorageNamespace)) || {};
+    ls[key] = value;
+    localStorage.setItem(Config.localStorageNamespace, JSON.stringify(ls));
   }
 }

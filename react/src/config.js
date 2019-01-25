@@ -14,6 +14,6 @@ export default {
   // size calculations.s
   gridVerticalPadding: 40,
 
-  // localStorage
-  localStorageKey: "cs-toolkit"
+  // localStorage namespace
+  localStorageNamespace: "cs-toolkit"
 };

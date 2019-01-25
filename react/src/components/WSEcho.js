@@ -13,13 +13,17 @@ library.add(faVolumeUp, faVolumeMute);
 import Table from "./Table";
 
 /**
- * Sub-component for WebSocket echo section
+ * Sub-component for WebSocket echo
  */
 class WSEcho extends Component {
   static propTypes = {
     // Function for registering a listener with the WS provider
     subscribe: PropTypes.func.isRequired,
 
+    // Optionally passed by the parent
+    onUpdate: PropTypes.func,
+
+    // For React.forwardRef
     innerRef: PropTypes.func
   };
 
@@ -162,6 +166,15 @@ class WSEcho extends Component {
         />
       </div>
     );
+  }
+
+  /**
+   * Let the parent know when we re-render
+   */
+  componentDidUpdate() {
+    if (this.props.onUpdate) {
+      this.props.onUpdate();
+    }
   }
 
   /**

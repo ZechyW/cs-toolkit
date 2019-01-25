@@ -115,11 +115,16 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
 .grid-box {
   // Keep any overflow neatly out of sight
   overflow: hidden;
+
+  // Prevent the entire grid item from hijacking touch events (only the drag
+  // handle should catch them)
+  touch-action: auto !important;
 }
 
 // Top-level elements within the grid item's inner container
 .grid-child {
   height: 100%;
+  overflow: hidden;
 }
 
 /******************************************************************************

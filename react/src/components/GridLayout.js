@@ -42,10 +42,7 @@ class GridLayout extends Component {
       this.props.breakpoints,
       this.props.width
     );
-    this.props.onUpdate(
-      this.props.width,
-      currentBreakpoint
-    );
+    this.props.onUpdate(this.props.width, currentBreakpoint);
   }
 }
 

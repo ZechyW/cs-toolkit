@@ -7,6 +7,10 @@ class GenerateDerivation extends Component {
     // Function for registering a listener with the WS provider
     subscribe: PropTypes.func.isRequired,
 
+    // Optionally passed by the parent
+    onUpdate: PropTypes.func,
+
+    // For React.forwardRef
     innerRef: PropTypes.func
   };
 
@@ -30,9 +34,7 @@ class GenerateDerivation extends Component {
         className="generate-derivation flex-column grid-child"
         ref={this.props.innerRef}
       >
-        <p className="grid-title">
-          Generate Derivations
-        </p>
+        <p className="grid-title">Generate Derivations</p>
         <p style={{ flexGrow: 1, flexShrink: 1 }}>
           Build a (bottom-up) Lexical Array in the box below, then hit the{" "}
           <strong>Derive!</strong> button to attempt to generate a corresponding
@@ -41,10 +43,10 @@ class GenerateDerivation extends Component {
         <p className="has-margin-10" style={{ flexGrow: 1, flexShrink: 1 }}>
           <strong>Add</strong> lexical items by typing and selecting from the
           pop-up list.
-          <br/>
+          <br />
           <strong>Delete</strong> items by pressing backspace, or by clicking on
           the × icon in the item.
-          <br/>
+          <br />
           <strong>Move</strong> items by dragging them around with the mouse.
         </p>
         <form onSubmit={this.submitInputStream}>
@@ -81,6 +83,15 @@ class GenerateDerivation extends Component {
         </p>
       </div>
     );
+  }
+
+  /**
+   * Let the parent know when we re-render
+   */
+  componentDidUpdate() {
+    if (this.props.onUpdate) {
+      this.props.onUpdate();
+    }
   }
 
   /**
@@ -164,7 +175,7 @@ class GenerateDerivation extends Component {
 }
 
 const GenerateDerivationWithRef = React.forwardRef((props, ref) => (
-  <GenerateDerivation {...props} innerRef={ref}/>
+  <GenerateDerivation {...props} innerRef={ref} />
 ));
 GenerateDerivationWithRef.displayName = "GenerateDerivationWithRef";
 export default GenerateDerivationWithRef;
