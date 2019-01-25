@@ -108,6 +108,7 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   margin-bottom: 0.5rem;
 
   cursor: move;
+  touch-action: none;
 }
 
 // For the grid item's outer container
