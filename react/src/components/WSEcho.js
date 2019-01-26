@@ -48,7 +48,7 @@ class WSEcho extends Component {
     };
 
     this.notificationSound = new Howl({
-      src: ["static/frontend/notification.mp3"]
+      src: ["static/notification.mp3"]
     });
 
     // For selecting text inputs that contain errors

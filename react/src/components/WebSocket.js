@@ -1,8 +1,9 @@
 /**
- * A higher-order component that manages WebSocket Pub/Sub against a compatible server.
+ * A higher-order component that manages WebSocket Pub/Sub against a compatible
+ * server.
  *
- * The main mechanism of action is via the `topic` property of the message, which
- * determines who receives it.
+ * The main mechanism of action is via the `topic` property of the message,
+ * which determines who receives it.
  *
  * Because we generally only want one WebSocket connection per URL, we throw
  * warnings if more are attempted.
@@ -33,10 +34,19 @@ function withWSProvider(WrappedComponent, wsUrl) {
 
       // Init
       this.initiateSocket();
+
+      // Will hold a reference to the wrapped component
+      this.inner = null;
     }
 
     render() {
-      return <WrappedComponent subscribe={this.subscribe} {...this.props} />;
+      return (
+        <WrappedComponent
+          ref={(inner) => (this.inner = inner)}
+          subscribe={this.subscribe}
+          {...this.props}
+        />
+      );
     }
 
     /**
@@ -106,7 +116,8 @@ function withWSProvider(WrappedComponent, wsUrl) {
     };
 
     /**
-     * Calls all the registered listeners for the given topic with the given data
+     * Calls all the registered listeners for the given topic with the given
+     * data
      * @param topic
      * @param data
      */

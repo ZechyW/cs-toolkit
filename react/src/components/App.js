@@ -32,12 +32,12 @@ class App extends Component {
 
     // Get last layout from localStorage if available
     this.state = {
-      layouts: getFromLS("layouts") || {}
+      layouts: getFromLS("layouts") || Config.gridDefaultLayout
     };
 
     // RGL options (also relevant for calculating item heights, etc.)
     this.margin = [10, 10];
-    this.containerPadding = [0, 0];
+    this.containerPadding = [15, 15];
     this.rowHeight = 30;
 
     // Updated whenever the GridLayout is updated
@@ -48,88 +48,71 @@ class App extends Component {
     this.items = {};
 
     // Which grid items to autosize (compacting when possible)
-    this.autosize = getFromLS("autosize") || { generateDerivation: true };
+    this.autosize = getFromLS("autosize") || Config.gridDefaultAutosize;
   }
 
   render() {
     return (
-      <div className="section">
-        <div className="container is-fluid">
-          <button className="button" onClick={this.resetLayout}>
-            Reset Layout
-          </button>
-          <GridLayout
-            className="has-margin-top-10"
-            draggableHandle=".grid-title"
-            layouts={_.cloneDeep(this.state.layouts)}
-            margin={this.margin}
-            containerPadding={this.containerPadding}
-            rowHeight={this.rowHeight}
-            onLayoutChange={this.onLayoutChange}
-            onResize={this.onGridItemResize}
-            onUpdate={this.handleGridUpdate}
-          >
-            <div
-              className="box grid-box"
-              key="generateDerivation"
-              data-grid={{ x: 0, y: 0, w: 10, h: 1 }}
-            >
-              <GenerateDerivation
-                subscribe={this.props.subscribe}
-                onUpdate={() => this.handleChildUpdate("generateDerivation")}
-                ref={(element) => {
-                  this.items.generateDerivation = element;
-                }}
-              />
-            </div>
-
-            <div
-              className="box grid-box"
-              key="wsEcho"
-              data-grid={{ x: 0, y: 1, w: 5, h: 1 }}
-            >
-              <WSEcho
-                subscribe={this.props.subscribe}
-                onUpdate={() => this.handleChildUpdate("wsEcho")}
-                ref={(element) => {
-                  this.items.wsEcho = element;
-                }}
-              />
-            </div>
-
-            <div
-              className="box grid-box"
-              key="lexicalItems"
-              data-grid={{ x: 6, y: 1, w: 5, h: 1 }}
-            >
-              <div
-                className="lexical-items grid-child"
-                ref={(element) => {
-                  this.items.lexicalItems = element;
-                }}
-              >
-                <p className="grid-title">Lexical Items</p>
-                <DataProvider
-                  endpoint="api/lexicon/"
-                  render={(data) => (
-                    <Table
-                      data={data}
-                      containerStyle={{
-                        overflow: "auto"
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-          </GridLayout>
+      <GridLayout
+        draggableHandle=".grid-title"
+        layouts={_.cloneDeep(this.state.layouts)}
+        margin={this.margin}
+        containerPadding={this.containerPadding}
+        rowHeight={this.rowHeight}
+        onLayoutChange={this.onLayoutChange}
+        onResize={this.onGridItemResize}
+        onUpdate={this.handleGridUpdate}
+      >
+        <div className="box grid-box" key="generateDerivation">
+          <GenerateDerivation
+            subscribe={this.props.subscribe}
+            onUpdate={() => this.handleChildUpdate("generateDerivation")}
+            ref={(element) => {
+              this.items.generateDerivation = element;
+            }}
+          />
         </div>
-      </div>
+
+        <div className="box grid-box" key="wsEcho">
+          <WSEcho
+            subscribe={this.props.subscribe}
+            onUpdate={() => this.handleChildUpdate("wsEcho")}
+            ref={(element) => {
+              this.items.wsEcho = element;
+            }}
+          />
+        </div>
+
+        <div className="box grid-box" key="lexicalItems">
+          <div
+            className="lexical-items grid-child"
+            ref={(element) => {
+              this.items.lexicalItems = element;
+            }}
+          >
+            <p className="grid-title">Lexical Items</p>
+            <DataProvider
+              endpoint="api/lexicon/"
+              render={(data) => (
+                <Table
+                  data={data}
+                  containerStyle={{
+                    overflow: "auto"
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+      </GridLayout>
     );
   }
 
   componentDidUpdate() {
-    console.log("Check: Shouldn't be needing to call this here");
+    console.log(
+      "Check: Shouldn't be needing to call this here once all" +
+        " components are factored out of the main App component."
+    );
     this.autosizeGridItems();
   }
 
@@ -267,7 +250,7 @@ class App extends Component {
   resetLayout = () => {
     console.log("Setting state: Reset");
     this.setState({
-      layouts: {}
+      layouts: Config.gridDefaultLayout
     });
   };
 

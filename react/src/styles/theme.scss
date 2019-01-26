@@ -18,8 +18,8 @@ $family-sans-serif: "Nunito", sans-serif;
  ******************************************************************************/
 // Trim the Bulma helpers library a bit, since we don't need all of it
 $enable-media-queries: false;
-$spacing-range-start: 5;
-$spacing-range-end: 100;
+$spacing-range-start: 0;
+$spacing-range-end: 30;
 $spacing-interval: 5;
 
 @import "~bulma-helpers/bulma-helpers";
@@ -125,6 +125,13 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
 .grid-child {
   height: 100%;
   overflow: hidden;
+}
+
+/******************************************************************************
+ * Navbar
+ ******************************************************************************/
+.cs-animate {
+  transition: all 300ms;
 }
 
 /******************************************************************************

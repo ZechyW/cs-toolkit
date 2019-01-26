@@ -127,7 +127,7 @@ STATIC_URL = "/static/"
 
 # Frontend bundles and other static files are saved/built into the `react` folder,
 # and they are served directly from there if `DEBUG` or `WHITENOISE_USE_FINDERS` is True
-STATICFILES_DIRS = [("frontend", "../react/static")]
+STATICFILES_DIRS = [("frontend", "../react/built"), "../static"]
 
 # Whitenoise
 # To serve compressed static files, `DEBUG` or `WHITENOISE_USE_FINDERS` must be

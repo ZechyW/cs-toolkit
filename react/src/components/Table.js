@@ -13,6 +13,10 @@ class Table extends Component {
     containerStyle: PropTypes.object
   };
 
+  static defaultProps = {
+    tableClass: ""
+  };
+
   render() {
     const { data } = this.props;
 
