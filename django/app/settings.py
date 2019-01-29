@@ -34,13 +34,18 @@ INSTALLED_APPS = [
     # Whitenoise
     "whitenoise.runserver_nostatic",
     # Django
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # 3rd-party libraries: Django REST Framework and Channels for API/Async operations
+    # Django admin site
+    # "grappelli.dashboard",
+    "grappelli",
+    "app.admin.AppAdminConfig",
+    "django.contrib.admindocs",
+    # 3rd-party libraries: Django REST Framework and Channels for API/Async
+    # operations
     "rest_framework",
     "channels",
     # App to manage the frontend sources
@@ -96,14 +101,17 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        "NAME": "django.contrib.auth.password_validation"
+        ".UserAttributeSimilarityValidator"
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
+        "NAME": "django.contrib.auth.password_validation"
+        ".CommonPasswordValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
+        "NAME": "django.contrib.auth.password_validation"
+        ".NumericPasswordValidator"
     },
 ]
 
@@ -125,13 +133,16 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-# Frontend bundles and other static files are saved/built into the `react` folder,
-# and they are served directly from there if `DEBUG` or `WHITENOISE_USE_FINDERS` is True
+# Frontend bundles and other static files are saved/built into the `react`
+# folder,
+# and they are served directly from there if `DEBUG` or
+# `WHITENOISE_USE_FINDERS` is True
 STATICFILES_DIRS = [("frontend", "../react/built"), "../static"]
 
 # Whitenoise
 # To serve compressed static files, `DEBUG` or `WHITENOISE_USE_FINDERS` must be
-# False, and the static files must be available in `STATIC_ROOT` (i.e., by running
+# False, and the static files must be available in `STATIC_ROOT` (i.e.,
+# by running
 # `collectstatic`)
 STATIC_ROOT = "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -150,3 +161,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
+
+# Grappelli
+GRAPPELLI_ADMIN_TITLE = "CS Toolkit"
+GRAPPELLI_INDEX_DASHBOARD = "app.dashboard.CustomIndexDashboard"

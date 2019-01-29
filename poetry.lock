@@ -212,6 +212,14 @@ pytz = "*"
 
 [[package]]
 category = "main"
+description = "A jazzy skin for the Django Admin-Interface."
+name = "django-grappelli"
+optional = false
+python-versions = "*"
+version = "2.12.2"
+
+[[package]]
+category = "main"
 description = "Django model mixins and utilities"
 name = "django-model-utils"
 optional = false
@@ -611,7 +619,7 @@ setuptools = "*"
 windows = ["pywin32"]
 
 [metadata]
-content-hash = "19c21dfb1834e25e2bf01d2b03d959cec1fbd1b20783123e2cb4edf9d2c4edfd"
+content-hash = "31914d222c7883b4fa9e2e7d7a8df0fa7855b260d7cdd08fb3deaac788ba4fd9"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -635,6 +643,7 @@ colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", 
 constantly = ["586372eb92059873e29eba4f9dec8381541b4d3834660707faf8ba59146dfc35", "dd2fa9d6b1a51a83f0d7dd76293d734046aa176e384bf6e33b7e44880eb37c5d"]
 daphne = ["0aafeb5199d564db675d5640bece6072cbd4af8c4f818938f08dac70b31c5841", "d22567197361782736e2031e8ba0bf5aaefbe202f66153fe9c1ac5578c292a97"]
 django = ["a32c22af23634e1d11425574dce756098e015a165be02e4690179889b207c7a8", "d6393918da830530a9516bbbcbf7f1214c3d733738779f06b0f649f49cc698c3"]
+django-grappelli = ["c4a98416c41eecaff99e104c18d8d71717305b8466b5de40d3c80d734a9297fb"]
 django-model-utils = ["2c057f3bf0859aba27f04389f0cedd2d48f8c9b3848acb86fd9970794e58f477", "8cd377744aa45f9f131d652ec460c57d1aaa88d3e9b586c8e27eb709341b9084"]
 djangorestframework = ["79c6efbb2514bc50cf25906d7c0a5cfead714c7af667ff4bd110312cd380ae66", "a4138613b67e3a223be6c97f53b13d759c5b90d2b433bad670b8ebf95402075f"]
 docutils = ["02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6", "51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274", "7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"]

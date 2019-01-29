@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('lexicon', '0001_initial'),
-    ]
+    dependencies = [("lexicon", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='lexicalitem',
-            name='is_functional',
+            model_name="lexicalitem",
+            name="is_functional",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='lexicalitem',
-            name='language_code',
+            model_name="lexicalitem",
+            name="language_code",
             field=models.CharField(max_length=50),
         ),
     ]

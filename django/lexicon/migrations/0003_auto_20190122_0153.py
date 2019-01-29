@@ -5,18 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('lexicon', '0002_auto_20190122_0022'),
-    ]
+    dependencies = [("lexicon", "0002_auto_20190122_0022")]
 
     operations = [
         migrations.RenameField(
-            model_name='lexicalitem',
-            old_name='orthographic_representation',
-            new_name='text',
+            model_name="lexicalitem",
+            old_name="orthographic_representation",
+            new_name="text",
         ),
-        migrations.RemoveField(
-            model_name='lexicalitem',
-            name='is_functional',
-        ),
+        migrations.RemoveField(model_name="lexicalitem", name="is_functional"),
     ]
