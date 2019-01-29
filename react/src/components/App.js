@@ -265,7 +265,7 @@ class App extends Component {
   };
 }
 
-const AppWithWS = withWSProvider(App, `${Config.wsHost}${Config.wsEndpoint}`);
+const AppWithWS = withWSProvider(App, `${Config.wsURL}`);
 export default AppWithWS;
 
 /**

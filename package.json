@@ -8,7 +8,10 @@
     "build": "webpack --mode production",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch --info-verbosity verbose",
-    "profile": "webpack --profile --json > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json ./react/static"
+    "profile": "webpack --profile --json > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json ./react/built",
+    "collectstatic": "cd django && poetry run python manage.py collectstatic --clear --noinput",
+    "build-docs": "cd docs && poetry run make html",
+    "watch-docs": "cd docs && chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
   },
   "repository": {
     "type": "git",
@@ -33,13 +36,16 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "bulma": "^0.7.2",
     "bulma-helpers": "^0.3.6",
+    "chokidar-cli": "^1.2.1",
     "css-loader": "^2.1.0",
     "date-fns": "^2.0.0-alpha.27",
     "eslint": "^5.12.0",
     "eslint-plugin-react": "^7.12.3",
     "gfynonce": "^1.0.1",
     "howler": "^2.1.1",
+    "husky": "^1.3.1",
     "jquery": "^3.3.1",
+    "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
@@ -59,5 +65,10 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.2.1",
     "whatwg-fetch": "^3.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build && npm run build-docs && npm run collectstatic && git add ."
+    }
   }
 }
