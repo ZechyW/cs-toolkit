@@ -9,9 +9,10 @@
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch --info-verbosity verbose",
     "profile": "webpack --profile --json > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json ./react/built",
-    "collectstatic": "cd django && poetry run python manage.py collectstatic --clear --noinput",
     "build-docs": "cd docs && poetry run make html",
-    "watch-docs": "cd docs && chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
+    "watch-docs": "cd docs && chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial",
+    "collectstatic": "cd django && poetry run python manage.py collectstatic --clear --noinput",
+    "stage": "npm run build && npm run build-docs && npm run collectstatic"
   },
   "repository": {
     "type": "git",
@@ -68,7 +69,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build && npm run build-docs && npm run collectstatic && git add ."
+      "pre-push": "npm run stage && git diff --quiet && git diff --staged --quiet || git commit -am \"Static: Auto-committing built static files.\""
     }
   }
 }

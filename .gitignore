@@ -341,3 +341,4 @@ typings/
 
 # Additional ignores
 .idea/pylint.xml
+webpack-profile.json
