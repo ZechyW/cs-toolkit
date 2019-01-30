@@ -41,7 +41,7 @@ class LexicalItem(NotifyModel):
     #:   - en_SG
     #:   - zh
     #:   - func
-    language_code = models.CharField(max_length=50)
+    language = models.CharField(max_length=50)
 
     features = models.ManyToManyField("Feature")
 

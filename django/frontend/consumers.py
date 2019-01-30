@@ -1,7 +1,7 @@
 """
 Django Channels consumers for the frontend
 """
-
+import logging
 import re
 
 from channels.generic.websocket import JsonWebsocketConsumer
@@ -9,11 +9,13 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from .serializers import PubSubSerializer
 from . import handlers
 
+logger = logging.getLogger("cs-toolkit")
+
 
 class WebSocketConsumer(JsonWebsocketConsumer):
     """
-    A Consumer that manages WebSocket Pub/Sub connections, dispatching data to the
-    various topic handlers
+    A Consumer that manages WebSocket Pub/Sub connections, dispatching data
+    to the various topic handlers
     """
 
     def __init__(self, *args, **kwargs):
@@ -36,7 +38,7 @@ class WebSocketConsumer(JsonWebsocketConsumer):
         :param kwargs:
         :return:
         """
-        print("WebSocket RECV JSON", content)
+        logger.info("WebSocket RECV JSON {}".format(content))
 
         # Should we handle this data?
         serializer = PubSubSerializer(data=content)
@@ -49,13 +51,13 @@ class WebSocketConsumer(JsonWebsocketConsumer):
             self.handlers[topic].handle(content)
             return
 
-        # If not, is one available?
+        # If not, is one available in the `handlers` submodule?
         handler_name = self.get_handler_name(topic)
         try:
             handler_class = getattr(handlers, handler_name)
         except AttributeError:
             # Nope
-            print("Warning: No valid handler", handler_name)
+            logger.warning("Warning: No valid handler", handler_name)
             return
 
         # Yep: Instantiate it and handle the request
@@ -83,7 +85,7 @@ class WebSocketConsumer(JsonWebsocketConsumer):
 
     def send_to_client(self, message):
         """
-        Called by handlers to send messages directly on the client channel
+        Called by handlers to send messages directly on the client channel.
         :param message:
         :return:
         """

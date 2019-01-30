@@ -1,4 +1,4 @@
 from django.urls import path
 from . import views
 
-urlpatterns = [path("lexicon/", views.LexicalItemListCreate.as_view())]
+urlpatterns = [path("lexicon/", views.LexicalItemList.as_view())]

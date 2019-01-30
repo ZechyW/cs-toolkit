@@ -19,6 +19,7 @@ sphinx-js = "^2.7"
 sphinx_rtd_theme = "^0.4.2"
 m2r = "^0.2.1"
 django-grappelli = "^2.12"
+djangorestframework-queryfields = "^1.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.2"

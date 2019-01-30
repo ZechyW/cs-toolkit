@@ -92,7 +92,7 @@ class App extends Component {
           >
             <p className="grid-title">Lexical Items</p>
             <DataProvider
-              endpoint="api/lexicon/"
+              endpoint="api/lexicon/?fields=text,language,features"
               render={(data) => (
                 <Table
                   data={data}

@@ -5,8 +5,10 @@ Lets clients know when some Django model has changed.
 from asgiref.sync import async_to_sync
 from rest_framework import serializers
 
+from frontend.handlers.base import Handler
 
-class NotifyHandler:
+
+class NotifyHandler(Handler):
     """
     Handles subscriptions to Django model changes for the current Consumer.
     """
@@ -42,7 +44,8 @@ class NotifyHandler:
 
     def notify_change(self, event):
         """
-        Receives channel layer group notifications for changes to the model objects
+        Receives channel layer group notifications for changes to the model
+        objects
         :param event:
         :return:
         """
@@ -54,7 +57,8 @@ class NotifyHandler:
 
     def notify_delete(self, event):
         """
-        Receives channel layer group notifications for changes to the model objects
+        Receives channel layer group notifications for changes to the model
+        objects
         :param event:
         :return:
         """

@@ -35,6 +35,10 @@ function withWSProvider(WrappedComponent, wsUrl) {
       // Init
       this.initiateSocket();
 
+      // In case components try to send messages on the WebSocket before
+      // it's ready
+      this.pendingMessages = [];
+
       // Will hold a reference to the wrapped component
       this.inner = null;
     }
@@ -55,6 +59,12 @@ function withWSProvider(WrappedComponent, wsUrl) {
     initiateSocket = () => {
       this.socket = new WebSocket(wsUrl);
       this.socket.onmessage = this._wsReceive;
+      this.socket.onopen = () => {
+        // Send any pending messages
+        while (this.pendingMessages.length > 0) {
+          this.socket.send(this.pendingMessages.pop());
+        }
+      };
     };
 
     /**
@@ -63,7 +73,11 @@ function withWSProvider(WrappedComponent, wsUrl) {
      * @private
      */
     _wsSend = (data) => {
-      this.socket.send(JSON.stringify(data));
+      if (this.socket.readyState !== 1) {
+        this.pendingMessages.push(JSON.stringify(data));
+      } else {
+        this.socket.send(JSON.stringify(data));
+      }
     };
 
     /**
@@ -109,6 +123,8 @@ function withWSProvider(WrappedComponent, wsUrl) {
         };
       });
 
+      // The publisher allows arbitrary messages, as long as the topic is
+      // appropriately set
       return (data) => {
         data.topic = topic;
         this._wsSend(data);

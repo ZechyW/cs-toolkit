@@ -8,7 +8,7 @@ from .models import LexicalItem, Feature, FeatureProperty
 
 
 class LexicalItemAdmin(admin.ModelAdmin):
-    list_display = ["text", "language_code", "features_string"]
+    list_display = ["text", "language", "features_string"]
     filter_horizontal = ["features"]
 
 

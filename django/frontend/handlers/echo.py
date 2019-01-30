@@ -6,10 +6,11 @@ from asgiref.sync import async_to_sync
 
 from django.utils import timezone
 
+from frontend.handlers.base import Handler
 from ..serializers import EchoSubscribeSerializer, EchoMessageSerializer
 
 
-class EchoHandler:
+class EchoHandler(Handler):
     """
     Takes messages and broadcasts it to all channels connected to the `echo` channel
     layer group.
@@ -69,8 +70,8 @@ class EchoHandler:
         # Check the specified username
         username = serializer.validated_data["username"]
         if (
-                username in EchoHandler.usernames
-                or username.lower() in EchoHandler.reserved_names
+            username in EchoHandler.usernames
+            or username.lower() in EchoHandler.reserved_names
         ):
             # Sending to the consumer directly doesn't broadcast the message to
             # the entire group
