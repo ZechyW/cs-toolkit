@@ -14,7 +14,7 @@ Contains the Django models used to represent lexical items and their features.
 from django.db import models
 from model_utils import FieldTracker
 
-from app.models import NotifyModel
+from notify.models import NotifyModel
 
 
 # Create your models here.
@@ -43,9 +43,7 @@ class LexicalItem(NotifyModel):
     #:   - func
     language_code = models.CharField(max_length=50)
 
-    feature_set = models.ForeignKey(
-        "FeatureSet", on_delete=models.CASCADE, null=True, blank=True
-    )
+    features = models.ManyToManyField("Feature")
 
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
@@ -55,24 +53,13 @@ class LexicalItem(NotifyModel):
     #: data processed via this serializer.
     serializer_class = "lexicon.serializers.LexicalItemSerializer"
 
+    def features_string(self):
+        return ", ".join(
+            [str(feature) for feature in sorted(self.features.all(), key=str)]
+        )
+
     def __str__(self):
         return self.text
-
-
-class FeatureSet(models.Model):
-    """
-    A Django model representing a single lexical item's feature-set.
-    Multiple LexicalItems can have the same FeatureSet. (E.g.: when they
-    represent near-synonyms from different languages)
-    """
-
-    features = models.ManyToManyField("Feature")
-
-    def __str__(self):
-        feature_list = ", ".join(
-            [str(feature) for feature in self.features.all()]
-        )
-        return "{}".format(feature_list)
 
 
 class Feature(models.Model):
@@ -82,10 +69,10 @@ class Feature(models.Model):
     of multiple Features.
     """
 
-    #: A human-friendly name for this feature.
+    #: A human-friendly short name for this Feature.
     name = models.CharField(max_length=100)
 
-    #: A long description of this feature.
+    #: A long description of this Feature.
     description = models.TextField()
 
     #: A QuerySet representing the FeatureProperties of this Feature.
@@ -122,8 +109,8 @@ class Feature(models.Model):
 
 class FeatureProperty(models.Model):
     """
-    A Django model representing a primitive property that may form a part of
-    a feature proper.
+    A Django model representing a primitive property-value pair that may
+    form a part of a feature proper.
     Each Feature is a collection of multiple FeatureProperties.
     """
 
@@ -131,8 +118,14 @@ class FeatureProperty(models.Model):
         verbose_name_plural = "Feature properties"
         unique_together = ("name", "value")
 
+    #: A human-friendly short name for this FeatureProperty.
     name = models.CharField(max_length=100)
+
+    #: The value associated with this FeatureProperty.
     value = models.CharField(max_length=100)
+
+    #: A long description of this FeatureProperty.
+    description = models.TextField()
 
     def __str__(self):
         return "{}: {}".format(self.name, self.value)

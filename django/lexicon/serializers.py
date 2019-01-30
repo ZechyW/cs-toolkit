@@ -5,6 +5,6 @@ from lexicon.models import LexicalItem
 class LexicalItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = LexicalItem
-        fields = ["text", "language_code", "feature_set"]
+        fields = ["id", "text", "language_code", "features"]
 
-    feature_set = serializers.StringRelatedField()
+    features = serializers.StringRelatedField(many=True)

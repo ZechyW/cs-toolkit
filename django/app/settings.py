@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "channels",
     # App to manage the frontend sources
     "frontend",
+    # For auto-notifying clients of changes
+    "notify",
     # Models
     "lexicon",
 ]
@@ -127,6 +129,20 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"level": "INFO", "class": "logging.StreamHandler"}
+    },
+    "loggers": {
+        # We might not want super-verbose logging on the server when developing
+        "django.channels.server": {"level": "WARNING"},
+        "cs-toolkit": {"handlers": ["console"], "level": "INFO"},
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
