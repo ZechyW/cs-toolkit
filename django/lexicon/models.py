@@ -34,7 +34,7 @@ class LexicalItem(NotifyModel):
     #: appropriately.
     #:
     #: In addition, the special code "func" is used for functional items (which
-    #: don't belong in any particular language)
+    #: don't belong in any particular language).
     #:
     #: Examples:
     #:   - en
@@ -43,7 +43,7 @@ class LexicalItem(NotifyModel):
     #:   - func
     language = models.CharField(max_length=50)
 
-    features = models.ManyToManyField("Feature")
+    features = models.ManyToManyField("Feature", blank=True)
 
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
@@ -59,7 +59,9 @@ class LexicalItem(NotifyModel):
         )
 
     def __str__(self):
-        return self.text
+        return "{} ({}) {}".format(
+            self.text, self.language, self.features_string()
+        )
 
 
 class Feature(models.Model):

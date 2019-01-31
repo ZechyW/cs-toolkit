@@ -90,9 +90,7 @@ class NotifyModel(models.Model):
 
     def notify_changes(self):
         """
-        Send the change notification on the `notify` channel layer group,
-        warning
-        about subclassing without instantiating a model_utils.FieldTracker
+        Sends the change notification on the `notify` channel layer group.
         :return:
         """
         if not self.subclass_valid():
@@ -112,13 +110,13 @@ class NotifyModel(models.Model):
             {
                 "type": "notify.change",
                 "model": self.__class__.__name__,
-                "data": json.dumps(data),
+                "data": data,
             },
         )
 
     def notify_delete(self):
         """
-        Send the deletion notification on the `notify` channel layer group
+        Sends the deletion notification on the `notify` channel layer group.
         :return:
         """
         if not self.subclass_valid():
@@ -137,6 +135,6 @@ class NotifyModel(models.Model):
             {
                 "type": "notify.delete",
                 "model": self.__class__.__name__,
-                "data": json.dumps(data),
+                "data": data,
             },
         )

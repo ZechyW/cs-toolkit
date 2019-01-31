@@ -2,10 +2,85 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from .models import Feature
+from .models import LexicalItem, Feature
+
+
+class LexicalItemForm(forms.ModelForm):
+    """
+    A form for creating/modifying LexicalItems that also performs custom
+    uniqueness validation:
+
+    - No two LexicalItems can have the same text, language, and set of
+      Features.
+    """
+
+    class Meta:
+        model = LexicalItem
+        fields = ["text", "language", "features"]
+        help_texts = {
+            "text": _(
+                "The orthographic representation of this lexical item, "
+                "to be used when building up/displaying lexical arrays, etc."
+            ),
+            "language": _(
+                "A short code representing the language that this lexical "
+                "item belongs to.<br>"
+                "By convention, contains a 2 letter ISO language code, "
+                "optionally followed by an underscore and a 2 letter ISO "
+                "country code. Other values may be used for cases that the "
+                "convention cannot handle appropriately.<br>"
+                "In addition, the special code `func` is used for functional "
+                "items (which don't belong in any particular language)."
+            ),
+        }
+
+    def clean(self):
+        """
+        Checks that no two LexicalItems have the same text, language,
+        and set of Features.
+        :return:
+        """
+        super().clean()
+
+        text = self.cleaned_data.get("text")
+        language = self.cleaned_data.get("language")
+        features = self.cleaned_data.get("features")
+
+        # Get other LexicalItems with the same text and language.
+        other_items = LexicalItem.objects.filter(text__exact=text).filter(
+            language__exact=language
+        )
+
+        # If this is an update to an existing LexicalItem, exclude it
+        if self.instance.pk is not None:
+            other_items = other_items.exclude(pk=self.instance.pk)
+
+        other_items = other_items.prefetch_related("features")
+        for item in other_items:
+            if set(item.features.all()) == set(features):
+                raise ValidationError(
+                    _(
+                        "There is already a LexicalItem in the database with "
+                        "that text, language, and set of Features: %(string)s"
+                    ),
+                    code="duplicate_feature",
+                    params={"string": item},
+                )
+
+        # No errors raised?  Return the good data
+        return self.cleaned_data
 
 
 class FeatureForm(forms.ModelForm):
+    """
+    A form for creating/modifying Features that also performs custom
+    uniqueness validation:
+
+    - A Feature cannot have multiple FeatureProperties with the same name
+      (E.g., both {interpretable: False} and {interpretable: True})
+    - No two Features can have the same name and FeatureProperties set.
+    """
+
     class Meta:
         model = Feature
         fields = ["name", "description", "properties"]
@@ -20,7 +95,7 @@ class FeatureForm(forms.ModelForm):
         """
         Checks that the Feature does not have multiple FeatureProperties
         with the same name.
-        (E.g.: both {interpretable: False} and {interpretable: True} )
+        (E.g.: both {interpretable: False} and {interpretable: True})
 
         Also checks that no features share the same name and
         FeatureProperties set.
@@ -68,7 +143,7 @@ class FeatureForm(forms.ModelForm):
             name__exact=self.cleaned_data.get("name")
         )
 
-        # If this is an update to an existing Feature, exclude it as well
+        # If this is an update to an existing Feature, exclude it
         if self.instance.pk is not None:
             other_features = other_features.exclude(pk=self.instance.pk)
 

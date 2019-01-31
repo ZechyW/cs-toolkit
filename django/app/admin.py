@@ -30,6 +30,9 @@ class AppAdminSite(admin.AdminSite):
     specified order, rather than alphabetically.
     """
 
+    site_title = "CS Toolkit"
+    index_title = "Data Management"
+
     def get_app_list(self, request):
         """
         Return a sorted list of all the installed apps that have been
@@ -60,7 +63,7 @@ class AppAdminSite(admin.AdminSite):
         app_name = apps.get_app_config(app_label).verbose_name
         context = {
             **self.each_context(request),
-            "title": _("%(app)s administration") % {"app": app_name},
+            "title": _("%(app)s management") % {"app": app_name},
             "app_list": [app_dict],
             "app_label": app_label,
             **(extra_context or {}),
@@ -78,3 +81,21 @@ class AppAdminSite(admin.AdminSite):
 
 class AppAdminConfig(AdminConfig):
     default_site = "app.admin.AppAdminSite"
+
+
+class AppModelAdmin(admin.ModelAdmin):
+    """
+    A ModelAdmin subclass that calls the Model.delete() even on bulk deletions.
+    """
+
+    def delete_queryset(self, request, queryset):
+        """
+        Given a queryset, deletes it from the database.
+        Calls the `.delete()` method of each element in the queryset
+        individually, since we rely on Model.delete() for change notifications.
+        :param request:
+        :param queryset:
+        :return:
+        """
+        for obj in queryset:
+            obj.delete()

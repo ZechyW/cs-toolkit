@@ -4,6 +4,8 @@ import { WithContext as ReactTags } from "react-tag-input";
 
 import _ from "lodash";
 
+import { getFromLS, saveToLS } from "../util";
+
 class GenerateDerivation extends Component {
   static propTypes = {
     // Function for registering a listener with the WS provider
@@ -21,30 +23,40 @@ class GenerateDerivation extends Component {
 
     this.state = {
       // Currently built-up lexical array
-      lexicalArray: [],
+      lexicalArray: getFromLS("lexicalArray") || [],
 
       // Autocomplete suggestions for the lexical array input
       suggestions: []
     };
 
-    // Subscribe to the API-related topics
+    // Currently loaded LexicalItems -- Doesn't need to be formally tracked
+    // as part of component state.  Keyed by LexicalItem id.
+    this.lexicalItemsById = {};
+
+    // Subscribe to the API PubSub topic
     this.apiPublish = this.props.subscribe("api", this.handleWSMessage);
-    this.notifyPublish = this.props.subscribe("notify", this.handleWSMessage);
 
     // The API requests that will be used by this component (for matching
     // server responses against).
     this.apiRequests = {
-      autocompleteList: {
+      lexicalItemList: {
         method: "get",
         url: "/api/lexicon/",
         payload: {
-          fields: "text,language"
+          fields: "id,text,language"
         }
       }
     };
 
-    // Request an initial load of the autocomplete list
-    this.apiPublish(this.apiRequests.autocompleteList);
+    // Request an initial get of all LexicalItems
+    this.apiPublish(this.apiRequests.lexicalItemList);
+
+    // Subscribe to change notifications for LexicalItems
+    this.notifyPublish = this.props.subscribe("notify", this.handleWSMessage);
+    this.notifyPublish({
+      type: "subscribe",
+      model: "LexicalItem"
+    });
   }
 
   render() {
@@ -58,6 +70,10 @@ class GenerateDerivation extends Component {
           Build a <strong>bottom-up</strong> Lexical Array in the box below,
           then hit the <strong>Derive!</strong> button to attempt to generate a
           corresponding derivation.
+        </p>
+        <p style={{ flexGrow: 1, flexShrink: 1 }}>
+          The language for each item is displayed in brackets next to its text,
+          with functional items showing <strong>func</strong> as their language.
         </p>
         <p className="has-margin-10" style={{ flexGrow: 1, flexShrink: 1 }}>
           <strong>Add</strong> lexical items by typing and selecting from the
@@ -120,16 +136,38 @@ class GenerateDerivation extends Component {
    * @param data
    */
   handleWSMessage = (data) => {
+    // Try and match it against one of our known API requests
     if (data.topic === "api" && data.type === "response") {
-      // Try and match it against one of our known API requests
       /**
        * @prop data.status_code
        * @prop data.content
        */
-      if (_.isMatch(data, this.apiRequests.autocompleteList)) {
+      if (_.isMatch(data, this.apiRequests.lexicalItemList)) {
         if (data.status_code === 200) {
-          return this.setAutocompleteList(data.content);
+          // This is a full list of LexicalItems.  Reset the local cache.
+          this.lexicalItemsById = {};
+          for (const lexicalItem of data.content) {
+            this.lexicalItemsById[lexicalItem.id] = lexicalItem;
+          }
+          return this.updateAutocompleteList();
         }
+      }
+    }
+
+    // See if it's an update to the LexicalItems model
+    if (data.topic === "notify" && data.model === "LexicalItem") {
+      if (data.type === "change") {
+        // A LexicalItem was either added or updated.
+        const lexicalItem = data.data;
+        this.lexicalItemsById[lexicalItem.id] = lexicalItem;
+        return this.updateAutocompleteList();
+      }
+
+      if (data.type === "delete") {
+        // A LexicalItem was removed
+        const lexicalItem = data.data;
+        delete this.lexicalItemsById[lexicalItem.id];
+        return this.updateAutocompleteList();
       }
     }
     console.warn("Unmatched WS message:", data);
@@ -151,9 +189,14 @@ class GenerateDerivation extends Component {
    * @param item
    */
   handleAddition = (item) => {
-    this.setState((state) => {
-      return { lexicalArray: [...state.lexicalArray, item] };
-    });
+    this.setState(
+      (state) => {
+        return { lexicalArray: [...state.lexicalArray, item] };
+      },
+      () => {
+        saveToLS("lexicalArray", this.state.lexicalArray);
+      }
+    );
   };
 
   /**
@@ -213,17 +256,27 @@ class GenerateDerivation extends Component {
 
   /**
    * Sets the autocomplete suggestions for the lexical array input based on
-   * the given list of lexical items.
-   * @param {Object[]} lexicalItems
+   * the currently-loaded list of lexical items.
+   *
+   * The list of lexical items may contain duplicates (for items with the
+   * same text/language but different features), so we need to de-duplicate
+   * as we go.
    */
-  setAutocompleteList = (lexicalItems) => {
+  updateAutocompleteList = () => {
     const suggestions = [];
+
+    // De-duplicate by suggestion text
+    const lexicalItems = _.uniqBy(
+      Object.values(this.lexicalItemsById),
+      (item) => `${item.text} (${item.language})`
+    );
+
     for (const lexicalItem of lexicalItems) {
       // Suggestions need to have an `id` field and `text` field, and we
       // also track the `language` field of lexical items.
       suggestions.push({
-        id: lexicalItem.text,
-        text: lexicalItem.text,
+        id: `${lexicalItem.text}`,
+        text: `${lexicalItem.text} (${lexicalItem.language})`,
         language: lexicalItem.language
       });
     }

@@ -19,6 +19,7 @@ class NotifyHandler(Handler):
         self.watched_models = []
 
         setattr(self.consumer, "notify_change", self.notify_change)
+        setattr(self.consumer, "notify_delete", self.notify_delete)
 
     def handle(self, content):
         """
@@ -49,10 +50,15 @@ class NotifyHandler(Handler):
         :param event:
         :return:
         """
-        model = event["model"]
+        model = event.get("model")
         if model in self.watched_models:
-            self.consumer.sent_to_client(
-                {"topic": "notify", "type": "change", "model": model}
+            self.consumer.send_to_client(
+                {
+                    "topic": "notify",
+                    "type": "change",
+                    "model": model,
+                    "data": event.get("data"),
+                }
             )
 
     def notify_delete(self, event):
@@ -62,10 +68,15 @@ class NotifyHandler(Handler):
         :param event:
         :return:
         """
-        model = event["model"]
+        model = event.get("model")
         if model in self.watched_models:
-            self.consumer.sent_to_client(
-                {"topic": "notify", "type": "delete", "model": model}
+            self.consumer.send_to_client(
+                {
+                    "topic": "notify",
+                    "type": "delete",
+                    "model": model,
+                    "data": event.get("data"),
+                }
             )
 
 

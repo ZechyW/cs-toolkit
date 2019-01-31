@@ -140,7 +140,7 @@ class WSEcho extends Component {
     return (
       <div className="ws-echo grid-child" ref={this.props.innerRef}>
         <div className="grid-title flex-row align-items-center">
-          <span className="has-padding-right-10">WebSocket Echo Test</span>
+          <span className="has-padding-right-10">Collaborator Chat</span>
           <span
             className="icon has-text-primary is-size-6 has-cursor-pointer"
             onClick={this.toggleAudio}

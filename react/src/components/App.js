@@ -4,19 +4,17 @@ import "react-resizable/css/styles.css";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import _ from "lodash";
+
 import withWSProvider from "./WebSocket";
-
 import GridLayout from "./GridLayout";
-
 import GenerateDerivation from "./GenerateDerivation";
 import WSEcho from "./WSEcho";
-
 import DataProvider from "./DataProvider";
 import Table from "./Table";
 
 import Config from "../config";
-
-import _ from "lodash";
+import { getFromLS, saveToLS } from "../util";
 
 /**
  * Main application component
@@ -267,35 +265,3 @@ class App extends Component {
 
 const AppWithWS = withWSProvider(App, `${Config.wsURL}`);
 export default AppWithWS;
-
-/**
- * Retrieves the value from the App's namespace in localStorage, if available
- * @param key
- * @return {*}
- */
-function getFromLS(key) {
-  let ls = {};
-  if (localStorage) {
-    try {
-      ls = JSON.parse(localStorage.getItem(Config.localStorageNamespace)) || {};
-    } catch (e) {
-      /*Ignore*/
-    }
-  }
-  return ls[key];
-}
-
-/**
- * Saves some key-value pair to the App's namespace in localStorage, if
- * available
- * @param key
- * @param value
- */
-function saveToLS(key, value) {
-  if (localStorage) {
-    const ls =
-      JSON.parse(localStorage.getItem(Config.localStorageNamespace)) || {};
-    ls[key] = value;
-    localStorage.setItem(Config.localStorageNamespace, JSON.stringify(ls));
-  }
-}

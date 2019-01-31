@@ -1,0 +1,30 @@
+{% extends "admin/base_site.html" %}
+{% load static custom_tags %}
+
+{# Overriding loading spinner  #}
+{% block extrastyle %}
+  <style>
+    #overlay {
+      display: none !important;
+    }
+  </style>
+{% endblock extrastyle %}
+
+{# Overriding sidebar menu #}
+{# Will use custom model ordering as well as custom branding #}
+{% block sidebar_menu %}
+
+  <div id="sidebar-menu" class="col-xs-6 col-sm-3 col-md-2 sidebar-menu">
+    {% block branding %}
+      <a href="{% url "admin:index" %}" class="django-admin-logo">
+        <!-- Branding -->
+        <div
+            style="font-size: 2rem; font-weight: 600; height: 100%; display: flex; align-items: center; justify-content: center;">
+          The CS Toolkit
+        </div>
+      </a>
+    {% endblock branding %}
+    {% block filters %}{% endblock filters %}
+    {% render_menu_app_list_ordered %}
+  </div>
+{% endblock sidebar_menu %}

@@ -40,8 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Django admin site
-    # "grappelli.dashboard",
-    "grappelli",
+    "bootstrap_admin",
     "app.admin.AppAdminConfig",
     "django.contrib.admindocs",
     # 3rd-party libraries: Django REST Framework and Channels for API/Async
@@ -69,11 +68,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "app.urls"
 
-# Custom templates are stored within the root `react` folder
+# Custom frontend templates are stored within the root `react` folder.
+# Custom backend templates are stored within the `templates` folder.
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["../react/django-templates"],
+        "DIRS": [
+            os.path.join(BASE_DIR, "../react/django-templates"),
+            os.path.join(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -150,16 +153,14 @@ LOGGING = {
 STATIC_URL = "/static/"
 
 # Frontend bundles and other static files are saved/built into the `react`
-# folder,
-# and they are served directly from there if `DEBUG` or
+# folder, and they are served directly from there if `DEBUG` or
 # `WHITENOISE_USE_FINDERS` is True
 STATICFILES_DIRS = [("frontend", "../react/built"), "../static"]
 
 # Whitenoise
 # To serve compressed static files, `DEBUG` or `WHITENOISE_USE_FINDERS` must be
 # False, and the static files must be available in `STATIC_ROOT` (i.e.,
-# by running
-# `collectstatic`)
+# by running `collectstatic`)
 STATIC_ROOT = "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -177,7 +178,3 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
-
-# Grappelli
-GRAPPELLI_ADMIN_TITLE = "CS Toolkit"
-GRAPPELLI_INDEX_DASHBOARD = "app.dashboard.CustomIndexDashboard"
