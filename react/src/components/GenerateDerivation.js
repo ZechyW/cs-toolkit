@@ -91,6 +91,7 @@ class GenerateDerivation extends Component {
                 tags={this.state.lexicalArray}
                 suggestions={this.state.suggestions}
                 placeholder="Add a new lexical item"
+                labelField="label"
                 handleAddition={this.handleAddition}
                 handleDelete={this.handleDelete}
                 handleDrag={this.handleDrag}
@@ -204,11 +205,16 @@ class GenerateDerivation extends Component {
    * @param i
    */
   handleDelete = (i) => {
-    this.setState((state) => {
-      return {
-        lexicalArray: state.lexicalArray.filter((item, index) => index !== i)
-      };
-    });
+    this.setState(
+      (state) => {
+        return {
+          lexicalArray: state.lexicalArray.filter((item, index) => index !== i)
+        };
+      },
+      () => {
+        saveToLS("lexicalArray", this.state.lexicalArray);
+      }
+    );
   };
 
   /**
@@ -218,15 +224,20 @@ class GenerateDerivation extends Component {
    * @param newPos
    */
   handleDrag = (item, currPos, newPos) => {
-    this.setState((state) => {
-      const newArray = state.lexicalArray.slice();
-      newArray.splice(currPos, 1);
-      newArray.splice(newPos, 0, item);
+    this.setState(
+      (state) => {
+        const newArray = state.lexicalArray.slice();
+        newArray.splice(currPos, 1);
+        newArray.splice(newPos, 0, item);
 
-      return {
-        lexicalArray: newArray
-      };
-    });
+        return {
+          lexicalArray: newArray
+        };
+      },
+      () => {
+        saveToLS("lexicalArray", this.state.lexicalArray);
+      }
+    );
   };
 
   /**
@@ -265,18 +276,19 @@ class GenerateDerivation extends Component {
   updateAutocompleteList = () => {
     const suggestions = [];
 
-    // De-duplicate by suggestion text
+    // De-duplicate by suggestion label
     const lexicalItems = _.uniqBy(
       Object.values(this.lexicalItemsById),
       (item) => `${item.text} (${item.language})`
     );
 
     for (const lexicalItem of lexicalItems) {
-      // Suggestions need to have an `id` field and `text` field, and we
-      // also track the `language` field of lexical items.
+      // Suggestions need to have an `id` field and `label` field, and we
+      // also track the `text` and `language` fields of lexical items directly.
       suggestions.push({
         id: `${lexicalItem.text}`,
-        text: `${lexicalItem.text} (${lexicalItem.language})`,
+        text: `${lexicalItem.text}`,
+        label: `${lexicalItem.text} (${lexicalItem.language})`,
         language: lexicalItem.language
       });
     }

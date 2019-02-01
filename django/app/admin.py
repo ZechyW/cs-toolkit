@@ -8,7 +8,7 @@ from django.contrib import admin
 from django.contrib.admin.apps import AdminConfig
 from django.http import Http404
 from django.template.response import TemplateResponse
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 
 
 #: Custom ordering for project models based on their names

@@ -1,8 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 
-from .models import LexicalItem, Feature
+from .models import LexicalItem, Feature, FeatureProperty
 
 
 class LexicalItemForm(forms.ModelForm):
@@ -162,3 +162,27 @@ class FeatureForm(forms.ModelForm):
 
         # No errors raised?  Return the good data
         return self.cleaned_data
+
+
+class FeaturePropertyForm(forms.ModelForm):
+    """
+    A form for creating/modifying FeatureProperties that also performs custom
+    validation:
+
+    - If a FeatureProperty has a `type` of "Boolean", its `raw_value` should be
+    either "True" or "False".
+    - If it has a `type` of "Integer", its `raw_value` will be a string that
+    can be parsed into an integer.
+    - If it has a `type` of "Text", its `raw_value` will be any
+    user-specified string.
+    """
+
+    class Meta:
+        model = FeatureProperty
+        fields = ["name", "description", "type", "raw_value"]
+        labels = {"raw_value": _("Value")}
+
+    # All the custom validation takes place in the attached .js file,
+    # which also modifies the form elements on the fly.
+    class Media:
+        js = ["lexicon/FeaturePropertyType.js"]

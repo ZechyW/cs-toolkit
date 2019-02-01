@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from app.admin import AppModelAdmin
-from lexicon.forms import LexicalItemForm, FeatureForm
 from .models import LexicalItem, Feature, FeatureProperty
+from .forms import LexicalItemForm, FeatureForm, FeaturePropertyForm
 
 
 # Register your models here.
@@ -27,7 +27,8 @@ admin.site.register(Feature, FeatureAdmin)
 
 
 class FeaturePropertyAdmin(AppModelAdmin):
-    list_display = ["__str__", "description"]
+    list_display = ["__str__", "type", "description"]
+    form = FeaturePropertyForm
 
 
 admin.site.register(FeatureProperty, FeaturePropertyAdmin)

@@ -174,7 +174,6 @@ class App extends Component {
   };
 
   handleChildUpdate = (id) => {
-    console.log("Child updated:", id);
     this.autosizeGridItems([id]);
   };
 

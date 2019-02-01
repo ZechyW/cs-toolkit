@@ -1,6 +1,11 @@
 """
 Contains the Django models used to represent lexical items and their features.
 
+It is expected that all interaction with users should take place via the
+admin interface and the forms in `.forms`, which perform various
+validation/cleaning steps on the data.  If you are modifying the database
+directly, you should ensure that the data you are touching remains clean.
+
 - Each LexicalItem has one FeatureSet.
   (e.g., [[iRel], [uT, EPP]])
 
@@ -91,7 +96,7 @@ class Feature(models.Model):
         # Prefix: Interpretable/uninterpretable
         interp = self.properties.filter(name__exact="interpretable")
         if len(interp) > 0:
-            if interp[0].value == "True":
+            if interp[0].value:
                 prefix = "i"
             else:
                 prefix = "u"
@@ -99,10 +104,13 @@ class Feature(models.Model):
         # Additional
         others = self.properties.exclude(name__exact="interpretable")
         for prop in others:
-            if prop.value == "True":
-                additional.append(prop.name)
+            if prop.type == "Boolean":
+                if prop.value:
+                    additional.append(prop.name)
+                else:
+                    additional.append("-{}".format(prop.name))
             else:
-                additional.append("-{}".format(prop.name))
+                additional.append("{}:{}".format(prop.name, prop.value))
 
         # Join the main feature name with any additional features
         additional.insert(0, "{}{}{}".format(prefix, self.name, suffix))
@@ -118,13 +126,36 @@ class FeatureProperty(models.Model):
 
     class Meta:
         verbose_name_plural = "Feature properties"
-        unique_together = ("name", "value")
+        unique_together = ("name", "raw_value")
 
     #: A human-friendly short name for this FeatureProperty.
     name = models.CharField(max_length=100)
 
-    #: The value associated with this FeatureProperty.
-    value = models.CharField(max_length=100)
+    #: A few standard types for the FeatureProperty, for cleaning/validation
+    type = models.CharField(
+        max_length=10,
+        choices=[
+            ["Boolean", "Boolean"],
+            ["Text", "Text"],
+            ["Integer", "Integer"],
+        ],
+    )
+
+    #: The raw value associated with this FeatureProperty.
+    raw_value = models.CharField(max_length=100)
+
+    #: This FeatureProperty's `raw_value` converted according to its `type`
+    @property
+    def value(self):
+        if self.type == "Boolean":
+            return self.raw_value == "True"
+        if self.type == "Text":
+            return str(self.raw_value)
+        if self.type == "Integer":
+            return int(self.raw_value)
+
+        # Still here?
+        return "INVALID_VALUE"
 
     #: A long description of this FeatureProperty.
     description = models.TextField()
