@@ -10,6 +10,7 @@ import withWSProvider from "./WebSocket";
 import GridLayout from "./GridLayout";
 import GenerateDerivation from "./GenerateDerivation";
 import WSEcho from "./WSEcho";
+import LexicalItemList from "./LexicalItemList";
 import DataProvider from "./DataProvider";
 import Table from "./Table";
 
@@ -36,7 +37,7 @@ class App extends Component {
     // RGL options (also relevant for calculating item heights, etc.)
     this.margin = [10, 10];
     this.containerPadding = [15, 15];
-    this.rowHeight = 30;
+    this.rowHeight = 20;
 
     // Updated whenever the GridLayout is updated
     this.currentBreakpoint = "";
@@ -81,26 +82,31 @@ class App extends Component {
           />
         </div>
 
-        <div className="box grid-box" key="lexicalItems">
-          <div
-            className="lexical-items grid-child"
+        <div className="box grid-box" key="lexicalItemList">
+          <LexicalItemList
             ref={(element) => {
-              this.items.lexicalItems = element;
+              this.items.lexicalItemList = element;
             }}
-          >
-            <p className="grid-title">Lexical Items</p>
-            <DataProvider
-              endpoint="api/lexicon/?fields=text,language,features"
-              render={(data) => (
-                <Table
-                  data={data}
-                  containerStyle={{
-                    overflow: "auto"
-                  }}
-                />
-              )}
-            />
-          </div>
+          />
+          {/*<div*/}
+          {/*className="lexical-items grid-child"*/}
+          {/*ref={(element) => {*/}
+          {/*this.items.lexicalItems = element;*/}
+          {/*}}*/}
+          {/*>*/}
+          {/*<p className="grid-title">Lexical Items</p>*/}
+          {/*<DataProvider*/}
+          {/*endpoint="api/lexicon/?fields=text,language,features"*/}
+          {/*render={(data) => (*/}
+          {/*<Table*/}
+          {/*data={data}*/}
+          {/*containerStyle={{*/}
+          {/*overflow: "auto"*/}
+          {/*}}*/}
+          {/*/>*/}
+          {/*)}*/}
+          {/*/>*/}
+          {/*</div>*/}
         </div>
       </GridLayout>
     );
@@ -204,6 +210,8 @@ class App extends Component {
         content.style.height = 0;
         const minScrollHeight = content.scrollHeight;
         content.style.height = "100%";
+
+        console.log("minScrollHeight:", id, minScrollHeight);
 
         // Set .minH, and either .h (for non-autosized items) or .maxH (for
         // autosized items)

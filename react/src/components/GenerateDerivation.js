@@ -6,6 +6,9 @@ import _ from "lodash";
 
 import { getFromLS, saveToLS } from "../util";
 
+/**
+ * Component for the lexical array builder
+ */
 class GenerateDerivation extends Component {
   static propTypes = {
     // Function for registering a listener with the WS provider

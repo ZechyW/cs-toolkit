@@ -4,24 +4,10 @@
  * Contains any styles that have to do with fonts/colours/spacing/etc.
  */
 /******************************************************************************
- * Bulma
+ * Bulma/Bulma-helpers variables and overrides
  ******************************************************************************/
-// Custom settings for Bulma CSS framework
-@import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
-
-$family-sans-serif: "Nunito", sans-serif;
-
+@import "variables";
 @import "~bulma/bulma";
-
-/******************************************************************************
- * Bulma-helpers
- ******************************************************************************/
-// Trim the Bulma helpers library a bit, since we don't need all of it
-$enable-media-queries: false;
-$spacing-range-start: 0;
-$spacing-range-end: 30;
-$spacing-interval: 5;
-
 @import "~bulma-helpers/bulma-helpers";
 
 /******************************************************************************

@@ -11,7 +11,10 @@ import "whatwg-fetch";
  */
 import { dom, config } from "@fortawesome/fontawesome-svg-core";
 
+// For React
 config.autoReplaceSvg = "nest";
+// For datatables-bulma
+config.searchPseudoElements = true;
 dom.watch();
 
 /**

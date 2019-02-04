@@ -17,7 +17,8 @@ class Config {
   // container and the root grid item container (e.g., with Bulma's .box).
   // This value should be added to the height of the content container for
   // size calculations.
-  gridVerticalPadding = 40;
+  // gridVerticalPadding = 40;
+  gridVerticalPadding = 0;
 
   // Default layout for the grid
   gridDefaultLayout = {
@@ -44,7 +45,7 @@ class Config {
   };
 
   // Which grid items to autosize (keeping them at their natural height)
-  gridDefaultAutosize = { generateDerivation: true };
+  gridDefaultAutosize = { generateDerivation: true, lexicalItemList: true };
 
   // localStorage namespace
   localStorageNamespace = "cs-toolkit";
