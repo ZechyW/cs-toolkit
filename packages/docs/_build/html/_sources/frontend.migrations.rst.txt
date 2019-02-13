@@ -1,0 +1,10 @@
+frontend.migrations package
+===========================
+
+Module contents
+---------------
+
+.. automodule:: frontend.migrations
+    :members:
+    :undoc-members:
+    :show-inheritance:

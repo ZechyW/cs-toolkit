@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lexicon package &mdash; CS Toolkit 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="React (Frontend)" href="react.html" />
+    <link rel="prev" title="frontend.handlers package" href="frontend.handlers.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CS Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="django.html">Django (Backend)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html">frontend package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lexicon package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.admin">lexicon.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.apps">lexicon.apps module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.models">lexicon.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.serializers">lexicon.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.tests">lexicon.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.urls">lexicon.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon.views">lexicon.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lexicon">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="react.html">React (Frontend)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CS Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="django.html">Django (Backend)</a> &raquo;</li>
+        
+      <li>lexicon package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lexicon.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lexicon-package">
+<h1>lexicon package<a class="headerlink" href="#lexicon-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lexicon.admin">
+<span id="lexicon-admin-module"></span><h2>lexicon.admin module<a class="headerlink" href="#module-lexicon.admin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lexicon.admin.LexicalItemAdmin">
+<em class="property">class </em><code class="descclassname">lexicon.admin.</code><code class="descname">LexicalItemAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.admin.LexicalItemAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">app.admin.AppModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.admin.LexicalItemAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ['text', 'language', 'features_string']</em><a class="headerlink" href="#lexicon.admin.LexicalItemAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.LexicalItemAdmin.filter_horizontal">
+<code class="descname">filter_horizontal</code><em class="property"> = ['features']</em><a class="headerlink" href="#lexicon.admin.LexicalItemAdmin.filter_horizontal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.LexicalItemAdmin.form">
+<code class="descname">form</code><a class="headerlink" href="#lexicon.admin.LexicalItemAdmin.form" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">lexicon.forms.LexicalItemForm</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.LexicalItemAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#lexicon.admin.LexicalItemAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lexicon.admin.FeatureAdmin">
+<em class="property">class </em><code class="descclassname">lexicon.admin.</code><code class="descname">FeatureAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.admin.FeatureAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">app.admin.AppModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.admin.FeatureAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ['__str__', 'description']</em><a class="headerlink" href="#lexicon.admin.FeatureAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.FeatureAdmin.filter_horizontal">
+<code class="descname">filter_horizontal</code><em class="property"> = ['properties']</em><a class="headerlink" href="#lexicon.admin.FeatureAdmin.filter_horizontal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.FeatureAdmin.form">
+<code class="descname">form</code><a class="headerlink" href="#lexicon.admin.FeatureAdmin.form" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">lexicon.forms.FeatureForm</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.FeatureAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#lexicon.admin.FeatureAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lexicon.admin.FeaturePropertyAdmin">
+<em class="property">class </em><code class="descclassname">lexicon.admin.</code><code class="descname">FeaturePropertyAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.admin.FeaturePropertyAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">app.admin.AppModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.admin.FeaturePropertyAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ['__str__', 'type', 'description']</em><a class="headerlink" href="#lexicon.admin.FeaturePropertyAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.FeaturePropertyAdmin.form">
+<code class="descname">form</code><a class="headerlink" href="#lexicon.admin.FeaturePropertyAdmin.form" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">lexicon.forms.FeaturePropertyForm</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.admin.FeaturePropertyAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#lexicon.admin.FeaturePropertyAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lexicon.apps">
+<span id="lexicon-apps-module"></span><h2>lexicon.apps module<a class="headerlink" href="#module-lexicon.apps" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lexicon.apps.LexiconConfig">
+<em class="property">class </em><code class="descclassname">lexicon.apps.</code><code class="descname">LexiconConfig</code><span class="sig-paren">(</span><em>app_name</em>, <em>app_module</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.apps.LexiconConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.apps.LexiconConfig.name">
+<code class="descname">name</code><em class="property"> = 'lexicon'</em><a class="headerlink" href="#lexicon.apps.LexiconConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lexicon.models">
+<span id="lexicon-models-module"></span><h2>lexicon.models module<a class="headerlink" href="#module-lexicon.models" title="Permalink to this headline">¶</a></h2>
+<p>Contains the Django models used to represent lexical items and their features.</p>
+<p>It is expected that all interaction with users should take place via the
+admin interface and the forms in <cite>.forms</cite>, which perform various
+validation/cleaning steps on the data.  If you are modifying the database
+directly, you should ensure that the data you are touching remains clean.</p>
+<ul class="simple">
+<li>Each LexicalItem has one FeatureSet.
+(e.g., [[iRel], [uT, EPP]])</li>
+<li>Each FeatureSet has one or more Features.
+(e.g., [uT, EPP])</li>
+<li>Each Feature has one or more FeatureProperties.
+(e.g., {name: T}, {interpretable: False}, {EPP: True})</li>
+</ul>
+<dl class="class">
+<dt id="lexicon.models.LexicalItem">
+<em class="property">class </em><code class="descclassname">lexicon.models.</code><code class="descname">LexicalItem</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.models.LexicalItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">notify.models.NotifyModel</span></code></p>
+<p>A Django model representing a single lexical item.</p>
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.text">
+<code class="descname">text</code><a class="headerlink" href="#lexicon.models.LexicalItem.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>The orthographic representation of this lexical item, to be used when
+building up/displaying lexical arrays, etc.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.language">
+<code class="descname">language</code><a class="headerlink" href="#lexicon.models.LexicalItem.language" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short code representing the language that this lexical item belongs
+to. By convention, contains a 2 letter ISO language code, optionally
+followed by an underscore and a 2 letter ISO country code. Other
+values may be used for cases that the convention cannot handle
+appropriately.</p>
+<p>In addition, the special code “func” is used for functional items (which
+don’t belong in any particular language).</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li>en</li>
+<li>en_SG</li>
+<li>zh</li>
+<li>func</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.features">
+<code class="descname">features</code><a class="headerlink" href="#lexicon.models.LexicalItem.features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.tracker">
+<code class="descname">tracker</code><a class="headerlink" href="#lexicon.models.LexicalItem.tracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used for change notifications. Subscribers will only be alerted when a
+substantive change is made to a model instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.serializer_class">
+<code class="descname">serializer_class</code><em class="property"> = 'lexicon.serializers.LexicalItemSerializer'</em><a class="headerlink" href="#lexicon.models.LexicalItem.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used for change notifications. Subscribers will receive the latest model
+data processed via this serializer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lexicon.models.LexicalItem.features_string">
+<code class="descname">features_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.models.LexicalItem.features_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.LexicalItem.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#lexicon.models.LexicalItem.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.LexicalItem.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#lexicon.models.LexicalItem.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.id">
+<code class="descname">id</code><a class="headerlink" href="#lexicon.models.LexicalItem.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.LexicalItem.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#lexicon.models.LexicalItem.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lexicon.models.Feature">
+<em class="property">class </em><code class="descclassname">lexicon.models.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.models.Feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>A Django model representing a single syntactic feature.
+The same Feature can be in multiple FeatureSets, and FeatureSets consist
+of multiple Features.</p>
+<dl class="attribute">
+<dt id="lexicon.models.Feature.name">
+<code class="descname">name</code><a class="headerlink" href="#lexicon.models.Feature.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-friendly short name for this Feature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.Feature.description">
+<code class="descname">description</code><a class="headerlink" href="#lexicon.models.Feature.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A long description of this Feature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.Feature.properties">
+<code class="descname">properties</code><a class="headerlink" href="#lexicon.models.Feature.properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>A QuerySet representing the FeatureProperties of this Feature.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.Feature.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#lexicon.models.Feature.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.Feature.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#lexicon.models.Feature.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.Feature.id">
+<code class="descname">id</code><a class="headerlink" href="#lexicon.models.Feature.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.Feature.lexicalitem_set">
+<code class="descname">lexicalitem_set</code><a class="headerlink" href="#lexicon.models.Feature.lexicalitem_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.Feature.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#lexicon.models.Feature.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lexicon.models.FeatureProperty">
+<em class="property">class </em><code class="descclassname">lexicon.models.</code><code class="descname">FeatureProperty</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.models.FeatureProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>A Django model representing a primitive property-value pair that may
+form a part of a feature proper.
+Each Feature is a collection of multiple FeatureProperties.</p>
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.name">
+<code class="descname">name</code><a class="headerlink" href="#lexicon.models.FeatureProperty.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-friendly short name for this FeatureProperty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.type">
+<code class="descname">type</code><a class="headerlink" href="#lexicon.models.FeatureProperty.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A few standard types for the FeatureProperty, for cleaning/validation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.raw_value">
+<code class="descname">raw_value</code><a class="headerlink" href="#lexicon.models.FeatureProperty.raw_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The raw value associated with this FeatureProperty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.value">
+<code class="descname">value</code><a class="headerlink" href="#lexicon.models.FeatureProperty.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.description">
+<code class="descname">description</code><a class="headerlink" href="#lexicon.models.FeatureProperty.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A long description of this FeatureProperty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.FeatureProperty.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#lexicon.models.FeatureProperty.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lexicon.models.FeatureProperty.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#lexicon.models.FeatureProperty.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.feature_set">
+<code class="descname">feature_set</code><a class="headerlink" href="#lexicon.models.FeatureProperty.feature_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lexicon.models.FeatureProperty.get_type_display">
+<code class="descname">get_type_display</code><span class="sig-paren">(</span><em>*</em>, <em>field=&lt;django.db.models.fields.CharField: type&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.models.FeatureProperty.get_type_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.id">
+<code class="descname">id</code><a class="headerlink" href="#lexicon.models.FeatureProperty.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.models.FeatureProperty.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#lexicon.models.FeatureProperty.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lexicon.serializers">
+<span id="lexicon-serializers-module"></span><h2>lexicon.serializers module<a class="headerlink" href="#module-lexicon.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lexicon.serializers.LexicalItemSerializer">
+<em class="property">class </em><code class="descclassname">lexicon.serializers.</code><code class="descname">LexicalItemSerializer</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.serializers.LexicalItemSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">drf_queryfields.mixins.QueryFieldsMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<dl class="class">
+<dt id="lexicon.serializers.LexicalItemSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#lexicon.serializers.LexicalItemSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.serializers.LexicalItemSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#lexicon.serializers.LexicalItemSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lexicon.models.LexicalItem" title="lexicon.models.LexicalItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">lexicon.models.LexicalItem</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.serializers.LexicalItemSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ['id', 'text', 'language', 'features']</em><a class="headerlink" href="#lexicon.serializers.LexicalItemSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lexicon.tests">
+<span id="lexicon-tests-module"></span><h2>lexicon.tests module<a class="headerlink" href="#module-lexicon.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lexicon.urls">
+<span id="lexicon-urls-module"></span><h2>lexicon.urls module<a class="headerlink" href="#module-lexicon.urls" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lexicon.urls.path">
+<code class="descclassname">lexicon.urls.</code><code class="descname">path</code><span class="sig-paren">(</span><em>route</em>, <em>view</em>, <em>kwargs=None</em>, <em>name=None</em>, <em>*</em>, <em>Pattern=&lt;class 'django.urls.resolvers.RoutePattern'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.urls.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-lexicon.views">
+<span id="lexicon-views-module"></span><h2>lexicon.views module<a class="headerlink" href="#module-lexicon.views" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lexicon.views.LexicalItemList">
+<em class="property">class </em><code class="descclassname">lexicon.views.</code><code class="descname">LexicalItemList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lexicon.views.LexicalItemList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.generics.ListAPIView</span></code></p>
+<dl class="attribute">
+<dt id="lexicon.views.LexicalItemList.queryset">
+<code class="descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;LexicalItem: John (en) &gt;, &lt;LexicalItem: Mary (en) &gt;, &lt;LexicalItem: C (func) [uWh, EPP]&gt;, &lt;LexicalItem: C (func) [uRel, EPP], [uWh, EPP]&gt;, &lt;LexicalItem: Bill (en) &gt;]&gt;</em><a class="headerlink" href="#lexicon.views.LexicalItemList.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lexicon.views.LexicalItemList.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lexicon.views.LexicalItemList.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lexicon.serializers.LexicalItemSerializer" title="lexicon.serializers.LexicalItemSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lexicon.serializers.LexicalItemSerializer</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lexicon">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lexicon" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="react.html" class="btn btn-neutral float-right" title="React (Frontend)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="frontend.handlers.html" class="btn btn-neutral" title="frontend.handlers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Zechy Wong
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

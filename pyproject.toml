@@ -21,6 +21,7 @@ m2r = "^0.2.1"
 djangorestframework-queryfields = "^1.0"
 bootstrap-admin = "^0.4.0"
 djangorestframework-datatables = "^0.4.1"
+requests = "^2.21"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.2"

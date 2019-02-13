@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Project Structure &mdash; CS Toolkit 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Django (Backend)" href="django.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> CS Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="django.html">Django (Backend)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="react.html">React (Frontend)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">CS Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Project Structure</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1 align="center">The Code Switching Toolkit</h1><p align="center">
+A (Roughly) Minimalist framework for exploring code switching data.
+</p><p align="center">
+<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://github.com/prettier/prettier"><img alt="Code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a>
+</p><div class="section" id="project-structure">
+<h1>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h1>
+<p>The project uses Django/Channels/Django REST Framework for its backend (in the <code class="docutils literal notranslate"><span class="pre">django</span></code> folder), and React/Babel/Webpack for its frontend (in the <code class="docutils literal notranslate"><span class="pre">react</span></code> folder).</p>
+<ul class="simple">
+<li>Frontend routing and server-side Channels operations are handled by a Django app named <code class="docutils literal notranslate"><span class="pre">frontend</span></code> (in <code class="docutils literal notranslate"><span class="pre">django/frontend</span></code>).</li>
+<li>The actual frontend views and client-side code are found in <code class="docutils literal notranslate"><span class="pre">react/django-templates</span></code> and <code class="docutils literal notranslate"><span class="pre">react/src</span></code> respectively.</li>
+</ul>
+<p>Frontend dependencies and tasks are managed by <code class="docutils literal notranslate"><span class="pre">npm</span></code> (via <code class="docutils literal notranslate"><span class="pre">package.json</span></code> in the project root), and backend dependencies and tasks are managed by <code class="docutils literal notranslate"><span class="pre">poetry</span></code> (via <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> in the project root) and the Django management script (<code class="docutils literal notranslate"><span class="pre">django/manage.py</span></code>).</p>
+</div>
+<div class="section" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="python-dependencies">
+<h2>Python dependencies<a class="headerlink" href="#python-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Start by cloning this repository and ensuring that Poetry (<a class="reference external" href="https://poetry.eustace.io/docs/">https://poetry.eustace.io/docs/</a>) is installed.</p>
+<p>From the project root, install the backend dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry install
+</pre></div>
+</div>
+<p>If you are running the server on a Windows machine, specify the <code class="docutils literal notranslate"><span class="pre">windows</span></code> extra option to pull in Windows-specific dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry install --extras <span class="s2">&quot;windows&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="redis-server">
+<h2>Redis server<a class="headerlink" href="#redis-server" title="Permalink to this headline">¶</a></h2>
+<p>In order for the Channels portion of the backend to work properly, the project expects a Redis server to be accessible (on <code class="docutils literal notranslate"><span class="pre">127.0.0.1:6379</span></code> by default).  An easy way to do this is to install Docker (<a class="reference external" href="https://www.docker.com/">https://www.docker.com/</a>), then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -p <span class="m">6379</span>:6379 -d redis
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-the-server">
+<h2>Start the server<a class="headerlink" href="#start-the-server" title="Permalink to this headline">¶</a></h2>
+<p>The shell script <code class="docutils literal notranslate"><span class="pre">start-server</span></code> will prepare and start the Django server on port <code class="docutils literal notranslate"><span class="pre">8080</span></code>.  You can Set the <code class="docutils literal notranslate"><span class="pre">PORT</span></code> environmental variable to use a non-default port:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PORT</span><span class="o">=</span>&lt;your port here&gt; ./start-server
+</pre></div>
+</div>
+<p>Then point your browser to <a class="reference external" href="http://localhost:8080">http://localhost:8080</a> (replacing 8080 with your chosen port, if you set one) to view the main interface.</p>
+</div>
+</div>
+<div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<p>Start by cloning this repository and making sure that Node.js (<a class="reference external" href="https://nodejs.org/">https://nodejs.org/</a>) is installed.</p>
+<p>From the project root, install the frontend development dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm install
+</pre></div>
+</div>
+<p>After making any changes to the frontend sources, you will need to rebuild the frontend bundles:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm run build
+</pre></div>
+</div>
+<p>Alternatively, use <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">dev</span></code> to build the bundles in development mode (<a class="reference external" href="https://webpack.js.org/concepts/mode/">https://webpack.js.org/concepts/mode/</a>), or <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">watch</span></code> to watch for changes to the sources and rebuild them automatically.</p>
+<p>For convenience, the shell script <code class="docutils literal notranslate"><span class="pre">start-dev</span></code> will spin up the Django server in debug mode and start watching for changes to the frontend sources at the same time.  Set the <code class="docutils literal notranslate"><span class="pre">PORT</span></code> environment variable to use a non-default port:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PORT</span><span class="o">=</span><span class="m">9000</span> ./start-dev
+</pre></div>
+</div>
+<div class="section" id="profiling">
+<h2>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">profile</span></code> to profile the contents/size of the main Webpack bundle.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentation for the project is built using Sphinx (<a class="reference external" href="http://www.sphinx-doc.org/">http://www.sphinx-doc.org/</a>) and Sphinx-js (<a class="reference external" href="https://github.com/erikrose/sphinx-js">https://github.com/erikrose/sphinx-js</a>) from the sources in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder.</p>
+<p>To build the documentation, the <code class="docutils literal notranslate"><span class="pre">jsdoc</span></code> executable will need to be available on your path. An easy way to do this is by installing JSDoc globally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm install -g jsdoc
+</pre></div>
+</div>
+<p>The documentation can then be built using the <code class="docutils literal notranslate"><span class="pre">build-docs</span></code> npm script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm run build-docs
+</pre></div>
+</div>
+<p>Alternatively, the <code class="docutils literal notranslate"><span class="pre">watch-docs</span></code> npm script will watch for changes to the documentation sources and rebuild it automatically:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm run watch-docs
+</pre></div>
+</div>
+<div class="section" id="api-project-component-reference">
+<h3>API/Project component reference<a class="headerlink" href="#api-project-component-reference" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="django.html">Django (Backend)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html">frontend package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexicon.html">lexicon package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="react.html">React (Frontend)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="react.html#config-class">Config class</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="django.html" class="btn btn-neutral float-right" title="Django (Backend)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Zechy Wong
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

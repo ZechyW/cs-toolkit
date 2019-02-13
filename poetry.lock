@@ -638,7 +638,7 @@ setuptools = "*"
 windows = ["pywin32"]
 
 [metadata]
-content-hash = "b50dfec043f80de4aa9797e8d58001ed5ae799c6c066bcbeae2dc7cc725f2c41"
+content-hash = "87dc0053f6679382db013e5dcd761a2977aaf5c66d18bbef37a0cd0f6b9ce863"
 python-versions = "^3.6"
 
 [metadata.hashes]

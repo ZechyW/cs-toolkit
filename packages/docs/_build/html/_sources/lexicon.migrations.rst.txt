@@ -1,0 +1,38 @@
+lexicon.migrations package
+==========================
+
+Submodules
+----------
+
+lexicon.migrations.0001\_initial module
+---------------------------------------
+
+.. automodule:: lexicon.migrations.0001_initial
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lexicon.migrations.0002\_auto\_20190122\_0022 module
+----------------------------------------------------
+
+.. automodule:: lexicon.migrations.0002_auto_20190122_0022
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lexicon.migrations.0003\_auto\_20190122\_0153 module
+----------------------------------------------------
+
+.. automodule:: lexicon.migrations.0003_auto_20190122_0153
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: lexicon.migrations
+    :members:
+    :undoc-members:
+    :show-inheritance:
