@@ -7,12 +7,12 @@ All requests that reach us are either pointed at `index.html` (in production
 mode) or proxied to the React dev server (in development mode)
 """
 import logging
+
 import requests
 from django import http
 from django.conf import settings
 from django.shortcuts import render
 from django.template import engines
-from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -27,14 +27,16 @@ def frontend_production(request):
     return render(request, "index.html")
 
 
-@csrf_exempt
 def frontend_development(request):
     """
     View for the main frontend page in development mode:
-    Proxy a request to the React development server.
+    Proxy a request to the React development server at
+    `localhost:<REACT_PORT>`.
     :param request:
     :return:
     """
+    logger.debug("frontend_dev PROXY: {}".format(request.path))
+
     upstream_url = "http://localhost:{}{}".format(
         settings.REACT_PORT, request.path
     )
@@ -50,7 +52,7 @@ def frontend_development(request):
         )
     else:
         return http.StreamingHttpResponse(
-            streaming_content=response,
+            streaming_content=response.iter_content(2 ** 12),
             content_type=content_type,
             status=response.status_code,
             reason=response.reason,

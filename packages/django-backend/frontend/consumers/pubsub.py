@@ -1,14 +1,10 @@
-"""
-Django Channels consumers for the frontend
-"""
 import logging
 import re
 
-from channels.exceptions import DenyConnection
-from channels.generic.websocket import JsonWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 
-from .serializers import PubSubSerializer
-from . import handlers
+from .. import handlers
+from ..serializers import PubSubSerializer
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -94,12 +90,3 @@ class PubSubConsumer(JsonWebsocketConsumer):
         assert "topic" in message
 
         self.send_json(message)
-
-
-class DropConsumer(WebsocketConsumer):
-    """
-    Closes any WebSocket connection it receives
-    """
-
-    def connect(self):
-        raise DenyConnection

@@ -22,6 +22,8 @@ djangorestframework-queryfields = "^1.0"
 bootstrap-admin = "^0.4.0"
 djangorestframework-datatables = "^0.4.1"
 requests = "^2.21"
+autobahn = "^19.1"
+twisted = "^18.9"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.2"
