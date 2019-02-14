@@ -1,12 +1,32 @@
+/**
+ * Main app entry point:
+ * Configures the Redux store and renders the App component.
+ */
+
+import { config, dom } from "@fortawesome/fontawesome-svg-core";
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
+import { Provider } from "react-redux";
+import { configureStore } from "redux-starter-kit";
+import App from "./core/components/App";
+import { reducer as lexicalArrayInput } from "./lexicalArrayInput";
+import "./core/styles/theme.scss";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+// FontAwesome icons
+config.autoReplaceSvg = "nest";
+dom.watch();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// Redux store
+const store = configureStore({
+  reducer: {
+    lexicalArrayInput
+  }
+});
+
+// Main component render
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);

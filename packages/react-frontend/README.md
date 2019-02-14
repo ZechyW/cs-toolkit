@@ -1,3 +1,13 @@
+## Nota Bene
+
+- `webpack-bundle-analyzer` report generation built into NPM `build` script (https://github.com/facebook/create-react-app/issues/3518#issuecomment-454144586)
+
+- Libraries in `node_modules` that export un-transpiled ES6 code are marked for transformation by Jest in the NPM `test` script (https://github.com/facebook/create-react-app/issues/5241#issuecomment-426986623)
+
+- `babel-preset-react-app` version pinned to `7.0.0` to avoid dependency conflict for `babel-loader` between `react-scripts` and `babel-preset-react-app`
+
+------
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
