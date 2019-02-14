@@ -1,29 +1,29 @@
 {
   "name": "cs-toolkit",
-  "version": "0.1.0",
   "description": "(Roughly) Minimalist framework for exploring code switching data",
-  "main": "frontend/src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
-    "dev": "webpack --mode development",
-    "watch": "webpack --mode development --watch --info-verbosity verbose",
-    "profile": "webpack --profile --json > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json ./react/built",
-    "build-docs": "cd docs && poetry run make html",
-    "watch-docs": "cd docs && chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial",
-    "collectstatic": "cd django && poetry run python manage.py collectstatic --clear --noinput",
-    "stage": "npm run build && npm run build-docs && npm run collectstatic"
-  },
+  "license": "MIT",
+  "author": "",
+  "homepage": "https://github.com/ZechyW/cs-toolkit#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ZechyW/cs-toolkit.git"
   },
-  "author": "",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ZechyW/cs-toolkit/issues"
   },
-  "homepage": "https://github.com/ZechyW/cs-toolkit#readme",
+  "version": "0.1.0",
+  "main": "frontend/src/index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build-docs": "cd docs && poetry run make html",
+    "collectstatic": "cd django && poetry run python manage.py collectstatic --clear --noinput",
+    "dev": "webpack --mode development",
+    "profile": "webpack --profile --json > webpack-profile.json && webpack-bundle-analyzer webpack-profile.json ./react/built",
+    "stage": "npm run build && npm run build-docs && npm run collectstatic",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --mode development --watch --info-verbosity verbose",
+    "watch-docs": "cd docs && chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/polyfill": "^7.2.5",

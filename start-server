@@ -29,10 +29,15 @@ esac
 
 # ----------------------------------
 # Set default port
-PORT="${PORT:-8080}"
+DJANGO_PORT="${DJANGO_PORT:-8080}"
 
-echo -e "${CYAN}Collecting static files (deleting old ones) and starting Django server (port ${PORT})...${NOCOLOR}"
+# React
+echo -e "${CYAN}Building React frontend...${NOCOLOR}"
+cd packages/react-frontend
+npm run build
 
-cd django
-poetry run python manage.py collectstatic --clear --noinput
-poetry run python manage.py runserver ${PORT}
+echo -e "${CYAN}Collecting static files (deleting old ones) and starting Django server (port ${DJANGO_PORT})...${NOCOLOR}"
+
+cd ../django-backend
+npm run build
+npm run start

@@ -6,9 +6,9 @@
   "author": "ZechyW",
   "version": "0.1.0",
   "scripts": {
-    "collectstatic": "poetry run python manage.py collectstatic --clear --noinput",
+    "build": "poetry run python manage.py collectstatic --clear --noinput",
     "dev": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} DJANGO_DEBUG=1 poetry run python manage.py runserver $DJANGO_PORT",
-    "start": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} poetry run daphne -p $DJANGO_PORT app.asgi:application"
+    "start": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} poetry run daphne -b 0.0.0.0 -p $DJANGO_PORT app.asgi:application"
   },
   "devDependencies": {
     "@naholyr/cross-env": "^1.0.0"

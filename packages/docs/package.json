@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "scripts": {
     "build": "poetry run make html",
-    "watch": "chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
+    "docs-dev": "chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
   },
   "devDependencies": {
     "chokidar-cli": "^1.2.1"
