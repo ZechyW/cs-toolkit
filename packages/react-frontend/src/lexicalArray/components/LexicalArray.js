@@ -54,8 +54,8 @@ export class LexicalArray extends React.Component {
               suggestions={this.props.suggestions}
               placeholder="Add a new lexical item"
               labelField="label"
-              handleAddition={this.handleAddition}
-              handleDelete={this.handleDelete}
+              // handleAddition={this.handleAddition}
+              // handleDelete={this.handleDelete}
               // handleDrag={this.handleDrag}
               // handleInputChange={this.handleInputChange}
               minQueryLength={1}

@@ -1,8 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { WithContext as ReactTags } from "react-tag-input";
-
 import _ from "lodash";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { WithContext as ReactTags } from "react-tag-input";
 
 import { getFromLS, saveToLS } from "../util";
 

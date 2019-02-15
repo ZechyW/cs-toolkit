@@ -9,8 +9,9 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "redux-starter-kit";
 import App from "./core/components/App";
-import { reducer as lexicalArray } from "./lexicalArray";
 import "./core/styles/theme.scss";
+import { reducer as lexicalArray } from "./lexicalArray";
+import { reducer as navbar } from "./navbar";
 
 // FontAwesome icons
 config.autoReplaceSvg = "nest";
@@ -19,7 +20,8 @@ dom.watch();
 // Redux store
 const store = configureStore({
   reducer: {
-    lexicalArray
+    lexicalArray,
+    navbar
   }
 });
 

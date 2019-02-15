@@ -28,16 +28,14 @@ case "$(uname -s)" in
 esac
 
 # ----------------------------------
-# Set default port
-DJANGO_PORT="${DJANGO_PORT:-8080}"
-
 # React
 echo -e "${CYAN}Building React frontend...${NOCOLOR}"
 cd packages/react-frontend
 npm run build
 
-echo -e "${CYAN}Collecting static files (deleting old ones) and starting Django server (port ${DJANGO_PORT})...${NOCOLOR}"
+echo -e "${CYAN}Collecting Django static files (deleting old ones)...${NOCOLOR}"
 
 cd ../django-backend
 npm run build
-npm run start
+
+echo -e "${CYAN}Production build done.${NOCOLOR}"
