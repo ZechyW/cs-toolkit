@@ -7,6 +7,7 @@ All requests that reach us are either pointed at `index.html` (in production
 mode) or proxied to the React dev server (in development mode)
 """
 import logging
+from timeit import default_timer
 
 import requests
 from django import http
@@ -35,14 +36,22 @@ def frontend_development(request):
     :param request:
     :return:
     """
-    logger.debug("frontend_dev PROXY: {}".format(request.path))
+    start_time = default_timer()
+    logger.info("frontend_dev PROXY {}".format(request.path))
 
-    upstream_url = "http://localhost:{}{}".format(
-        settings.REACT_PORT, request.path
+    upstream_url = "http://{}:{}{}".format(
+        settings.REACT_HOST, settings.REACT_PORT, request.path
     )
+
     method = request.META["REQUEST_METHOD"].lower()
     response = getattr(requests, method)(upstream_url, stream=True)
     content_type = response.headers.get("Content-Type")
+
+    logger.info(
+        "frontend_dev PROXY_RECV ({:.2f}s): {} ()".format(
+            default_timer() - start_time, request.path
+        )
+    )
 
     if content_type.startswith("text/html"):
         return http.HttpResponse(

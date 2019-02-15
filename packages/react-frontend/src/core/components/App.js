@@ -2,12 +2,14 @@
  * Main app component
  */
 import React from "react";
-import { LexicalArrayInput } from "../../lexicalArrayInput";
+import { Navbar } from "../../navbar/";
+import { LexicalArray } from "../../lexicalArray";
 
-const App = () => (
-  <div>
-    <LexicalArrayInput />
-  </div>
+export const App = () => (
+  <>
+    <Navbar />
+    <LexicalArray />
+  </>
 );
 
 export default App;

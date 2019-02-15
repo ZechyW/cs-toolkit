@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "scripts": {
     "build": "poetry run python manage.py collectstatic --clear --noinput",
-    "dev": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} DJANGO_DEBUG=1 poetry run python manage.py runserver $DJANGO_PORT",
+    "dev": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} DJANGO_DEBUG=1 REACT_HOST=${REACT_HOST:127.0.0.1} REACT_PORT=${REACT_PORT:3000} poetry run python manage.py runserver $DJANGO_PORT",
     "start": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} poetry run daphne -b 0.0.0.0 -p $DJANGO_PORT app.asgi:application"
   },
   "devDependencies": {

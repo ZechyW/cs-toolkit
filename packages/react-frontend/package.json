@@ -7,7 +7,7 @@
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
     "build": "react-scripts build --stats && webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html -O",
-    "dev": "cross-env BROWSER=browser.js DJANGO_PORT=${DJANGO_PORT:8080} react-scripts start",
+    "dev": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} BROWSER=browser.js HOST=${REACT_HOST:127.0.0.1} PORT=${REACT_PORT:3000} react-scripts start",
     "eject": "react-scripts eject",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\""
   },
@@ -29,6 +29,7 @@
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^3.0.2",
     "react-redux": "^6.0.0",
+    "react-spring": "^8.0.7",
     "react-tag-input": "^6.2.1",
     "redux": "^4.0.1",
     "redux-devtools": "^3.5.0",

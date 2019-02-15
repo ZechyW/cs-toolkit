@@ -147,7 +147,7 @@ LOGGING = {
         # We might not want super-verbose logging on the server when
         # developing, so this can be set to a higher level than `INFO`
         "django.channels.server": {"level": "INFO"},
-        "cs-toolkit": {"handlers": ["console"], "level": "DEBUG"},
+        "cs-toolkit": {"handlers": ["console"], "level": "INFO"},
     },
 }
 
@@ -188,5 +188,8 @@ REST_FRAMEWORK = {
 }
 
 # Integration with React dev mode
-# Port for the React dev server (the upstream default is 3000)
-REACT_PORT = 3000
+# Host/Port for the React dev server (the upstream default is
+# localhost:3000, but this might cause problems for our proxy view since it
+# does not seem to answer on the IPv6 localhost address.)
+REACT_HOST = os.environ.get("REACT_HOST") or "127.0.0.1"
+REACT_PORT = os.environ.get("REACT_PORT") or 3000

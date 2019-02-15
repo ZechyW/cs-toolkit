@@ -6,6 +6,8 @@
 
 - `babel-preset-react-app` version pinned to `7.0.0` to avoid dependency conflict for `babel-loader` between `react-scripts` and `babel-preset-react-app`
 
+- The CRA dev server does not seem to respond on the IPv6 `localhost` address `[::1]`, so `HOST` is explicitly set (`127.0.0.1` by default)
+
 ------
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

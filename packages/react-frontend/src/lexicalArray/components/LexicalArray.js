@@ -3,25 +3,25 @@ import React from "react";
 import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
 import createSelector from "selectorator";
-import "../styles/LexicalArrayInput.scss";
+import "../styles/LexicalArray.scss";
 
 /**
  * Component for the lexical array builder.
  * Uses the `react-tag-input` library to display lexical items as tag-like
  * pills.
  */
-export class LexicalArrayInput extends React.Component {
+export class LexicalArray extends React.Component {
   static propTypes = {
     // Autocomplete suggestions for the tag input
     suggestions: PropTypes.array,
 
     // Currently built-up lexical array
-    lexicalArray: PropTypes.array
+    currentInput: PropTypes.array
   };
 
   static defaultProps = {
     suggestions: [],
-    lexicalArray: []
+    currentInput: []
   };
 
   render = () => (
@@ -50,7 +50,7 @@ export class LexicalArrayInput extends React.Component {
         <div className="field">
           <div className="control is-expanded">
             <ReactTags
-              tags={this.props.lexicalArray}
+              tags={this.props.currentInput}
               suggestions={this.props.suggestions}
               placeholder="Add a new lexical item"
               labelField="label"
@@ -78,7 +78,7 @@ export class LexicalArrayInput extends React.Component {
       </form>
 
       <p className="has-text-grey-light has-margin-top-10">
-        {JSON.stringify(this.props.lexicalArray)}
+        {JSON.stringify(this.props.currentInput)}
       </p>
     </>
   );
@@ -89,7 +89,7 @@ export class LexicalArrayInput extends React.Component {
  */
 export default connect(
   createSelector({
-    suggestions: "suggestions",
-    lexicalArray: "lexicalArray"
+    suggestions: "lexicalArray.suggestions",
+    currentInput: "lexicalArray.currentInput"
   })
-)(LexicalArrayInput);
+)(LexicalArray);

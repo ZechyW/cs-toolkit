@@ -1,15 +1,15 @@
 import { replaceSuggestions } from "./actions";
 import reducer from "./reducer";
 
-describe("The lexicalArrayInput reducer", () => {
-  it("should return the initial state", () => {
+describe("The reducer", () => {
+  it("returns the initial state", () => {
     expect(reducer(undefined, {})).toEqual({
       suggestions: [],
-      lexicalArray: []
+      currentInput: []
     });
   });
 
-  it("should deduplicate suggestions", () => {
+  it("deduplicates suggestions", () => {
     expect(
       reducer(
         { suggestions: [] },

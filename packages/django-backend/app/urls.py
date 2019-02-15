@@ -20,6 +20,8 @@ urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
     path("api/", include("lexicon.urls")),
-    # Catchall for all frontend and unrecognised/unresolved paths
-    re_path(r"", include("frontend.urls")),
+    # Catchalls for bare URL, and all frontend and unrecognised/unresolved
+    # paths
+    path("", include("frontend.urls")),
+    re_path(r"^.*/", include("frontend.urls")),
 ]

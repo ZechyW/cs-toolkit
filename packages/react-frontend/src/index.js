@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "redux-starter-kit";
 import App from "./core/components/App";
-import { reducer as lexicalArrayInput } from "./lexicalArrayInput";
+import { reducer as lexicalArray } from "./lexicalArray";
 import "./core/styles/theme.scss";
 
 // FontAwesome icons
@@ -19,7 +19,7 @@ dom.watch();
 // Redux store
 const store = configureStore({
   reducer: {
-    lexicalArrayInput
+    lexicalArray
   }
 });
 

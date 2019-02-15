@@ -2,10 +2,10 @@ import { uniqBy } from "lodash-es";
 import { createReducer } from "redux-starter-kit";
 import { replaceSuggestions } from "./actions";
 
-const lexicalArrayInputReducer = createReducer(
+const lexicalArrayReducer = createReducer(
   {
     suggestions: [],
-    lexicalArray: []
+    currentInput: []
   },
   {
     [replaceSuggestions]: replaceSuggestionsReducer
@@ -42,4 +42,4 @@ export function replaceSuggestionsReducer(state, action) {
   state.suggestions = newSuggestions;
 }
 
-export default lexicalArrayInputReducer;
+export default lexicalArrayReducer;
