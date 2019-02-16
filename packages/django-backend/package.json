@@ -10,7 +10,7 @@
     "dev": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} DJANGO_DEBUG=1 REACT_HOST=${REACT_HOST:127.0.0.1} REACT_PORT=${REACT_PORT:3000} poetry run python manage.py runserver $DJANGO_PORT",
     "serve": "cross-env DJANGO_PORT=${DJANGO_PORT:8080} poetry run daphne -b 0.0.0.0 -p $DJANGO_PORT app.asgi:application"
   },
-  "devDependencies": {
+  "dependencies": {
     "@naholyr/cross-env": "^1.0.0"
   }
 }

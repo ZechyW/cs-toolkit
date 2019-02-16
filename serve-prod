@@ -33,5 +33,5 @@ DJANGO_PORT="${DJANGO_PORT:-8080}"
 
 echo -e "${CYAN}Starting production server (port ${DJANGO_PORT})...${NOCOLOR}"
 
-cd ../django-backend
+cd packages/django-backend
 npm run serve
