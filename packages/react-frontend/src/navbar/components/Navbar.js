@@ -1,4 +1,3 @@
-import { throttle } from "lodash-es";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
@@ -62,6 +61,7 @@ function Navbar(props) {
     if (!navbarExpanded) return;
 
     const handleScroll = () => {
+      console.log("Whohop");
       if (document.documentElement.scrollTop > 0) {
         collapseNavbar();
       }

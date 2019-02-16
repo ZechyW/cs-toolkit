@@ -3,10 +3,7 @@ import reducer from "./reducer";
 
 describe("The reducer", () => {
   it("returns the initial state", () => {
-    expect(reducer(undefined, {})).toEqual({
-      suggestions: [],
-      currentInput: []
-    });
+    expect(reducer(undefined, {})).toMatchSnapshot();
   });
 
   it("deduplicates suggestions", () => {

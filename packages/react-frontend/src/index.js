@@ -7,23 +7,13 @@ import { config, dom } from "@fortawesome/fontawesome-svg-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { configureStore } from "redux-starter-kit";
 import App from "./core/components/App";
 import "./core/styles/theme.scss";
-import { reducer as lexicalArray } from "./lexicalArray";
-import { reducer as navbar } from "./navbar";
+import store from "./store";
 
 // FontAwesome icons
 config.autoReplaceSvg = "nest";
 dom.watch();
-
-// Redux store
-const store = configureStore({
-  reducer: {
-    lexicalArray,
-    navbar
-  }
-});
 
 // Main component render
 ReactDOM.render(
