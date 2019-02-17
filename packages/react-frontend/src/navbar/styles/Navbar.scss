@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+/**
+ * Styles for the navbar component
+ */
+
+// Find a better way to ensure that scrolling works for tests
+body {
+  min-height: 101vh;
+}

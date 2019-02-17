@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import createSelector from "selectorator";
@@ -10,6 +10,7 @@ import {
   expandNavbar
 } from "../actions";
 import logo from "../images/logo.png";
+import "../styles/Navbar.scss";
 
 /**
  * Animated collapsible navbar component.
@@ -37,6 +38,9 @@ function Navbar(props) {
     "0"
   );
 
+  // Cheat a little to imperatively note when the animation is done
+  const navbarRef = useRef(null);
+
   // Animation springs
   const spring = useSpring({
     navbarHeight: navbarExpanded ? "10rem" : "3.25rem",
@@ -48,11 +52,21 @@ function Navbar(props) {
     logoSize: navbarExpanded ? "4rem" : "1.75rem",
     logoMarginRight: navbarExpanded ? "1rem" : "0.5rem",
     subtitleHeight: navbarExpanded ? "1.6rem" : "0rem",
-    onFrame: handleNavbarHeight
+    onFrame: ({ navbarHeight }) => {
+      // Adjust the body's top padding to account for the fixed navbar
+      if (document.body.style.paddingTop !== navbarHeight) {
+        document.body.style.paddingTop = navbarHeight;
+      }
+      // Note the animation in progress
+      navbarRef.current.classList.add("is-animating");
+    },
+    onRest: () => {
+      navbarRef.current.classList.remove("is-animating");
+    }
   });
   const fastSpring = useSpring({
     opacity: navbarExpanded ? "1" : "0",
-    config: { mass: 1, tension: 170, friction: 13 }
+    config: { mass: 1, tension: 300, friction: 26 }
   });
 
   // Scroll listener
@@ -61,7 +75,6 @@ function Navbar(props) {
     if (!navbarExpanded) return;
 
     const handleScroll = () => {
-      console.log("Whohop");
       if (document.documentElement.scrollTop > 0) {
         collapseNavbar();
       }
@@ -77,7 +90,9 @@ function Navbar(props) {
   // Render
   return (
     <animated.nav
-      className={"navbar is-light is-fixed-top"}
+      className={
+        "navbar is-light is-fixed-top" + (navbarExpanded ? " is-expanded" : "")
+      }
       style={{
         height: spring.navbarHeight,
         paddingTop: spring.navbarPaddingY,
@@ -85,6 +100,7 @@ function Navbar(props) {
         paddingLeft: spring.navbarPaddingX,
         paddingRight: spring.navbarPaddingX
       }}
+      ref={navbarRef}
     >
       <div className="navbar-brand">
         <animated.div
@@ -153,16 +169,6 @@ function Navbar(props) {
       </div>
     </animated.nav>
   );
-}
-
-/**
- * Adjust the body's top padding to account for the fixed navbar
- * @param navbarHeight
- */
-function handleNavbarHeight({ navbarHeight }) {
-  if (document.body.style.paddingTop !== navbarHeight) {
-    document.body.style.paddingTop = navbarHeight;
-  }
 }
 
 /**
