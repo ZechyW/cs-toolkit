@@ -8,6 +8,7 @@ A (Roughly) Minimalist framework for exploring code switching data.
 <a href="https://lernajs.io/"><img alt="<Maintained with: lerna" src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg"></a>
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://github.com/prettier/prettier"><img alt="Code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a>
+<img alt="Travis CI" src="https://travis-ci.org/ZechyW/cs-toolkit.svg?branch=master">
 </p>
 
 ## Project Structure

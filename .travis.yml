@@ -27,6 +27,6 @@ install:
 
 script:
   - chmod a+x ./build-prod && ./build-prod
-  - chmod a+x ./serve-prod && ./serve-prod
+  - chmod a+x ./serve-prod && ./serve-prod &
   - yarn workspace cypress-testing run cypress-run
 
