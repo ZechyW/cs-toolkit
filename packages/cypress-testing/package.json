@@ -9,9 +9,11 @@
     "cypress": "cypress open",
     "cypress-run": "cypress run"
   },
-  "devDependencies": {
+  "dependencies": {
     "cypress": "^3.1.5",
-    "cypress-plugin-snapshots": "^1.2.5",
+    "cypress-plugin-snapshots": "^1.2.5"
+  },
+  "devDependencies": {
     "eslint-plugin-cypress": "^2.2.0"
   }
 }

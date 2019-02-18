@@ -21,10 +21,11 @@ before_install:
 
 install:
   - poetry install
+  - poetry show -v
   - yarn --prod
 
 script:
-  - ./build-prod
-  - ./serve-prod
+  - chmod a+x ./build-prod && ./build-prod
+  - chmod a+x ./serve-prod && ./serve-prod
   - yarn workspace cypress-testing run cypress-run
 
