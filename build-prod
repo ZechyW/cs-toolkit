@@ -28,18 +28,12 @@ case "$(uname -s)" in
 esac
 
 # ----------------------------------
-# Yarn for production dependencies
-echo -e "${CYAN}Installing production dependencies...${NOCOLOR}"
-yarn --prod
-
 # React
 echo -e "${CYAN}Building React frontend...${NOCOLOR}"
-cd packages/react-frontend
-npm run build
+yarn workspace react-frontend run build
 
 # Django
 echo -e "${CYAN}Collecting Django static files (deleting old ones)...${NOCOLOR}"
-cd ../django-backend
-npm run build
+yarn workspace django-backend run build
 
 echo -e "${CYAN}Production build done.${NOCOLOR}"

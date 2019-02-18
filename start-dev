@@ -21,30 +21,30 @@ LIGHTCYAN='\033[1;36m'
 WHITE='\033[1;37m'
 
 # Handling for Git Bash for Windows
+# (incl. workaround for https://github.com/yarnpkg/yarn/issues/2591)
 case "$(uname -s)" in
    MINGW*)
      export FORCE_COLOR=true
+     yarn=yarn.cmd
      ;;
+   *) yarn=yarn;;
 esac
 
 # ----------------------------------
 # Set default dev hosts/ports
-DJANGO_PORT="${DJANGO_PORT:-8080}"
-REACT_HOST="${REACT_HOST:-127.0.0.1}"
-REACT_PORT="${REACT_PORT:-3000}"
+DJANGO_PORT=${DJANGO_PORT:-8080}
+REACT_HOST=${REACT_HOST:-127.0.0.1}
+REACT_PORT=${REACT_PORT:-3000}
 
 # Update-notifier sometimes causes permissions errors on Windows
 NO_UPDATE_NOTIFIER=1
 
 echo -e "${CYAN}Starting Django/React development servers (UI on port ${DJANGO_PORT})...${NOCOLOR}"
 
-
 # Django
 echo -e "${YELLOW}Django is running debug mode.\nStatic bundles will not be compressed and only local connections will be accepted, among other caveats.${NOCOLOR}"
 
-cd packages/django-backend
-npm run dev &
+eval ${yarn} workspace django-backend run dev ${DJANGO_PORT} &
 
 # React
-cd ../react-frontend
-npm run dev
+DJANGO_PORT=${DJANGO_PORT} HOST=${REACT_HOST} PORT=${REACT_PORT} eval ${yarn} workspace react-frontend run dev

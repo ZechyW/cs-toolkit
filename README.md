@@ -64,15 +64,25 @@ docker container start redis
 
 ### Build the production files and start the server
 
-The shell script `build-prod` will install the JS production dependencies, build the production frontend bundles, and collect all production assets in the Django static files directory (`django-backend/static`).
-
-The shell script `serve-prod` will then start the Django production server (Daphne) on port `8080`.  You can Set the `DJANGO_PORT` environmental variable to use a non-default port:
+Start by installing the frontend production dependencies:
 
 ```bash
-DJANGO_PORT=8080 ./start-server
+yarn --prod
 ```
 
-Then point your browser to http://localhost:8080 (replacing 8080 with your chosen port, if you set one) to view the main interface.
+Next, run the `build-prod` shell script to build the production frontend bundles and collect all production assets in the Django static files directory (`packages/django-backend/static`);
+
+```bash
+./build-prod
+```
+
+Finally, use the `serve-prod` shell script to start the Django production server (Daphne) on port `8000`.  You can set the `DJANGO_PORT` environmental variable to use a non-default port:
+
+```bash
+DJANGO_PORT=8000 ./start-server
+```
+
+Then point your browser to http://localhost:8000 (replacing 8000 with your chosen port, if you set one) to view the main interface.
 
 ## Development
 

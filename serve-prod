@@ -29,9 +29,8 @@ esac
 
 # ----------------------------------
 # Set default port
-DJANGO_PORT="${DJANGO_PORT:-8080}"
+DJANGO_PORT="${DJANGO_PORT:-8000}"
 
 echo -e "${CYAN}Starting production server (port ${DJANGO_PORT})...${NOCOLOR}"
 
-cd packages/django-backend
-npm run serve
+yarn workspace django-backend run serve -p ${DJANGO_PORT}
