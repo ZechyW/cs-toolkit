@@ -105,7 +105,15 @@ function Navbar(props) {
       <div className="navbar-brand">
         <animated.div
           className={"navbar-item has-cursor-pointer"}
-          onClick={() => (navbarExpanded ? collapseNavbar() : expandNavbar())}
+          onClick={() => {
+            if (!burgerExpanded) {
+              if (navbarExpanded) {
+                collapseNavbar();
+              } else {
+                expandNavbar();
+              }
+            }
+          }}
           style={{
             paddingTop: spring.brandPaddingY,
             paddingBottom: spring.brandPaddingY,

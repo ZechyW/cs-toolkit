@@ -1,0 +1,93 @@
+exports[`The main app navbar > Snapshot - Expanded #0`] = `
+<nav
+  class="navbar is-light is-fixed-top is-expanded"
+  style="height: 10rem; padding: 3rem 1.5rem;"
+>
+  <div class="navbar-brand">
+    <div
+      class="navbar-item has-cursor-pointer"
+      style="padding: 0rem; margin-left: 0px; margin-right: 0px;"
+    >
+      <img
+        src="/static/media/logo.faf9ea68.png"
+        alt="CS Toolkit"
+        style="height: 4rem; width: 4rem; margin-right: 1rem; max-height: 100%;"
+      />
+      <div>
+        <p class="title">The Code Switching Toolkit</p>
+        <p class="subtitle" style="height: 1.6rem; opacity: 1;">
+          A (roughly) Minimalist framework for exploring code switching data
+        </p>
+      </div>
+    </div>
+    <div
+      role="button"
+      class="navbar-burger"
+      aria-label="menu"
+      aria-expanded="false"
+    >
+      <span aria-hidden="true"></span><span aria-hidden="true"></span
+      ><span aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start"></div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <button class="button is-primary">
+            <strong>Reset Layout</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+`;
+
+exports[`The main app navbar > Snapshot - Collapsed #0`] = `
+<nav
+  class="navbar is-light is-fixed-top"
+  style="height: 3.25rem; padding: 0rem;"
+>
+  <div class="navbar-brand">
+    <div
+      class="navbar-item has-cursor-pointer"
+      style="padding: 0.5rem 0.75rem; margin-left: 0px; margin-right: 0px;"
+    >
+      <img
+        src="/static/media/logo.faf9ea68.png"
+        alt="CS Toolkit"
+        style="height: 1.75rem; width: 1.75rem; margin-right: 0.5rem; max-height: 100%;"
+      />
+      <div>
+        <p class="title">CS Toolkit</p>
+        <p class="subtitle" style="height: 0rem; opacity: 0;">
+          A (roughly) Minimalist framework for exploring code switching data
+        </p>
+      </div>
+    </div>
+    <div
+      role="button"
+      class="navbar-burger"
+      aria-label="menu"
+      aria-expanded="false"
+    >
+      <span aria-hidden="true"></span><span aria-hidden="true"></span
+      ><span aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start"></div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <button class="button is-primary">
+            <strong>Reset Layout</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+`;

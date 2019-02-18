@@ -21,6 +21,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/datatables.net" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />
+    <orderEntry type="library" name="Cypress" level="project" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
