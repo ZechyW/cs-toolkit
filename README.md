@@ -26,7 +26,7 @@ The project is structured as a multi-package repository via Lerna (https://lerna
 
 - Python dependencies are managed by `poetry` (via `pyproject.toml` in the project root).
 - JS dependencies are managed by `yarn` (via the various `package.json` files).
-- Tasks are defined as `npm` scripts (via the various `package.json` files).
+- Tasks are defined as `npm` scripts and can also be managed by `yarn` (via the various `package.json` files).
 
 ## Quickstart
 
@@ -92,26 +92,34 @@ DJANGO_PORT=8080 REACT_HOST=127.0.0.1 REACT_PORT=3000 ./start-dev
 
 ### Profiling
 
-Use `npm run profile` from inside the `react-frontend` package to rebuild and profile the contents/size of the main frontend bundle. Open `build/bundle-stats.html` to view the results.
+From the project root, use the following command to rebuild and profile the contents/size of the main frontend bundle:
+
+```bash
+yarn workspace react-frontend run profile
+```
+
+Open `packages/react-frontend/build/bundle-stats.html` to view the results.
 
 ### Documentation
 
-Documentation for the project is built using Sphinx (http://www.sphinx-doc.org/) and Sphinx-js (https://github.com/erikrose/sphinx-js) from the sources in the `docs` folder.
+Documentation for the project is built using Sphinx (http://www.sphinx-doc.org/) and Sphinx-js (https://github.com/erikrose/sphinx-js) from the sources in the `docs` package.
 
 To build the documentation, the `jsdoc` executable will need to be available on your path. An easy way to do this is by installing JSDoc globally:
 
 ```bash
-npm install -g jsdoc
+yarn global add jsdoc
 ```
  
-The documentation can then be built using the `build-docs` npm script:
+The documentation can then be built from the project root with the following command:
 
 ```bash
-npm run build-docs
+yarn workspace docs run build
 ```
 
-Alternatively, the `watch-docs` npm script will watch for changes to the documentation sources and rebuild it automatically:
+Open `packages/docs/_build/index.html` to view the generated documentation.
+
+Alternatively, the `docs-dev` npm script will watch for changes to the documentation sources and rebuild it automatically:
 
 ```bash
-npm run watch-docs
+yarn workspace docs run docs-dev
 ```

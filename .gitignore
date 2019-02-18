@@ -339,6 +339,10 @@ typings/
 
 # End of https://www.gitignore.io/api/node,python,django,intellij
 
-# Additional ignores
+## Additional ignores
+
+# Intellij pylint plugin
 .idea/pylint.xml
-webpack-profile.json
+
+# Sphinx docs
+_build

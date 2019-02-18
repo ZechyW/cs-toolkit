@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="JS/SCSS/CSS Sources" pattern="(file:*.js||file:*.scss||file:*.css)&amp;&amp;(file[cs-toolkit]:packages/react-frontend/src//*||file[cs-toolkit]:packages/cypress-testing//*)" />
+</component>

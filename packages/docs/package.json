@@ -6,7 +6,7 @@
   "author": "ZechyW",
   "version": "0.1.0",
   "scripts": {
-    "build": "poetry run make html",
+    "build": "poetry run sphinx-build -b html . _build",
     "docs-dev": "chokidar \"**/*.rst\" \"../README.md\" -c \"poetry run make html\" --initial"
   },
   "devDependencies": {
