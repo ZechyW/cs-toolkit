@@ -16,6 +16,7 @@ cache:
     - "~/.cache/"
 
 before_install:
+  - sudo apt-get install libgconf-2-4
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
   - source ~/.poetry/env
 
