@@ -77,10 +77,10 @@ Next, run the `build-prod` shell script to build the production frontend bundles
 ./build-prod
 ```
 
-Finally, use the `serve-prod` shell script to start the Django production server (Daphne) on port `8000`.  You can set the `DJANGO_PORT` environmental variable to use a non-default port:
+Finally, use the `serve-prod` shell script to start the Django production server (Daphne) on port `8080`.  You can set the `DJANGO_PORT` environmental variable to use a non-default port:
 
 ```bash
-DJANGO_PORT=8000 ./start-server
+DJANGO_PORT=8080 ./start-server
 ```
 
 Then point your browser to http://localhost:8000 (replacing 8000 with your chosen port, if you set one) to view the main interface.
