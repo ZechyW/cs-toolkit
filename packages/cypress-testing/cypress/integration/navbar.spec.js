@@ -33,7 +33,8 @@ describe("The main app navbar", () => {
     });
   });
 
-  it("collapses when window is scrolled", () => {
+  it.only("collapses when window is scrolled", () => {
+    cy.viewport(1087, 161);
     cy.scrollTo(0, 1);
     cy.get(".navbar").should("not.have.class", "is-expanded");
   });
