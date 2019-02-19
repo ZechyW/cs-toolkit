@@ -1,29 +1,24 @@
-<h1 align="center">The Code Switching Toolkit</h1>
+# The Code Switching Toolkit
 
-<p align="center">
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Build Status](https://travis-ci.org/ZechyW/cs-toolkit.svg?branch=master)](https://travis-ci.org/ZechyW/cs-toolkit)
+
 A (Roughly) Minimalist framework for exploring code switching data.
-</p>
-
-<p align="center">
-<a href="https://lernajs.io/"><img alt="<Maintained with: lerna" src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg"></a>
-<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://github.com/prettier/prettier"><img alt="Code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a>
-<img alt="Travis CI" src="https://travis-ci.org/ZechyW/cs-toolkit.svg?branch=master">
-</p>
 
 ## Project Structure
-The project is structured as a multi-package repository via Lerna (https://lernajs.io/).
+The project is structured as a multi-package repository via Lerna (https://lernajs.io/) and Yarn (https://yarnpkg.com/) workspaces.
 
 - The `django-backend` package manages the Django/Channels/Django REST Framework backend.
 - The `react-frontend` package manages the React/Redux frontend.
 - The `docs` package manages the project documentation.  
 
-#### Interaction
+### Interaction
 
 - Frontend routing and server-side Channels operations are handled by a Django app named `frontend`.
 - The actual frontend views and bundles are built via `create-react-app` and end up in the `build` folder of the `react-frontend` package. The Django backend will either collect them as static files before serving them (in production mode) or proxy browser requests to the `create-react-app` dev server (in dev mode). 
 
-#### Dependencies and tasks
+### Dependencies and tasks
 
 - Python dependencies are managed by `poetry` (via `pyproject.toml` in the project root).
 - JS dependencies are managed by `yarn` (via the various `package.json` files).
