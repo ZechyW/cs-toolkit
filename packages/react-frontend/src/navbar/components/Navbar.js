@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
@@ -10,7 +11,6 @@ import {
   expandNavbar
 } from "../actions";
 import logo from "../images/logo.png";
-import "../styles/Navbar.scss";
 
 /**
  * Animated collapsible navbar component.
@@ -90,9 +90,9 @@ function Navbar(props) {
   // Render
   return (
     <animated.nav
-      className={
-        "navbar is-light is-fixed-top" + (navbarExpanded ? " is-expanded" : "")
-      }
+      className={classNames("navbar is-light is-fixed-top", {
+        "is-expanded": navbarExpanded
+      })}
       style={{
         height: spring.navbarHeight,
         paddingTop: spring.navbarPaddingY,
@@ -151,7 +151,9 @@ function Navbar(props) {
 
         <div
           role="button"
-          className={"navbar-burger" + (burgerExpanded ? " is-active" : "")}
+          className={classNames("navbar-burger", {
+            "is-active": burgerExpanded
+          })}
           aria-label="menu"
           aria-expanded={burgerExpanded ? "true" : "false"}
           onClick={() => (burgerExpanded ? collapseBurger() : expandBurger())}
@@ -162,7 +164,9 @@ function Navbar(props) {
         </div>
       </div>
 
-      <div className={"navbar-menu" + (burgerExpanded ? " is-active" : "")}>
+      <div
+        className={classNames("navbar-menu", { "is-active": burgerExpanded })}
+      >
         <div className="navbar-start" />
 
         <div className="navbar-end">

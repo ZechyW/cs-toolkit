@@ -1,5 +1,6 @@
 import * as actions from "./actions";
 import reducer from "./reducer";
-import Navbar from "./components/Navbar";
+import Grid from "./components/Grid";
+import GridItem from "./components/GridItem";
 
-export { actions, reducer, Navbar };
+export { actions, reducer, Grid, GridItem };
