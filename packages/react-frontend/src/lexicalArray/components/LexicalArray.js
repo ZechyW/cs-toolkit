@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
 import createSelector from "selectorator";
+import { addItem, deleteItemAtIndex } from "../actions";
 import "../styles/LexicalArray.scss";
 
 /**
@@ -10,21 +11,8 @@ import "../styles/LexicalArray.scss";
  * Uses the `react-tag-input` library to display lexical items as tag-like
  * pills.
  */
-export class LexicalArray extends React.Component {
-  static propTypes = {
-    // Autocomplete suggestions for the tag input
-    suggestions: PropTypes.array,
-
-    // Currently built-up lexical array
-    currentInput: PropTypes.array
-  };
-
-  static defaultProps = {
-    suggestions: [],
-    currentInput: []
-  };
-
-  render = () => (
+function LexicalArray(props) {
+  return (
     <>
       <p>
         Build a <strong>bottom-up</strong> Lexical Array in the box below, then
@@ -44,18 +32,18 @@ export class LexicalArray extends React.Component {
         <br />
         <strong>Move</strong> items by dragging them around with the mouse.
       </p>
-      <form
+      <div
       // onSubmit={this.submitLexicalArray}
       >
         <div className="field">
           <div className="control is-expanded">
             <ReactTags
-              tags={this.props.currentInput}
-              suggestions={this.props.suggestions}
+              tags={props.currentInput}
+              suggestions={props.suggestions}
               placeholder="Add a new lexical item"
               labelField="label"
-              // handleAddition={this.handleAddition}
-              // handleDelete={this.handleDelete}
+              handleAddition={(item) => props.addItem(item)}
+              handleDelete={(index) => props.deleteItemAtIndex(index)}
               // handleDrag={this.handleDrag}
               // handleInputChange={this.handleInputChange}
               minQueryLength={1}
@@ -75,21 +63,40 @@ export class LexicalArray extends React.Component {
             <button className="button is-primary">Derive!</button>
           </div>
         </div>
-      </form>
+      </div>
 
       <p className="has-text-grey-light has-margin-top-10">
-        {JSON.stringify(this.props.currentInput)}
+        {JSON.stringify(props.currentInput)}
       </p>
     </>
   );
 }
 
+LexicalArray.propTypes = {
+  // Autocomplete suggestions for the tag input
+  suggestions: PropTypes.array,
+
+  // Currently built-up lexical array
+  currentInput: PropTypes.array
+};
+
+LexicalArray.defaultProps = {
+  suggestions: [],
+  currentInput: []
+};
+
 /**
  * React-redux binding
  */
+const actionCreators = {
+  addItem,
+  deleteItemAtIndex
+};
+
 export default connect(
   createSelector({
     suggestions: "lexicalArray.suggestions",
     currentInput: "lexicalArray.currentInput"
-  })
+  }),
+  actionCreators
 )(LexicalArray);

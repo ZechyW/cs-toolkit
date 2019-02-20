@@ -1,6 +1,6 @@
 import { uniqBy } from "lodash-es";
 import { createReducer } from "redux-starter-kit";
-import { replaceSuggestions } from "./actions";
+import { addItem, deleteItemAtIndex, replaceSuggestions } from "./actions";
 
 const lexicalArrayReducer = createReducer(
   {
@@ -8,7 +8,17 @@ const lexicalArrayReducer = createReducer(
     currentInput: []
   },
   {
-    [replaceSuggestions]: replaceSuggestionsReducer
+    // Suggestions
+    [replaceSuggestions]: replaceSuggestionsReducer,
+
+    // Input items
+    [addItem]: (state, action) => {
+      state.currentInput.push(action.payload);
+    },
+    [deleteItemAtIndex]: (state, action) => {
+      const index = action.payload;
+      state.currentInput = state.currentInput.filter((item, i) => index !== i);
+    }
   }
 );
 

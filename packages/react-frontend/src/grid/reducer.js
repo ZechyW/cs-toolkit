@@ -1,6 +1,6 @@
 import { createReducer } from "redux-starter-kit";
 import Config from "../config";
-import { saveItemMinHeight, saveLayout } from "./actions";
+import { saveItemMinHeight, saveLayouts } from "./actions";
 
 const reducer = createReducer(
   {
@@ -8,7 +8,7 @@ const reducer = createReducer(
     minHeights: {}
   },
   {
-    [saveLayout]: (state, action) => {
+    [saveLayouts]: (state, action) => {
       state.layouts = action.payload;
     },
     [saveItemMinHeight]: (state, action) => {

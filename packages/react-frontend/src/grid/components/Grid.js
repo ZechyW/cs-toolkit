@@ -1,3 +1,6 @@
+/**
+ * Component for the main app UI grid.
+ */
 import { isMatch } from "lodash-es";
 import React, { useEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -8,7 +11,7 @@ import createSelector from "selectorator";
 
 import Config from "../../config";
 import { InjectProps } from "../../util";
-import { saveLayout } from "../actions";
+import { saveLayouts } from "../actions";
 import "../styles/Grid.scss";
 
 // Static grid options
@@ -40,8 +43,7 @@ function calculateGridHeight(heightPx) {
  * @constructor
  */
 function Grid(props) {
-  const { layouts, saveLayout, minHeights } = props;
-  const lastSavedLayouts = layouts;
+  const lastSavedLayouts = props.layouts;
 
   // Auto-sizing
   useEffect(() => {
@@ -54,17 +56,17 @@ function Grid(props) {
 
     let changed = false;
     const newLayout = [];
-    for (const currentItem of layouts[currentBreakpoint]) {
+    for (const currentItem of props.layouts[currentBreakpoint]) {
       // Clone first
       const item = { ...currentItem };
       newLayout.push(item);
 
       const id = item.i;
-      if (!minHeights[id]) {
+      if (!props.minHeights[id]) {
         continue;
       }
       const minGridHeight = calculateGridHeight(
-        minHeights[id] + Config.gridVerticalPadding
+        props.minHeights[id] + Config.gridVerticalPadding
       );
 
       // Set .minH, and either .h (for non-autosized items) or .maxH (for
@@ -88,8 +90,8 @@ function Grid(props) {
     }
 
     if (changed) {
-      saveLayout({
-        ...layouts,
+      props.saveLayouts({
+        ...props.layouts,
         [currentBreakpoint]: newLayout
       });
     }
@@ -100,10 +102,12 @@ function Grid(props) {
     width: props.width,
     // `react-grid-layout` might modify `layouts` directly, so we clone
     // before passing it through
-    layouts: { ...layouts },
-    onLayoutChange: (layout, layouts) => {
-      if (!isMatch(layouts, lastSavedLayouts)) {
-        saveLayout(layouts);
+    layouts: { ...props.layouts },
+    onLayoutChange: (newLayout, newLayouts) => {
+      // We're interested in the full `layouts` argument, not only the
+      // layout at the current breakpoint (in the `layout` argument).
+      if (!isMatch(newLayouts, lastSavedLayouts)) {
+        props.saveLayouts(newLayouts);
       }
     },
     ...staticGridOptions
@@ -125,7 +129,7 @@ WrappedGrid = InjectProps(WrappedGrid, {
  * React-redux binding
  */
 const actionCreators = {
-  saveLayout
+  saveLayouts
 };
 
 export default connect(

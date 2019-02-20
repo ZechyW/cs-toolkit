@@ -21,18 +21,6 @@ import logo from "../images/logo.png";
  * @constructor
  */
 function Navbar(props) {
-  const {
-    // Navbar
-    navbarExpanded,
-    collapseNavbar,
-    expandNavbar,
-
-    // Burger menu
-    burgerExpanded,
-    collapseBurger,
-    expandBurger
-  } = props;
-
   // We mimic Bulma's `.container.is-fluid` for sizing the brand item, so we
   // need to mirror its media query here as well.
   const brandMarginXExpanded = useMedia(
@@ -48,15 +36,15 @@ function Navbar(props) {
 
   // Animation springs
   const spring = useSpring({
-    navbarHeight: navbarExpanded ? "10rem" : "3.25rem",
-    navbarPaddingY: navbarExpanded ? "3rem" : "0rem",
-    navbarPaddingX: navbarExpanded ? "1.5rem" : "0rem",
-    brandPaddingY: navbarExpanded ? "0rem" : "0.5rem",
-    brandPaddingX: navbarExpanded ? "0rem" : "0.75rem",
-    brandMarginX: navbarExpanded ? brandMarginXExpanded : "0",
-    logoSize: navbarExpanded ? "4rem" : "1.75rem",
-    logoMarginRight: navbarExpanded ? "1rem" : "0.5rem",
-    subtitleHeight: navbarExpanded ? "1.6rem" : "0rem",
+    navbarHeight: props.navbarExpanded ? "10rem" : "3.25rem",
+    navbarPaddingY: props.navbarExpanded ? "3rem" : "0rem",
+    navbarPaddingX: props.navbarExpanded ? "1.5rem" : "0rem",
+    brandPaddingY: props.navbarExpanded ? "0rem" : "0.5rem",
+    brandPaddingX: props.navbarExpanded ? "0rem" : "0.75rem",
+    brandMarginX: props.navbarExpanded ? brandMarginXExpanded : "0",
+    logoSize: props.navbarExpanded ? "4rem" : "1.75rem",
+    logoMarginRight: props.navbarExpanded ? "1rem" : "0.5rem",
+    subtitleHeight: props.navbarExpanded ? "1.6rem" : "0rem",
     onFrame: ({ navbarHeight }) => {
       // Adjust the body's top padding to account for the fixed navbar
       if (document.body.style.paddingTop !== navbarHeight) {
@@ -70,18 +58,18 @@ function Navbar(props) {
     }
   });
   const fastSpring = useSpring({
-    opacity: navbarExpanded ? "1" : "0",
+    opacity: props.navbarExpanded ? "1" : "0",
     config: { mass: 1, tension: 300, friction: 26 }
   });
 
   // Scroll listener: Collapse the navbar on scroll
   useEffect(() => {
     // Only set up the collapse listener if the navbar is currently open.
-    if (!navbarExpanded) return;
+    if (!props.navbarExpanded) return;
 
     const handleScroll = () => {
       if (document.documentElement.scrollTop > 0) {
-        collapseNavbar();
+        props.collapseNavbar();
       }
     };
     window.addEventListener("scroll", handleScroll);
@@ -93,12 +81,12 @@ function Navbar(props) {
   // Burger menu: Collapse the burger menu when user clicks outside it
   useEffect(() => {
     // Only set up if the burger menu is open.
-    if (!burgerExpanded) return;
+    if (!props.burgerExpanded) return;
 
     const handleClick = (event) => {
       if (!menuRef.current.contains(event.target)) {
         // Clicked outside an active burger menu
-        collapseBurger();
+        props.collapseBurger();
       }
     };
 
@@ -112,7 +100,7 @@ function Navbar(props) {
   return (
     <animated.nav
       className={classNames("navbar is-light is-fixed-top", {
-        "is-expanded": navbarExpanded
+        "is-expanded": props.navbarExpanded
       })}
       style={{
         height: spring.navbarHeight,
@@ -127,11 +115,11 @@ function Navbar(props) {
         <animated.div
           className={"navbar-item has-cursor-pointer"}
           onClick={() => {
-            if (!burgerExpanded) {
-              if (navbarExpanded) {
-                collapseNavbar();
+            if (!props.burgerExpanded) {
+              if (props.navbarExpanded) {
+                props.collapseNavbar();
               } else {
-                expandNavbar();
+                props.expandNavbar();
               }
             }
           }}
@@ -156,7 +144,9 @@ function Navbar(props) {
           />
           <div>
             <p className="title">
-              {navbarExpanded ? "The Code Switching Toolkit" : "CS Toolkit"}
+              {props.navbarExpanded
+                ? "The Code Switching Toolkit"
+                : "CS Toolkit"}
             </p>
             <animated.p
               className="subtitle"
@@ -173,11 +163,13 @@ function Navbar(props) {
         <div
           role="button"
           className={classNames("navbar-burger", {
-            "is-active": burgerExpanded
+            "is-active": props.burgerExpanded
           })}
           aria-label="menu"
-          aria-expanded={burgerExpanded ? "true" : "false"}
-          onClick={() => (burgerExpanded ? collapseBurger() : expandBurger())}
+          aria-expanded={props.burgerExpanded ? "true" : "false"}
+          onClick={() =>
+            props.burgerExpanded ? props.collapseBurger() : props.expandBurger()
+          }
         >
           <span aria-hidden="true" />
           <span aria-hidden="true" />
@@ -186,7 +178,9 @@ function Navbar(props) {
       </div>
 
       <div
-        className={classNames("navbar-menu", { "is-active": burgerExpanded })}
+        className={classNames("navbar-menu", {
+          "is-active": props.burgerExpanded
+        })}
         ref={menuRef}
       >
         <div className="navbar-start" />
