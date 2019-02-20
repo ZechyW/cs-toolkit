@@ -29,6 +29,14 @@ function mainRender() {
 }
 
 // Additional debug processing, if necessary
+
+/**
+ * Expose Redux store for testing or debugging
+ * @prop window.Cypress */
+if (window.Cypress || process.env.NODE_ENV !== "production") {
+  window.store = store;
+}
+
 if (process.env.NODE_ENV !== "production") {
   // Workaround for https://github.com/facebook/create-react-app/issues/6399
   // until it gets fixed upstream

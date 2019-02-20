@@ -14,6 +14,7 @@
     "cypress-plugin-snapshots": "^1.2.5"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^4.0.3",
     "eslint-plugin-cypress": "^2.2.0"
   }
 }

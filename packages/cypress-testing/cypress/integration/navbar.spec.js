@@ -1,3 +1,5 @@
+import { actions as coreActions } from "react-frontend/src/core";
+
 describe("The main app navbar", () => {
   // Viewports
   function viewportBurger() {
@@ -12,8 +14,12 @@ describe("The main app navbar", () => {
 
   beforeEach(() => {
     cy.visit("/");
+
     // Clear out any persisted Redux state
-    cy.clearLocalStorage();
+    // noinspection JSCheckFunctionSignatures
+    cy.window()
+      .its("store")
+      .invoke("dispatch", coreActions.resetAll());
   });
 
   describe("burger menu", () => {
