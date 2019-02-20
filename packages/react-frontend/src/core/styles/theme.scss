@@ -14,53 +14,6 @@
 @import "~bulma-helpers/bulma-helpers";
 
 /******************************************************************************
- * React-grid-layout
- ******************************************************************************/
-// Title elements for grid items.  Based on Bulma's .title
-.grid-title {
-  color: $title-color;
-  font-size: $size-4;
-  font-weight: $title-weight;
-  line-height: $title-line-height;
-
-  word-break: break-word;
-
-  margin-bottom: 1rem;
-
-  cursor: move;
-  touch-action: none;
-}
-
-// For the grid item's outer container
-.grid-box {
-  // Keep any overflow neatly out of sight
-  overflow: hidden;
-
-  // Prevent the entire grid item from hijacking touch events (only the drag
-  // handle should catch them)
-  touch-action: auto !important;
-}
-
-// Top-level elements within the grid item's inner container
-.grid-child {
-  height: 100%;
-  overflow: hidden;
-}
-
-// Flexbox elements within grid items that should expand to fill available space
-.grid-expand {
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
-/******************************************************************************
- * Navbar
- ******************************************************************************/
-.cs-animate {
-  transition: all 300ms;
-}
-
-/******************************************************************************
  * Misc
  ******************************************************************************/
 html {

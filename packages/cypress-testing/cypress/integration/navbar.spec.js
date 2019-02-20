@@ -1,13 +1,45 @@
 describe("The main app navbar", () => {
+  // Viewports
+  function viewportBurger() {
+    cy.viewport(1087, 500);
+  }
+  function viewportNoBurger() {
+    cy.viewport(1088, 500);
+  }
+  function viewportScroll() {
+    cy.viewport(1087, 161);
+  }
+
   beforeEach(() => {
     cy.visit("/");
+    // Clear out any persisted Redux state
+    cy.clearLocalStorage();
   });
 
-  it("shows the burger menu when the width is less than 1088px", () => {
-    cy.viewport(1088, 500);
-    cy.get(".navbar-burger").should("not.be.visible");
-    cy.viewport(1087, 500);
-    cy.get(".navbar-burger").should("be.visible");
+  describe("burger menu", () => {
+    beforeEach(() => {
+      viewportBurger();
+    });
+
+    it("is available only when the viewport is small", () => {
+      cy.get(".navbar-burger").should("be.visible");
+
+      viewportNoBurger();
+      cy.get(".navbar-burger").should("not.be.visible");
+    });
+
+    it("is shown when the burger is clicked", () => {
+      cy.get(".navbar-burger").click();
+      cy.get(".navbar-menu").should("be.visible");
+    });
+
+    it("collapses when the user clicks outside it", () => {
+      cy.get(".navbar-burger").click();
+      cy.get(".navbar-menu").should("be.visible");
+
+      cy.get("body").click("bottom");
+      cy.get(".navbar-menu").should("not.be.visible");
+    });
   });
 
   describe("toggles", () => {
@@ -21,7 +53,7 @@ describe("The main app navbar", () => {
     });
 
     it("only if the burger menu is collapsed", () => {
-      cy.viewport(1087, 500);
+      viewportBurger();
       cy.get(".navbar-burger")
         .click()
         .should("have.class", "is-active");
@@ -33,8 +65,8 @@ describe("The main app navbar", () => {
     });
   });
 
-  it("collapses when window is scrolled", () => {
-    cy.viewport(1087, 161);
+  it("collapses when the document is scrolled", () => {
+    viewportScroll();
     cy.scrollTo("bottom");
     cy.get(".navbar").should("not.have.class", "is-expanded");
   });

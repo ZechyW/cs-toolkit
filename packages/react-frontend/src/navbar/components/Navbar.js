@@ -22,9 +22,12 @@ import logo from "../images/logo.png";
  */
 function Navbar(props) {
   const {
+    // Navbar
     navbarExpanded,
     collapseNavbar,
     expandNavbar,
+
+    // Burger menu
     burgerExpanded,
     collapseBurger,
     expandBurger
@@ -40,6 +43,8 @@ function Navbar(props) {
 
   // Cheat a little to imperatively note when the animation is done
   const navbarRef = useRef(null);
+  // ... and when the burger menu is open
+  const menuRef = useRef(null);
 
   // Animation springs
   const spring = useSpring({
@@ -69,7 +74,7 @@ function Navbar(props) {
     config: { mass: 1, tension: 300, friction: 26 }
   });
 
-  // Scroll listener
+  // Scroll listener: Collapse the navbar on scroll
   useEffect(() => {
     // Only set up the collapse listener if the navbar is currently open.
     if (!navbarExpanded) return;
@@ -85,7 +90,23 @@ function Navbar(props) {
     };
   });
 
-  // Burger menu
+  // Burger menu: Collapse the burger menu when user clicks outside it
+  useEffect(() => {
+    // Only set up if the burger menu is open.
+    if (!burgerExpanded) return;
+
+    const handleClick = (event) => {
+      if (!menuRef.current.contains(event.target)) {
+        // Clicked outside an active burger menu
+        collapseBurger();
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
 
   // Render
   return (
@@ -166,6 +187,7 @@ function Navbar(props) {
 
       <div
         className={classNames("navbar-menu", { "is-active": burgerExpanded })}
+        ref={menuRef}
       >
         <div className="navbar-start" />
 

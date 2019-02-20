@@ -1,0 +1,49 @@
+@charset "utf-8";
+
+/**
+ * Styles for the main UI grid
+ */
+@import "../../core/styles/variables.scss";
+
+/******************************************************************************
+ * React-grid-layout
+ ******************************************************************************/
+// Title elements for grid items.  Based on Bulma's .title
+.grid-title {
+  color: $grey-darker;
+  font-size: $size-4;
+  font-weight: $weight-semibold;
+  line-height: 1.125;
+
+  word-break: break-word;
+
+  margin-bottom: 1rem;
+
+  cursor: move;
+  touch-action: none;
+}
+
+// For the grid item's outer container
+.grid-box {
+  // Keep any overflow neatly out of sight
+  overflow: hidden;
+
+  // Prevent the entire grid item from hijacking touch events (only the drag
+  // handle should catch them)
+  touch-action: auto !important;
+}
+
+// Top-level elements within the grid item's inner container
+.grid-child {
+  height: 100%;
+  overflow: hidden;
+}
+
+// Flexbox: All direct children of this element will expand to fill available
+// space.
+// - Except the first child (the title)
+// - Except the last two children (the resize handle, and the last content item)
+.grid-expand > *:nth-child(n+2):nth-last-child(n+3) {
+  flex-grow: 1;
+  flex-shrink: 1;
+}

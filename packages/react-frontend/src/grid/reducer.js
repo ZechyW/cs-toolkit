@@ -1,33 +1,21 @@
 import { createReducer } from "redux-starter-kit";
-import {
-  collapseBurger,
-  collapseNavbar,
-  expandBurger,
-  expandNavbar
-} from "./actions";
+import Config from "../config";
+import { saveItemMinHeight, saveLayout } from "./actions";
 
-const navbarReducer = createReducer(
+const reducer = createReducer(
   {
-    navbarExpanded: true,
-    burgerExpanded: false
+    layouts: Config.gridDefaultLayout,
+    minHeights: {}
   },
   {
-    [expandNavbar]: (state) => {
-      state.navbarExpanded = true;
+    [saveLayout]: (state, action) => {
+      state.layouts = action.payload;
     },
-    [collapseNavbar]: (state) => {
-      state.navbarExpanded = false;
-    },
-    [expandBurger]: (state) => {
-      // When the burger menu is expanded, the main navbar should always be
-      // collapsed.
-      state.navbarExpanded = false;
-      state.burgerExpanded = true;
-    },
-    [collapseBurger]: (state) => {
-      state.burgerExpanded = false;
+    [saveItemMinHeight]: (state, action) => {
+      const { id, minHeight } = action.payload;
+      state.minHeights[id] = minHeight;
     }
   }
 );
 
-export default navbarReducer;
+export default reducer;

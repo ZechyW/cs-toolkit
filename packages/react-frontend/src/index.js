@@ -7,18 +7,34 @@ import { config, dom } from "@fortawesome/fontawesome-svg-core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import App from "./core/components/App";
 import "./core/styles/theme.scss";
-import store from "./store";
+import { persistor, store } from "./store";
 
 // FontAwesome icons
 config.autoReplaceSvg = "nest";
 dom.watch();
 
 // Main component render
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
-);
+function mainRender() {
+  ReactDOM.render(
+    <Provider store={store}>
+      <PersistGate loading={"Loading..."} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>,
+    document.getElementById("root")
+  );
+}
+
+// Additional debug processing, if necessary
+if (process.env.NODE_ENV !== "production") {
+  // Workaround for https://github.com/facebook/create-react-app/issues/6399
+  // until it gets fixed upstream
+  setTimeout(() => {
+    mainRender();
+  }, 1000);
+} else {
+  mainRender();
+}
