@@ -10,11 +10,11 @@
     "cypress-run": "cypress run --browser chrome"
   },
   "dependencies": {
+    "@cypress/webpack-preprocessor": "^4.0.3",
     "cypress": "^3.1.5",
     "cypress-plugin-snapshots": "^1.2.5"
   },
   "devDependencies": {
-    "@cypress/webpack-preprocessor": "^4.0.3",
     "eslint-plugin-cypress": "^2.2.0"
   }
 }
