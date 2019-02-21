@@ -209,10 +209,12 @@ const actionCreators = {
   collapseBurger
 };
 
-export default connect(
+let WrappedNavbar = connect(
   createSelector({
     navbarExpanded: "navbar.navbarExpanded",
     burgerExpanded: "navbar.burgerExpanded"
   }),
   actionCreators
 )(Navbar);
+
+export default WrappedNavbar;

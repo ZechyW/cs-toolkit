@@ -96,3 +96,21 @@ export function InjectProps(WrappedComponent, extraProps) {
     return <WrappedComponent {...props} />;
   };
 }
+
+/**
+ * Redux profiling middleware
+ * (https://medium.com/@vcarl/performance-profiling-a-redux-app-c85e67bf84ae)
+ * @return {function(*): Function}
+ */
+export const userTiming = () => (next) => (action) => {
+  if (performance.mark === undefined) return next(action);
+  performance.mark(`${action.type}_start`);
+  const result = next(action);
+  performance.mark(`${action.type}_end`);
+  performance.measure(
+    `${action.type}`,
+    `${action.type}_start`,
+    `${action.type}_end`
+  );
+  return result;
+};

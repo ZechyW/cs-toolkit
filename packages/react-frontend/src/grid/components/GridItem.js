@@ -1,12 +1,13 @@
 import classNames from "classnames";
 import assert from "minimalistic-assert";
 import PropTypes from "prop-types";
-import React, { useEffect, useRef } from "react";
+import rafSchd from "raf-schd";
+import React, { useRef } from "react";
 import { connect } from "react-redux";
 import createSelector from "selectorator";
 
-import { saveItemMinHeight } from "../actions";
 import Config from "../../config";
+import { saveItemMinHeight } from "../actions";
 
 /**
  * Single item in the main app UI grid
@@ -15,8 +16,11 @@ import Config from "../../config";
  * @constructor
  */
 function GridItem(props) {
+  // console.log("GridItem: Render: Start");
+
   // We want to pass down every prop that the main Grid gives us, but also
   // inject a bit of pizzazz along the way.
+  // Start by pulling everything that isn't relevant.
   const {
     // Pull the passed classes
     className,
@@ -34,28 +38,55 @@ function GridItem(props) {
     ...otherProps
   } = props;
 
-  // Measure our minimum scroll height on every (re-)render
+  // Measure our minimum scroll height when our children are (re-)rendered.
+  // N.B.: Because some children might not be done rendering yet, we need to
+  // defer the height computation.
+  // (E.g.: https://github.com/react-dnd/react-dnd/issues/1146)
   const childRef = useRef(null);
-  useEffect(() => {
-    const currentMinHeight = minHeights[id];
+  let currentMinHeight = minHeights[id];
+  let checkMinHeight = () => {
+    // console.log("RAF-checkMinHeight");
+    if (!childRef.current) {
+      // The child hasn't finished mounting yet.
+      return;
+    }
 
     const content = childRef.current;
-    content.style.height = 0;
+    content.style.height = "0";
     const minHeight = content.scrollHeight;
+    console.log("WxH", content.scrollWidth, minHeight);
     content.style.height = "100%";
-    // DEBUG: Assert
+    // DEBUG: Assert that styles are loaded (waiting on `react-scripts` fix
+    // upstream)
     assert(
       getComputedStyle(content.parentElement)["padding-top"] ===
         `${Config.gridVerticalPadding / 2}px`
     );
 
     if (minHeight !== currentMinHeight) {
+      // console.log(
+      //   "GridItem: Dispatch: saveItemMinHeight",
+      //   currentMinHeight,
+      //   minHeight
+      // );
       saveItemMinHeight({
         id,
         minHeight
       });
+      currentMinHeight = minHeight;
     }
-  });
+  };
+  checkMinHeight = rafSchd(checkMinHeight);
+
+  // For children to let us know when they render.
+  const children = React.Children.map(props.children, (child) =>
+    React.cloneElement(child, {
+      gridNotifyUpdate: () => {
+        // console.log("GridItem: gridNotifyUpdate");
+        checkMinHeight();
+      }
+    })
+  );
 
   return (
     <div className={classNames("box grid-box", className)} {...otherProps}>
@@ -71,7 +102,7 @@ function GridItem(props) {
         ref={childRef}
       >
         <p className="grid-title">{title}</p>
-        {props.children}
+        {children}
       </div>
     </div>
   );

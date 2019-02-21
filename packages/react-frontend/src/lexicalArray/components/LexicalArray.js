@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
 import createSelector from "selectorator";
-import { addItem, deleteItemAtIndex } from "../actions";
+import { addItem, changeItemIndex, deleteItemAtIndex } from "../actions";
 import "../styles/LexicalArray.scss";
 
 /**
@@ -12,6 +12,13 @@ import "../styles/LexicalArray.scss";
  * pills.
  */
 function LexicalArray(props) {
+  // console.log("LexicalArray: Render: Start");
+
+  // Notify grid parent on every render
+  useEffect(() => {
+    props.gridNotifyUpdate();
+  });
+
   return (
     <>
       <p>
@@ -42,9 +49,13 @@ function LexicalArray(props) {
               suggestions={props.suggestions}
               placeholder="Add a new lexical item"
               labelField="label"
-              handleAddition={(item) => props.addItem(item)}
-              handleDelete={(index) => props.deleteItemAtIndex(index)}
-              // handleDrag={this.handleDrag}
+              handleAddition={(item) => props.addItem({ item })}
+              handleDelete={(index) => {
+                if (index > -1) return props.deleteItemAtIndex({ index });
+              }}
+              handleDrag={(item, oldIndex, newIndex) =>
+                props.changeItemIndex({ item, oldIndex, newIndex })
+              }
               // handleInputChange={this.handleInputChange}
               minQueryLength={1}
               autocomplete={true}
@@ -58,16 +69,16 @@ function LexicalArray(props) {
           </div>
         </div>
 
+        <p className="has-text-grey-light has-margin-bottom-10">
+          {JSON.stringify(props.currentInput)}
+        </p>
+
         <div className="field">
           <div className="control">
             <button className="button is-primary">Derive!</button>
           </div>
         </div>
       </div>
-
-      <p className="has-text-grey-light has-margin-top-10">
-        {JSON.stringify(props.currentInput)}
-      </p>
     </>
   );
 }
@@ -77,7 +88,10 @@ LexicalArray.propTypes = {
   suggestions: PropTypes.array,
 
   // Currently built-up lexical array
-  currentInput: PropTypes.array
+  currentInput: PropTypes.array,
+
+  // For notifying grid parent of (re-)renders
+  gridNotifyUpdate: PropTypes.func.isRequired
 };
 
 LexicalArray.defaultProps = {
@@ -90,7 +104,8 @@ LexicalArray.defaultProps = {
  */
 const actionCreators = {
   addItem,
-  deleteItemAtIndex
+  deleteItemAtIndex,
+  changeItemIndex
 };
 
 export default connect(

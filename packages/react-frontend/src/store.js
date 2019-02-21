@@ -12,6 +12,7 @@ import { actions as coreActions } from "./core";
 import { reducer as grid } from "./grid";
 import { reducer as lexicalArray } from "./lexicalArray";
 import { reducer as navbar } from "./navbar";
+import { userTiming } from "./util";
 
 window.resetAll = coreActions.resetAll;
 
@@ -46,7 +47,7 @@ const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 // `redux-starter-kit` throws errors with `redux-persist`
 let middleware;
 if (process.env.NODE_ENV !== "production") {
-  middleware = [immutableStateInvariant(), thunk];
+  middleware = [immutableStateInvariant(), thunk, userTiming];
 } else {
   middleware = [thunk];
 }
