@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import createSelector from "selectorator";
+import { actions as coreActions } from "../../core";
 import { useMedia } from "../../util";
 import {
   collapseBurger,
@@ -188,7 +189,13 @@ function Navbar(props) {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <button className="button is-primary">
+              <button
+                className="button is-primary"
+                onClick={() => {
+                  if (!props.navbarExpanded) props.expandNavbar();
+                  props.resetGrid();
+                }}
+              >
                 <strong>Reset Layout</strong>
               </button>
             </div>
@@ -206,7 +213,9 @@ const actionCreators = {
   expandNavbar,
   collapseNavbar,
   expandBurger,
-  collapseBurger
+  collapseBurger,
+
+  resetGrid: coreActions.resetGrid
 };
 
 let WrappedNavbar = connect(

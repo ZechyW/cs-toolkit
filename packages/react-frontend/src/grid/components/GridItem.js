@@ -54,7 +54,7 @@ function GridItem(props) {
     const content = childRef.current;
     content.style.height = "0";
     const minHeight = content.scrollHeight;
-    console.log("WxH", content.scrollWidth, minHeight);
+    // console.log("WxH", content.scrollWidth, minHeight);
     content.style.height = "100%";
     // DEBUG: Assert that styles are loaded (waiting on `react-scripts` fix
     // upstream)

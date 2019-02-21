@@ -1,7 +1,7 @@
 /**
  * Component for the main app UI grid.
  */
-import { isEqual } from "lodash-es";
+import { cloneDeep, isMatch } from "lodash-es";
 import assert from "minimalistic-assert";
 import React, { useLayoutEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -21,7 +21,7 @@ import "../styles/Grid.scss";
  * @constructor
  */
 function Grid(props) {
-  // console.log("Grid: Render: Start");
+  console.log("Grid: Render: Start");
 
   let lastLayouts = props.layouts;
 
@@ -71,28 +71,32 @@ function Grid(props) {
     }
 
     if (changed) {
-      console.log("Dispatch saveLayouts from autosize");
       const newLayouts = {
         ...props.layouts,
         [currentBreakpoint]: newLayout
       };
+
+      console.log("Dispatch saveLayouts from autosize");
       props.saveLayouts(newLayouts);
     }
   }, [props.minHeights, props.width]);
 
   // Helper functions
-  function handleLayoutChange(newLayout, newLayouts) {
+  function handleLayoutChange(_, newLayouts) {
     // console.log("On Layout change");
-    // We're interested in the full `layouts` argument, not only the
-    // layout at the current breakpoint (in the `layout` argument).
-    if (!isEqual(newLayouts, lastLayouts)) {
+
+    // We use `isMatch` rather than `isEqual` because `newLayouts` items may
+    // have a bunch of extra keys with `undefined` as their values, but we
+    // should skip the update as long as `lastLayouts` matches in every
+    // other way.
+    if (!isMatch(newLayouts, lastLayouts)) {
       console.log("Dispatch saveLayouts from layoutChange");
-      props.saveLayouts(newLayouts);
+      props.saveLayouts(cloneDeep(newLayouts));
     }
   }
 
   function handleResize(layout, oldItem, newItem, placeholder, e, element) {
-    console.log("handleResize");
+    // console.log("handleResize");
 
     // `element` points at the resize handle, unfortunately.  Grab the actual
     // grid element (2 levels up) instead.
