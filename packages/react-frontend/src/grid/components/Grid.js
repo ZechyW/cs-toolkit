@@ -1,6 +1,3 @@
-/**
- * Component for the main app UI grid.
- */
 import { cloneDeep, isMatch } from "lodash-es";
 import assert from "minimalistic-assert";
 import React, { useLayoutEffect } from "react";
@@ -21,20 +18,16 @@ import "../styles/Grid.scss";
  * @constructor
  */
 function Grid(props) {
-  console.log("Grid: Render: Start");
-
-  let lastLayouts = props.layouts;
-
+  // Used in auto-sizing and resizing
   const currentBreakpoint = Responsive.utils.getBreakpointFromWidth(
     staticGridOptions.breakpoints,
     props.width
   );
-  // console.log("Grid: Breakpoint", currentBreakpoint, props.width);
 
   // Auto-sizing
+  // (`useLayoutEffect` because it might affect the visible height of grid
+  // items and should therefore be executed before the main render frame)
   useLayoutEffect(() => {
-    // console.log("Grid: Effect: Autosize");
-
     let changed = false;
     const newLayout = [];
     for (const currentItem of props.layouts[currentBreakpoint]) {
@@ -76,28 +69,28 @@ function Grid(props) {
         [currentBreakpoint]: newLayout
       };
 
-      console.log("Dispatch saveLayouts from autosize");
       props.saveLayouts(newLayouts);
     }
   }, [props.minHeights, props.width]);
 
   // Helper functions
   function handleLayoutChange(_, newLayouts) {
-    // console.log("On Layout change");
+    // N.B.: `react-grid-layout` may modify `newLayouts` directly after this
+    // function, so we need to clone it before saving it if we want it to
+    // remain immutable.
 
     // We use `isMatch` rather than `isEqual` because `newLayouts` items may
     // have a bunch of extra keys with `undefined` as their values, but we
     // should skip the update as long as `lastLayouts` matches in every
     // other way.
-    if (!isMatch(newLayouts, lastLayouts)) {
-      console.log("Dispatch saveLayouts from layoutChange");
+    // (E.g.: This may happen on the very first layout change event if we have
+    // loaded `props.layouts` from some external source.)
+    if (!isMatch(newLayouts, props.layouts)) {
       props.saveLayouts(cloneDeep(newLayouts));
     }
   }
 
   function handleResize(layout, oldItem, newItem, placeholder, e, element) {
-    // console.log("handleResize");
-
     // `element` points at the resize handle, unfortunately.  Grab the actual
     // grid element (2 levels up) instead.
     const gridItem = element.parentElement.parentElement;
@@ -107,10 +100,7 @@ function Grid(props) {
     // be, based on the placeholder's width
     const gridItemClone = gridItem.cloneNode(true);
 
-    // Figure out the placeholder's pixel width and predict the element's
-    // minimum height at that width
-
-    // Width calculations
+    // Figure out the placeholder's pixel width
     // (Adapted from `react-grid-layout/GridItem.js.flow`:)
     const { margin, containerPadding } = staticGridOptions;
     const containerWidth = props.width;
@@ -131,10 +121,10 @@ function Grid(props) {
     const contentClone = gridItemClone.querySelector(".grid-child");
     contentClone.style.height = "0";
 
+    // Done - Set the placeholder height and clean up.
     placeholder.h = calculateGridHeight(
       contentClone.scrollHeight + Config.gridVerticalPadding
     );
-
     document.body.removeChild(gridItemClone);
   }
 

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
 import createSelector from "selectorator";
@@ -12,11 +12,11 @@ import "../styles/LexicalArray.scss";
  * pills.
  */
 function LexicalArray(props) {
-  // console.log("LexicalArray: Render: Start");
-
-  // Notify grid parent on every render
-  useEffect(() => {
-    props.gridNotifyUpdate();
+  // Before any re-render, enqueue a height check with our parent
+  // (`useLayoutEffect` because the new height might affect the visible
+  // height of the parent grid item)
+  useLayoutEffect(() => {
+    props.gridCheckMinHeight();
   });
 
   return (
@@ -90,8 +90,8 @@ LexicalArray.propTypes = {
   // Currently built-up lexical array
   currentInput: PropTypes.array,
 
-  // For notifying grid parent of (re-)renders
-  gridNotifyUpdate: PropTypes.func.isRequired
+  // For notifying grid parent when our height may have changed
+  gridCheckMinHeight: PropTypes.func.isRequired
 };
 
 LexicalArray.defaultProps = {

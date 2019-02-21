@@ -2,7 +2,7 @@ import classNames from "classnames";
 import assert from "minimalistic-assert";
 import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
-import React, { useRef } from "react";
+import React, { cloneElement, useRef } from "react";
 import { connect } from "react-redux";
 import createSelector from "selectorator";
 
@@ -16,8 +16,6 @@ import { saveItemMinHeight } from "../actions";
  * @constructor
  */
 function GridItem(props) {
-  // console.log("GridItem: Render: Start");
-
   // We want to pass down every prop that the main Grid gives us, but also
   // inject a bit of pizzazz along the way.
   // Start by pulling everything that isn't relevant.
@@ -40,21 +38,19 @@ function GridItem(props) {
 
   // Measure our minimum scroll height when our children are (re-)rendered.
   // N.B.: Because some children might not be done rendering yet, we need to
-  // defer the height computation.
+  // defer the height computation (via `rafSchd`).
   // (E.g.: https://github.com/react-dnd/react-dnd/issues/1146)
   const childRef = useRef(null);
   let currentMinHeight = minHeights[id];
   let checkMinHeight = () => {
-    // console.log("RAF-checkMinHeight");
+    // The child might not have finished mounting yet.
     if (!childRef.current) {
-      // The child hasn't finished mounting yet.
       return;
     }
 
     const content = childRef.current;
     content.style.height = "0";
     const minHeight = content.scrollHeight;
-    // console.log("WxH", content.scrollWidth, minHeight);
     content.style.height = "100%";
     // DEBUG: Assert that styles are loaded (waiting on `react-scripts` fix
     // upstream)
@@ -64,11 +60,6 @@ function GridItem(props) {
     );
 
     if (minHeight !== currentMinHeight) {
-      // console.log(
-      //   "GridItem: Dispatch: saveItemMinHeight",
-      //   currentMinHeight,
-      //   minHeight
-      // );
       saveItemMinHeight({
         id,
         minHeight
@@ -80,9 +71,8 @@ function GridItem(props) {
 
   // For children to let us know when they render.
   const children = React.Children.map(props.children, (child) =>
-    React.cloneElement(child, {
-      gridNotifyUpdate: () => {
-        // console.log("GridItem: gridNotifyUpdate");
+    cloneElement(child, {
+      gridCheckMinHeight: () => {
         checkMinHeight();
       }
     })
@@ -125,9 +115,11 @@ const actionCreators = {
   saveItemMinHeight
 };
 
-export default connect(
+let WrappedGridItem = connect(
   createSelector({
     minHeights: "grid.minHeights"
   }),
   actionCreators
 )(GridItem);
+
+export default WrappedGridItem;
