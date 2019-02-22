@@ -29,5 +29,5 @@ install:
 script:
   - chmod a+x ./build-prod && ./build-prod
   - chmod a+x ./serve-prod && ./serve-prod &
+  - CI=true yarn workspace react-frontend run test
   - yarn workspace cypress-testing run cypress-run
-

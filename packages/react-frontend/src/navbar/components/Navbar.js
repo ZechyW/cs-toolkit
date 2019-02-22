@@ -46,13 +46,17 @@ function Navbar(props) {
     logoSize: props.navbarExpanded ? "4rem" : "1.75rem",
     logoMarginRight: props.navbarExpanded ? "1rem" : "0.5rem",
     subtitleHeight: props.navbarExpanded ? "1.6rem" : "0rem",
+    onStart: () => {
+      // Note the animation in progress, if we've started
+      if (navbarRef.current) {
+        navbarRef.current.classList.add("is-animating");
+      }
+    },
     onFrame: ({ navbarHeight }) => {
       // Adjust the body's top padding to account for the fixed navbar
       if (document.body.style.paddingTop !== navbarHeight) {
         document.body.style.paddingTop = navbarHeight;
       }
-      // Note the animation in progress
-      navbarRef.current.classList.add("is-animating");
     },
     onRest: () => {
       navbarRef.current.classList.remove("is-animating");
