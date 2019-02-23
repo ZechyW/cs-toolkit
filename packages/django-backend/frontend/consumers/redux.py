@@ -2,17 +2,19 @@ import logging
 import re
 
 from channels.generic.websocket import JsonWebsocketConsumer
+from rest_framework import serializers
 
 from .. import handlers
-from ..serializers import PubSubSerializer
 
 logger = logging.getLogger("cs-toolkit")
 
 
-class PubSubConsumer(JsonWebsocketConsumer):
+class ReduxConsumer(JsonWebsocketConsumer):
     """
-    A Consumer that manages WebSocket Pub/Sub connections, dispatching data
-    to the various topic handlers
+    A Consumer that manages WebSocket connections, dispatching data
+    to the various message handlers.
+    Receives messages that look like FSAs (from Redux on the client side).
+    (https://github.com/redux-utilities/flux-standard-action)
     """
 
     def __init__(self, *args, **kwargs):
@@ -25,8 +27,8 @@ class PubSubConsumer(JsonWebsocketConsumer):
         :param code:
         :return:
         """
-        for topic in self.handlers:
-            self.handlers[topic].disconnect(code)
+        for message_type in self.handlers:
+            self.handlers[message_type].disconnect(code)
 
     def receive_json(self, content, **kwargs):
         """
@@ -38,18 +40,20 @@ class PubSubConsumer(JsonWebsocketConsumer):
         logger.info("WebSocket RECV JSON {}".format(content))
 
         # Should we handle this data?
-        serializer = PubSubSerializer(data=content)
+        serializer = ReduxSerializer(data=content)
         if not serializer.is_valid():
             return
 
         # Do we have a handler initialised?
-        topic = content["topic"]
-        if topic in self.handlers:
-            self.handlers[topic].handle(content)
+        message_type = content["type"]
+        payload = content["payload"]
+
+        if message_type in self.handlers:
+            self.handlers[message_type].handle(payload)
             return
 
         # If not, is one available in the `handlers` submodule?
-        handler_name = self.get_handler_name(topic)
+        handler_name = self.get_handler_name(message_type)
         try:
             handler_class = getattr(handlers, handler_name)
         except AttributeError:
@@ -59,22 +63,22 @@ class PubSubConsumer(JsonWebsocketConsumer):
 
         # Yep: Instantiate it and handle the request
         handler = handler_class(self)
-        self.handlers[topic] = handler
-        handler.handle(content)
+        self.handlers[message_type] = handler
+        handler.handle(payload)
 
     @staticmethod
-    def get_handler_name(topic):
+    def get_handler_name(message_type):
         """
         Returns a valid handler class name for the given topic.
-        Strips all non-word characters, converts to title case, removes spaces,
-        and adds "Handler" to the end.
-        :param topic:
+        Converts to title case, strips all non-word characters, removes
+        spaces, and adds "Handler" to the end.
+        :param message_type:
         :return:
         """
-        # Replace everything that is not a word or space
-        handler_name = re.sub(r"[^\w\s]", "", topic)
         # Title case
-        handler_name = handler_name.title()
+        handler_name = message_type.title()
+        # Replace everything that is not a word or space
+        handler_name = re.sub(r"[^\w\s]", "", handler_name)
         # Remove spaces
         handler_name = re.sub(r"\s+", "", handler_name)
         # Add "Handler"
@@ -86,7 +90,24 @@ class PubSubConsumer(JsonWebsocketConsumer):
         :param message:
         :return:
         """
-        # Communication with a client requires a PubSub topic to be specified
-        assert "topic" in message
+        # Communication with a client requires an action type to be specified
+        assert "type" in message
+
+        logger.debug("WebSocket SEND JSON {}".format(message))
 
         self.send_json(message)
+
+
+class ReduxSerializer(serializers.Serializer):
+    """
+    For validating a Redux action over the WS connection
+    """
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
+    type = serializers.CharField()
+    payload = serializers.DictField()

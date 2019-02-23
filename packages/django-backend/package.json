@@ -8,6 +8,7 @@
   "scripts": {
     "build": "poetry run python manage.py collectstatic --clear --noinput",
     "dev": "cross-env DJANGO_DEBUG=1 poetry run python manage.py runserver",
+    "django-shell": "poetry run python manage.py shell",
     "serve": "poetry run daphne -b 0.0.0.0 app.asgi:application"
   },
   "devDependencies": {

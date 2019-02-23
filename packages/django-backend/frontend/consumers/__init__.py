@@ -1,6 +1,6 @@
 """
 Django Channels consumers.
 """
-from .pubsub import PubSubConsumer
+from .redux import ReduxConsumer
 from .reactdev import ReactDevConsumer
 from .drop import DropConsumer

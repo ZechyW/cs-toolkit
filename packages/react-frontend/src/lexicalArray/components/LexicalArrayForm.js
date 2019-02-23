@@ -11,14 +11,7 @@ import "../styles/LexicalArray.scss";
  * Uses the `react-tag-input` library to display lexical items as tag-like
  * pills.
  */
-function LexicalArray(props) {
-  // Before any re-render, enqueue a height check with our parent
-  // (`useLayoutEffect` because the new height might affect the visible
-  // height of the parent grid item)
-  useLayoutEffect(() => {
-    props.gridCheckMinHeight();
-  });
-
+function LexicalArrayForm(props) {
   return (
     <>
       <p>
@@ -83,35 +76,22 @@ function LexicalArray(props) {
   );
 }
 
-LexicalArray.propTypes = {
+LexicalArrayForm.propTypes = {
   // Autocomplete suggestions for the tag input
   suggestions: PropTypes.array,
 
   // Currently built-up lexical array
   currentInput: PropTypes.array,
 
-  // For notifying grid parent when our height may have changed
-  gridCheckMinHeight: PropTypes.func.isRequired
+  // For manipulating the input
+  addItem: PropTypes.func.isRequired,
+  deleteItemAtIndex: PropTypes.func.isRequired,
+  changeItemIndex: PropTypes.func.isRequired
 };
 
-LexicalArray.defaultProps = {
+LexicalArrayForm.defaultProps = {
   suggestions: [],
   currentInput: []
 };
 
-/**
- * React-redux binding
- */
-const actionCreators = {
-  addItem,
-  deleteItemAtIndex,
-  changeItemIndex
-};
-
-export default connect(
-  createSelector({
-    suggestions: "lexicalArray.suggestions",
-    currentInput: "lexicalArray.currentInput"
-  }),
-  actionCreators
-)(LexicalArray);
+export default LexicalArrayForm;

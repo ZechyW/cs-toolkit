@@ -11210,6 +11210,11 @@ recompose@^0.27.1:
     react-lifecycles-compat "^3.0.2"
     symbol-observable "^1.0.4"
 
+reconnecting-websocket@^4.1.10:
+  version "4.1.10"
+  resolved "https://registry.yarnpkg.com/reconnecting-websocket/-/reconnecting-websocket-4.1.10.tgz#15485b5c5266ab6dd99187e23e8da207d24c4270"
+  integrity sha512-x6vgqa8q9KRuJyFkOvBKH1TfyTmN5OWQUf1MIsblfOSY29VE+iI9cKqmIuPvg9TO/hUBxdmUIVutDkcdbqFwZg==
+
 recursive-readdir@2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/recursive-readdir/-/recursive-readdir-2.2.2.tgz#9946fb3274e1628de6e36b2f6714953b4845094f"
@@ -11267,6 +11272,11 @@ redux-thunk@^2.2.0, redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
+
+redux-websocket-bridge@^0.3.0-0:
+  version "0.3.0-0"
+  resolved "https://registry.yarnpkg.com/redux-websocket-bridge/-/redux-websocket-bridge-0.3.0-0.tgz#5c482a0815ccfa8927525abc66cdbe081ea50220"
+  integrity sha512-L2BXPnhmWufvxG9eoWWXYM+TI2FmKRXaCNm5LN9jmIHGU8zzipEeEOAS1EYTaON19r6OL1Mnn/nj6wLvCGv/+w==
 
 redux@*, redux@^4.0.0, redux@^4.0.1:
   version "4.0.1"

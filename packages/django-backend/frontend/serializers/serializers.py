@@ -5,20 +5,6 @@ Django Channels serializers
 from rest_framework import serializers
 
 
-class PubSubSerializer(serializers.Serializer):
-    """
-    For validating a Pub/Sub message over the WS connection
-    """
-
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-
-    topic = serializers.CharField()
-
-
 class EchoSubscribeSerializer(serializers.Serializer):
     """
     For validating a subscription request over the WS connection

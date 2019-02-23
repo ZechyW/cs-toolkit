@@ -193,3 +193,6 @@ REST_FRAMEWORK = {
 # does not seem to answer on the IPv6 localhost address.)
 REACT_HOST = os.environ.get("REACT_HOST") or "127.0.0.1"
 REACT_PORT = os.environ.get("REACT_PORT") or 3000
+
+# Port that Django is running on, for internal API requests etc.
+DJANGO_PORT = os.environ.get("DJANGO_PORT") or 8080

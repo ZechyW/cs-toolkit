@@ -22,6 +22,6 @@ urlpatterns = [
     path("api/", include("lexicon.urls")),
     # Catchalls for bare URL, and all frontend and unrecognised/unresolved
     # paths
-    path("", include("frontend.urls")),
+    re_path("^$", include("frontend.urls")),
     re_path(r"^.*/", include("frontend.urls")),
 ]

@@ -9,7 +9,7 @@ class Config {
    * @example `ws://${window.location.host}/ws/`
    * @example "wss://secure.host.example/ws/"
    */
-  wsURL = `ws://${window.location.host}/ws/`;
+  wsUrl = `ws://${window.location.host}/redux/`;
 
   // React-grid-layout
   // When we want to size a grid item, we take the height of the content

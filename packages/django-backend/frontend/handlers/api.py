@@ -4,6 +4,7 @@ Lets clients perform REST API operations over a channel.
 """
 import logging
 
+from django.conf import settings
 from rest_framework.test import APIClient
 
 from frontend.handlers.base import Handler
@@ -12,14 +13,14 @@ from ..serializers.api import ApiRequestSerializer
 logger = logging.getLogger("cs-toolkit")
 
 
-class ApiHandler(Handler):
+class ApiRequestHandler(Handler):
     """
     Handles REST API requests for the current Consumer.
     """
 
     def __init__(self, consumer):
         self.consumer = consumer
-        self.client = APIClient(HTTP_HOST="localhost:8080")
+        self.client = APIClient(HTTP_HOST="localhost:" + settings.DJANGO_PORT)
 
     def handle(self, content):
         """

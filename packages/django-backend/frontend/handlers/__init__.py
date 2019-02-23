@@ -13,5 +13,5 @@ The Handler's `disconnect` method will also be called when the Consumer's
 connection is closed.
 """
 from .echo import EchoHandler
-from .notify import NotifyHandler
-from .api import ApiHandler
+from .subscribe import SubscribeRequestHandler
+from .api import ApiRequestHandler

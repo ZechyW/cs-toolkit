@@ -2,15 +2,23 @@
 Handles `notify` topic PubSub connections.
 Lets clients know when some Django model has changed.
 """
+import importlib
+import logging
+
 from asgiref.sync import async_to_sync
+from django.utils.module_loading import import_string
 from rest_framework import serializers
 
 from frontend.handlers.base import Handler
 
+logger = logging.getLogger("cs-toolkit")
 
-class NotifyHandler(Handler):
+
+class SubscribeRequestHandler(Handler):
     """
     Handles subscriptions to Django model changes for the current Consumer.
+    Handles client requests with `type` set to "SubscribeRequest", and adds
+    clients to the "notify" channel layer group.
     """
 
     def __init__(self, consumer):
@@ -23,25 +31,41 @@ class NotifyHandler(Handler):
 
     def handle(self, content):
         """
-        Received some content with topic `notify`
+        Received some content with `type` set to "SubscribeRequest"
         :param content:
         :return:
         """
         # Check message format
-        serializer = NotifySubscribeSerializer(data=content)
+        serializer = SubscribeRequestSerializer(data=content)
         if not serializer.is_valid():
+            logger.warning(
+                "SubscribeRequest made without specifying a valid model name."
+            )
             return
 
-        # Subscribe to the given model
-        model = serializer.validated_data["model"]
-        if model not in self.watched_models:
-            self.watched_models.append(model)
+        # Try to subscribe to the given model
+        model_name = serializer.validated_data["model"]
+        model = import_string(model_name)
+
+        if model_name not in self.watched_models:
+            self.watched_models.append(model_name)
 
         # And the layer group
         if not self.in_group:
             async_to_sync(self.consumer.channel_layer.group_add)(
                 "notify", self.consumer.channel_name
             )
+
+        # Send back the full dataset as an initial response
+        self.consumer.send_to_client(
+            {
+                "type": "subscribe/acknowledge",
+                "payload": {
+                    "model": model_name,
+                    "data": model.get_all_serialized_data(),
+                },
+            }
+        )
 
     def notify_change(self, event):
         """
@@ -80,7 +104,7 @@ class NotifyHandler(Handler):
             )
 
 
-class NotifySubscribeSerializer(serializers.Serializer):
+class SubscribeRequestSerializer(serializers.Serializer):
     """
     For validating a subscription request to a given model
     """
@@ -91,13 +115,4 @@ class NotifySubscribeSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 
-    type = serializers.CharField()
     model = serializers.CharField(max_length=200)
-
-    @staticmethod
-    def validate_type(value):
-        if not value == "subscribe":
-            raise serializers.ValidationError(
-                "Message is not a subscription request."
-            )
-        return value

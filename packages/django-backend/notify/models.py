@@ -51,6 +51,10 @@ class NotifyModel(models.Model):
         self.notify_delete()
         return super().delete(*args, **kwargs)
 
+    @property
+    def model_name(self):
+        return self.__class__.__module__ + "." + self.__class__.__name__
+
     def subclass_valid(self):
         """
         Logs a warning and returns False if subclasses don't properly define
@@ -63,7 +67,7 @@ class NotifyModel(models.Model):
                 "To use the change notification functionality of {}, add an "
                 "instance of model_utils.FieldTracker to the model as a "
                 "class variable named `tracker` and a serializer class "
-                "string as `serializer_class`".format(self.__class__.__name__)
+                "string as `serializer_class`".format(self.model_name)
             )
             return False
 
@@ -96,21 +100,19 @@ class NotifyModel(models.Model):
         if not self.subclass_valid():
             return False
 
-        # This model object has changed; serialize it and let people know
-        serializer = import_string(self.serializer_class)(self)
-        data = serializer.data
+        # This model object has changed; let people know
         channel_layer = get_channel_layer()
         logger.info(
             "-----\n"
             "Model object created/updated: {}\n"
-            "{}".format(self.__class__.__name__, json.dumps(data))
+            "{}".format(self.model_name, json.dumps(self.serialized_data))
         )
         async_to_sync(channel_layer.group_send)(
             "notify",
             {
                 "type": "notify.change",
-                "model": self.__class__.__name__,
-                "data": data,
+                "model": self.model_name,
+                "data": self.serialized_data,
             },
         )
 
@@ -122,19 +124,39 @@ class NotifyModel(models.Model):
         if not self.subclass_valid():
             return False
 
-        serializer = import_string(self.serializer_class)(self)
-        data = serializer.data
         channel_layer = get_channel_layer()
         logger.info(
             "-----\n"
             "Model object deleted: {}\n"
-            "{}".format(self.__class__.__name__, json.dumps(data))
+            "{}".format(self.model_name, json.dumps(self.serialized_data))
         )
         async_to_sync(channel_layer.group_send)(
             "notify",
             {
                 "type": "notify.delete",
-                "model": self.__class__.__name__,
-                "data": data,
+                "model": self.model_name,
+                "data": self.serialized_data,
             },
         )
+
+    @property
+    def serialized_data(self):
+        """
+        Returns the serialization of the current model instance (as provided
+        by the model-specific `serializer_class`)
+        :return:
+        """
+        serializer = import_string(self.serializer_class)(self)
+        return serializer.data
+
+    @classmethod
+    def get_all_serialized_data(cls):
+        """
+        Returns the serialization of _all_ the data associated with this
+        model (as provided by the model-specific `serializer_class`)
+        :return:
+        """
+        serializer = import_string(cls.serializer_class)(
+            cls.objects.all(), many=True
+        )
+        return serializer.data

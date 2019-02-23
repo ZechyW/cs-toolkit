@@ -13,13 +13,13 @@ import { reducer as grid } from "./grid";
 import { reducer as lexicalArray } from "./lexicalArray";
 import { reducer as navbar } from "./navbar";
 import { userTiming } from "./util";
-
-window.resetAll = coreActions.resetAll;
+import { middleware as wsMiddleware, reducer as websocket } from "./websocket";
 
 // Persistence configs
 const rootPersistConfig = {
   key: "root",
-  storage
+  storage,
+  blacklist: ["websocket"]
 };
 
 // N.B.: Currently, nested persists don't work with our immutable state
@@ -31,7 +31,8 @@ const rootPersistConfig = {
 const appReducer = combineReducers({
   grid,
   navbar,
-  lexicalArray
+  lexicalArray,
+  websocket
 });
 const rootReducer = (state, action) => {
   if (action.type === coreActions.resetAll.toString()) {
@@ -42,19 +43,17 @@ const rootReducer = (state, action) => {
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
-// Store and persistor
+// Middleware
 // The included default `serializable-state-invariant-middleware` from
-// `redux-starter-kit` throws errors with `redux-persist`
-let middleware;
+// `redux-starter-kit` throws errors with `redux-persist`, so we don't load
+// it here.
+let middleware = [thunk, wsMiddleware];
 if (process.env.NODE_ENV !== "production") {
-  middleware = [immutableStateInvariant(), thunk, userTiming];
-} else {
-  middleware = [thunk];
+  middleware = middleware.concat([immutableStateInvariant(), userTiming]);
 }
 
 export const store = configureStore({
   reducer: persistedReducer,
   middleware
 });
-
 export const persistor = persistStore(store);
