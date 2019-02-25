@@ -4,17 +4,28 @@ import {
   addItem,
   changeItemIndex,
   deleteItemAtIndex,
-  replaceSuggestions
+  fetchLexicalItemsSuccess
 } from "./actions";
+import { actions as wsActions } from "../websocket";
 
 const lexicalArrayReducer = createReducer(
   {
+    currentInput: [],
     suggestions: [],
-    currentInput: []
+    lexicalItems: [],
+    fetchedLexicalItems: false
   },
   {
-    // Suggestions
-    [replaceSuggestions]: replaceSuggestionsReducer,
+    // Lexical items -> Suggestions
+    [fetchLexicalItemsSuccess]: (state, action) => {
+      state.fetchedLexicalItems = true;
+      state.lexicalItems = action.payload;
+      return replaceSuggestionsReducer(state, { payload: state.lexicalItems });
+    },
+    [wsActions.wsClose]: (state) => {
+      state.lexicalItems = [];
+      state.fetchedLexicalItems = false;
+    },
 
     // Input items
     [addItem]: (state, action) => {
@@ -34,7 +45,7 @@ const lexicalArrayReducer = createReducer(
 );
 
 /**
- * Sets the list of lexical item suggestions based on the provided payload.
+ * Sets the list of suggestions based on the provided payload of lexical items.
  *
  * The list of lexical items may contain duplicates (for items with the
  * same text/language but different features), so we need to deduplicate

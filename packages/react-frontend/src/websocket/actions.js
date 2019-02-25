@@ -10,17 +10,17 @@ export const wsClose = createAction(`@@websocket/${CLOSE}`);
 // `meta.send` will be set to true for WS request actions so that they can
 // be intercepted and sent across the socket by the middleware.
 
-export function wsSubscribeRequest(payload) {
-  const type = "subscribe/request";
+const SUBSCRIBE_REQUEST = "subscribe/request";
 
+export function wsSubscribeRequest(payload) {
   return {
-    type: type,
+    type: SUBSCRIBE_REQUEST,
     payload: payload,
     meta: { send: true }
   };
 }
-wsSubscribeRequest.toString = () => "subscribe/request";
-wsSubscribeRequest.type = "subscribe/request";
+wsSubscribeRequest.toString = () => SUBSCRIBE_REQUEST;
+wsSubscribeRequest.type = SUBSCRIBE_REQUEST;
 
 // Actions that can be received by other components (essentially just string
 // constants, synced with the server code, that other reducers can watch for)

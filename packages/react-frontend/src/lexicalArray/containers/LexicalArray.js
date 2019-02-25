@@ -3,7 +3,12 @@ import React, { useEffect, useLayoutEffect } from "react";
 import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { actions as wsActions } from "../../websocket";
-import { addItem, changeItemIndex, deleteItemAtIndex } from "../actions";
+import {
+  addItem,
+  changeItemIndex,
+  deleteItemAtIndex,
+  fetchLexicalItems
+} from "../actions";
 import LexicalArrayForm from "../components/LexicalArrayForm";
 
 /**
@@ -22,6 +27,10 @@ function LexicalArray(props) {
     wsSubscribed,
     subscribeRequest,
 
+    // Suggestion list management
+    fetchLexicalItems,
+    fetchedLexicalItems,
+
     ...otherProps
   } = props;
 
@@ -39,7 +48,14 @@ function LexicalArray(props) {
         model: "LexicalItem"
       });
     }
-  });
+  }, [wsConnected, wsSubscribed]);
+
+  // Fetch the lexical item list if we haven't done so yet
+  useEffect(() => {
+    if (!fetchedLexicalItems) {
+      fetchLexicalItems();
+    }
+  }, [fetchedLexicalItems]);
 
   return <LexicalArrayForm {...otherProps} />;
 }
@@ -57,14 +73,18 @@ const actionCreators = {
   deleteItemAtIndex,
   changeItemIndex,
 
-  subscribeRequest: wsActions.wsSubscribeRequest
+  subscribeRequest: wsActions.wsSubscribeRequest,
+  fetchLexicalItems
 };
 
 export default connect(
   createSelector({
     // Pass through to form
-    suggestions: "lexicalArray.suggestions",
     currentInput: "lexicalArray.currentInput",
+    suggestions: "lexicalArray.suggestions",
+
+    // Fetch the lexical item list on first load
+    fetchedLexicalItems: "lexicalArray.fetchedLexicalItems",
 
     // Websocket management
     wsConnected: "websocket.connected",
