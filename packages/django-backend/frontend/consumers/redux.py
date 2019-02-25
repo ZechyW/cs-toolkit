@@ -1,5 +1,6 @@
 import logging
 import re
+import zlib
 
 from channels.generic.websocket import JsonWebsocketConsumer
 from rest_framework import serializers
@@ -15,6 +16,9 @@ class ReduxConsumer(JsonWebsocketConsumer):
     to the various message handlers.
     Receives messages that look like FSAs (from Redux on the client side).
     (https://github.com/redux-utilities/flux-standard-action)
+
+    Expects zlib compression on all incoming messages, and applies zlib
+    compression to all outgoing messages.
     """
 
     def __init__(self, *args, **kwargs):
@@ -30,9 +34,23 @@ class ReduxConsumer(JsonWebsocketConsumer):
         for message_type in self.handlers:
             self.handlers[message_type].disconnect(code)
 
+    def receive(self, text_data=None, bytes_data=None, **kwargs):
+        """
+        Receives incoming zlib-compressed data and parses it as JSON.
+        :param text_data:
+        :param bytes_data:
+        :param kwargs:
+        :return:
+        """
+        if bytes_data:
+            text_data = zlib.decompress(bytes_data).decode("utf-8")
+            self.receive_json(self.decode_json(text_data), **kwargs)
+        else:
+            raise ValueError("No bytes section for incoming WebSocket frame!")
+
     def receive_json(self, content, **kwargs):
         """
-        Received raw JSON data over the WebSocket
+        Handles the received JSON data.
         :param content:
         :param kwargs:
         :return:
@@ -96,6 +114,18 @@ class ReduxConsumer(JsonWebsocketConsumer):
         logger.debug("WebSocket SEND JSON {}".format(message))
 
         self.send_json(message)
+
+    def send_json(self, content, close=False):
+        """
+        Encode the given content as JSON, zlib-compress it and send it to the
+        client.
+        """
+        super().send(
+            bytes_data=zlib.compress(
+                self.encode_json(content).encode("utf-8")
+            ),
+            close=close,
+        )
 
 
 class ReduxSerializer(serializers.Serializer):

@@ -129,10 +129,12 @@ function Grid(props) {
   }
 
   // Render
+  // `react-grid-layout` may change the value of `props.layouts` during the
+  // render, so we have to pass it a clone.
   return (
     <Responsive
       width={props.width}
-      layouts={props.layouts}
+      layouts={cloneDeep(props.layouts)}
       onLayoutChange={handleLayoutChange}
       onResize={handleResize}
       {...staticGridOptions}

@@ -36,7 +36,7 @@ function LexicalArray(props) {
   useEffect(() => {
     if (wsConnected && !wsSubscribed) {
       subscribeRequest({
-        model: "lexicon.models.LexicalItem"
+        model: "LexicalItem"
       });
     }
   });
@@ -68,7 +68,7 @@ export default connect(
 
     // Websocket management
     wsConnected: "websocket.connected",
-    wsSubscribed: "websocket.subscriptions.lexicalArray"
+    wsSubscribed: "websocket.subscriptions.LexicalItem"
   }),
   actionCreators
 )(LexicalArray);

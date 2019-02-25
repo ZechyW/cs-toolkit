@@ -1,3 +1,4 @@
-from django.db import models
-
-# Create your models here.
+"""
+Imports all the models that the frontend can subscribe to.
+"""
+from lexicon.models import LexicalItem

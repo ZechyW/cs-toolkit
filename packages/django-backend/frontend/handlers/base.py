@@ -1,5 +1,5 @@
 """
-Base handler for PubSub connections.
+Base handler for client connections.
 """
 
 

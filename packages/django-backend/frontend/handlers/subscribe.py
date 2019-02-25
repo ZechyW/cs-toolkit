@@ -2,19 +2,18 @@
 Handles `notify` topic PubSub connections.
 Lets clients know when some Django model has changed.
 """
-import importlib
 import logging
 
 from asgiref.sync import async_to_sync
-from django.utils.module_loading import import_string
 from rest_framework import serializers
 
-from frontend.handlers.base import Handler
+import frontend.models
+from . import base
 
 logger = logging.getLogger("cs-toolkit")
 
 
-class SubscribeRequestHandler(Handler):
+class SubscribeRequestHandler(base.Handler):
     """
     Handles subscriptions to Django model changes for the current Consumer.
     Handles client requests with `type` set to "SubscribeRequest", and adds
@@ -41,11 +40,19 @@ class SubscribeRequestHandler(Handler):
             logger.warning(
                 "SubscribeRequest made without specifying a valid model name."
             )
-            return
+            return self.send_error("No model specified.")
 
         # Try to subscribe to the given model
         model_name = serializer.validated_data["model"]
-        model = import_string(model_name)
+        try:
+            model = getattr(frontend.models, model_name)
+        except AttributeError:
+            logger.warning(
+                "SubscribeRequest made with invalid model name: {}".format(
+                    model_name
+                )
+            )
+            return self.send_error("Invalid model.")
 
         if model_name not in self.watched_models:
             self.watched_models.append(model_name)
@@ -65,6 +72,15 @@ class SubscribeRequestHandler(Handler):
                     "data": model.get_all_serialized_data(),
                 },
             }
+        )
+
+    def send_error(self, error_text):
+        """
+        Sends an error message back to the client
+        :return:
+        """
+        self.consumer.send_to_client(
+            {"type": "subscribe/error", "payload": error_text, "error": True}
         )
 
     def notify_change(self, event):

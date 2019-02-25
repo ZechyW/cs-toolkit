@@ -1,9 +1,6 @@
 import PropTypes from "prop-types";
-import React, { useLayoutEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { WithContext as ReactTags } from "react-tag-input";
-import createSelector from "selectorator";
-import { addItem, changeItemIndex, deleteItemAtIndex } from "../actions";
 import "../styles/LexicalArray.scss";
 
 /**
