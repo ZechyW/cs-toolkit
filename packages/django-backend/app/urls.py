@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 
 urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
@@ -22,6 +22,5 @@ urlpatterns = [
     path("api/", include("lexicon.urls")),
     # Catchalls for bare URL, and all frontend and unrecognised/unresolved
     # paths
-    re_path("^$", include("frontend.urls")),
-    re_path(r"^.*/", include("frontend.urls")),
+    path("", include("frontend.urls")),
 ]
