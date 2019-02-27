@@ -11,14 +11,18 @@ import Config from "../config";
 // Any necessary options for the WS or Redux bridge library can be
 // initialised here.
 
-// Intellij incorrectly reports `unfold` as unused.
-// noinspection JSUnusedGlobalSymbols
+// Also waiting on a fix for
+// https://github.com/pladaria/reconnecting-websocket/issues/91
 const middleware = ReduxWebSocketBridge(
-  () => new ReconnectingWebSocket(Config.wsUrl),
-  {
-    fold,
-    unfold
-  }
+  () => {
+    const rws = new ReconnectingWebSocket(Config.wsUrl, "", {
+      minReconnectionDelay: 100,
+      reconnectionDelayGrowFactor: 1.75
+    });
+    window.rws = rws;
+    return rws;
+  },
+  { fold, unfold }
 );
 
 /**
@@ -87,5 +91,3 @@ function tryParseGzipJSON(data) {
 }
 
 export default middleware;
-
-window.pako = pako;

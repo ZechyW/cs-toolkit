@@ -1,4 +1,4 @@
-import { cloneDeep, isMatch } from "lodash-es";
+import { cloneDeep, isMatch, throttle } from "lodash-es";
 import assert from "minimalistic-assert";
 import React, { useLayoutEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -91,6 +91,7 @@ function Grid(props) {
   }
 
   function handleResize(layout, oldItem, newItem, placeholder, e, element) {
+    console.log("handleResize");
     // `element` points at the resize handle, unfortunately.  Grab the actual
     // grid element (2 levels up) instead.
     const gridItem = element.parentElement.parentElement;
@@ -122,9 +123,14 @@ function Grid(props) {
     contentClone.style.height = "0";
 
     // Done - Set the placeholder height and clean up.
-    placeholder.h = calculateGridHeight(
+    const id = newItem.i;
+    const minHeight = calculateGridHeight(
       contentClone.scrollHeight + Config.gridVerticalPadding
     );
+    placeholder.minH = minHeight;
+    if (Config.gridDefaultAutosize[id]) {
+      placeholder.h = minHeight;
+    }
     document.body.removeChild(gridItemClone);
   }
 
@@ -136,7 +142,7 @@ function Grid(props) {
       width={props.width}
       layouts={cloneDeep(props.layouts)}
       onLayoutChange={handleLayoutChange}
-      onResize={handleResize}
+      onResize={throttle(handleResize, 10)}
       {...staticGridOptions}
     >
       {props.children}

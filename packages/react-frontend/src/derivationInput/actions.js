@@ -2,15 +2,17 @@ import { createAction } from "redux-starter-kit";
 import axios from "axios";
 
 // Lexical item input
-export const addItem = createAction("lexicalArray/addItem");
-export const deleteItemAtIndex = createAction("lexicalArray/deleteItemAtIndex");
-export const changeItemIndex = createAction("lexicalArray/changeItemIndex");
+export const addItem = createAction("derivationInput/addItem");
+export const deleteItemAtIndex = createAction(
+  "derivationInput/deleteItemAtIndex"
+);
+export const changeItemIndex = createAction("derivationInput/changeItemIndex");
 
 // Suggestions list
-const FETCH_LEXICAL_ITEMS = "lexicalArray/fetchLexicalItems";
-const FETCH_LEXICAL_ITEMS_LOADING = "lexicalArray/fetchLexicalItemsLoading";
-const FETCH_LEXICAL_ITEMS_SUCCESS = "lexicalArray/fetchLexicalItemsSuccess";
-const FETCH_LEXICAL_ITEMS_ERROR = "lexicalArray/fetchLexicalItemsError";
+const FETCH_LEXICAL_ITEMS = "derivationInput/fetchLexicalItems";
+const FETCH_LEXICAL_ITEMS_LOADING = "derivationInput/fetchLexicalItemsLoading";
+const FETCH_LEXICAL_ITEMS_SUCCESS = "derivationInput/fetchLexicalItemsSuccess";
+const FETCH_LEXICAL_ITEMS_ERROR = "derivationInput/fetchLexicalItemsError";
 
 export const fetchLexicalItemsLoading = createAction(
   FETCH_LEXICAL_ITEMS_LOADING

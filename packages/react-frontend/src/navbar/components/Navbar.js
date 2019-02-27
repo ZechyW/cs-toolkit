@@ -152,6 +152,11 @@ function Navbar(props) {
               {props.navbarExpanded
                 ? "The Code Switching Toolkit"
                 : "CS Toolkit"}
+              {!props.wsConnected ? (
+                <span className="has-text-grey"> (offline)</span>
+              ) : (
+                ""
+              )}
             </p>
             <animated.p
               className="subtitle"
@@ -225,7 +230,9 @@ const actionCreators = {
 let WrappedNavbar = connect(
   createSelector({
     navbarExpanded: "navbar.navbarExpanded",
-    burgerExpanded: "navbar.burgerExpanded"
+    burgerExpanded: "navbar.burgerExpanded",
+
+    wsConnected: "websocket.connected"
   }),
   actionCreators
 )(Navbar);

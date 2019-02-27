@@ -1,14 +1,19 @@
 import PropTypes from "prop-types";
 import React from "react";
+import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
-import "../styles/LexicalArray.scss";
+import createSelector from "selectorator";
+import { GridItemWrapper } from "../../grid";
+import { addItem, changeItemIndex, deleteItemAtIndex } from "../actions";
+import { getSuggestions } from "../selectors";
+import "../styles/DerivationInput.scss";
 
 /**
- * Component for the lexical array builder.
+ * Component for the derivation input builder.
  * Uses the `react-tag-input` library to display lexical items as tag-like
  * pills.
  */
-function LexicalArrayForm(props) {
+function DerivationInput(props) {
   return (
     <>
       <p>
@@ -30,7 +35,7 @@ function LexicalArrayForm(props) {
         <strong>Move</strong> items by dragging them around with the mouse.
       </p>
       <div
-      // onSubmit={this.submitLexicalArray}
+      // onSubmit={this.submitDerivationInput}
       >
         <div className="field">
           <div className="control is-expanded">
@@ -73,11 +78,11 @@ function LexicalArrayForm(props) {
   );
 }
 
-LexicalArrayForm.propTypes = {
+DerivationInput.propTypes = {
   // Autocomplete suggestions for the tag input
   suggestions: PropTypes.array,
 
-  // Currently built-up lexical array
+  // Currently built-up derivation input array
   currentInput: PropTypes.array,
 
   // For manipulating the input
@@ -86,9 +91,31 @@ LexicalArrayForm.propTypes = {
   changeItemIndex: PropTypes.func.isRequired
 };
 
-LexicalArrayForm.defaultProps = {
+DerivationInput.defaultProps = {
   suggestions: [],
   currentInput: []
 };
 
-export default LexicalArrayForm;
+/**
+ * HOCs and React-redux binding
+ */
+
+let Wrapped = DerivationInput;
+
+Wrapped = GridItemWrapper(Wrapped);
+
+const actionCreators = {
+  addItem,
+  deleteItemAtIndex,
+  changeItemIndex
+};
+
+Wrapped = connect(
+  createSelector({
+    currentInput: "derivationInput.currentInput",
+    suggestions: getSuggestions
+  }),
+  actionCreators
+)(Wrapped);
+
+export default Wrapped;

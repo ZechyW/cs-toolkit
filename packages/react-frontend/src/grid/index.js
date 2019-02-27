@@ -1,6 +1,7 @@
 import * as actions from "./actions";
-import reducer from "./reducer";
 import Grid from "./components/Grid";
 import GridItem from "./components/GridItem";
+import reducer from "./reducer";
+import GridItemWrapper from "./wrappers/GridItemWrapper";
 
-export { actions, reducer, Grid, GridItem };
+export { actions, reducer, Grid, GridItem, GridItemWrapper };

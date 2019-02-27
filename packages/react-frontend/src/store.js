@@ -5,13 +5,20 @@ import { combineReducers } from "redux";
 import immutableStateInvariant from "redux-immutable-state-invariant";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import createSagaMiddleware from "redux-saga";
+import { all } from "redux-saga/effects";
 import { configureStore } from "redux-starter-kit";
 import thunk from "redux-thunk";
 
 import { actions as coreActions } from "./core";
+
+import { reducer as derivationInput } from "./derivationInput";
 import { reducer as grid } from "./grid";
-import { reducer as lexicalArray } from "./lexicalArray";
+import { reducer as lexicalItems } from "./lexicalItems";
 import { reducer as navbar } from "./navbar";
+
+import { saga as notificationSaga } from "./notifications";
+
 import { userTiming } from "./util";
 import { middleware as wsMiddleware, reducer as websocket } from "./websocket";
 
@@ -29,9 +36,10 @@ const rootPersistConfig = {
 
 // Root reducer with reset functionality
 const appReducer = combineReducers({
+  derivationInput,
   grid,
+  lexicalItems,
   navbar,
-  lexicalArray,
   websocket
 });
 const rootReducer = (state, action) => {
@@ -47,7 +55,10 @@ const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 // The included default `serializable-state-invariant-middleware` from
 // `redux-starter-kit` throws errors with `redux-persist`, so we don't load
 // it here.
-let middleware = [thunk, wsMiddleware];
+
+const sagaMiddleware = createSagaMiddleware();
+
+let middleware = [thunk, wsMiddleware, sagaMiddleware];
 if (process.env.NODE_ENV !== "production") {
   middleware = middleware.concat([immutableStateInvariant(), userTiming]);
 }
@@ -57,3 +68,9 @@ export const store = configureStore({
   middleware
 });
 export const persistor = persistStore(store);
+
+// Sagas
+// (Must be run after the store is configured)
+sagaMiddleware.run(function*() {
+  yield all([notificationSaga()]);
+});
