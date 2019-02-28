@@ -87,7 +87,7 @@ function GridItem(props) {
           // `.react-grid-item > .react-resizable-handle` styles from the
           // vendor CSS
           "react-grid-item",
-          { "grid-expand": expandContents }
+          { "grid-expand-children": expandContents }
         )}
         ref={childRef}
       >

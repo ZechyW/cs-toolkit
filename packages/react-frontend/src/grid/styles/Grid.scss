@@ -36,14 +36,17 @@
 // Top-level elements within the grid item's inner container
 .grid-child {
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 // Flexbox: All direct children of this element will expand to fill available
 // space.
 // - Except the first child (the title)
 // - Except the last two children (the resize handle, and the last content item)
-.grid-expand > *:nth-child(n+2):nth-last-child(n+3) {
+// Without the `children` suffix, the item itself expands.
+.grid-expand-children > *:nth-child(n+2):nth-last-child(n+3),
+.grid-expand
+{
   flex-grow: 1;
   flex-shrink: 1;
 }

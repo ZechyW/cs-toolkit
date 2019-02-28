@@ -2294,6 +2294,18 @@ after@0.8.2:
   resolved "https://registry.yarnpkg.com/after/-/after-0.8.2.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
   integrity sha1-/ts5T58OAqqXaOcCvaI7UF+ufh8=
 
+ag-grid-community@^20.1.0:
+  version "20.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-20.1.0.tgz#38c11aaaf7418dc33627d7e67e00de3ba99786a8"
+  integrity sha512-58JQj2n/2NvqStDO0aNEEUUvc1ziRcEhi1NY+AYzsADzA0snrn228D4ea974JYjxbqy4cqFsqn9hDX11aInIfg==
+
+ag-grid-react@^20.1.0:
+  version "20.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-20.1.0.tgz#3a25265f793347e29a60b1284bf47c37389a4001"
+  integrity sha512-hwxxJLWcLyrp5sSjfDl9aYCZ0tr6hCcdVgYsqTSiO955c8BwR3VRZxmKL0DqujZEnHVgx3kBiBSVyjBVQVmtog==
+  dependencies:
+    prop-types "^15.6.2"
+
 agent-base@4, agent-base@^4.1.0, agent-base@~4.2.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-4.2.1.tgz#d89e5999f797875674c07d87f260fc41e83e8ca9"
@@ -11094,13 +11106,6 @@ react-spring@^8.0.7:
   integrity sha512-QHEjWLvEuRCGFRlR29o03CMc+uN1QMPt8Gxxp37szpnkJUq+HDIWNXNCacQ+kJxqzcu65JoeWV6D5q3/y5VK6Q==
   dependencies:
     "@babel/runtime" "^7.3.1"
-
-react-table@^6.9.2:
-  version "6.9.2"
-  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.9.2.tgz#6a59adfeb8d5deced288241ed1c7847035b5ec5f"
-  integrity sha512-sTbNHU8Um0xRtmCd1js873HXnXaMWeBwZoiljuj0l1d44eaqjKyYPK/3HCBbJg1yeE2O5pQJ3Km0tlm9niNL9w==
-  dependencies:
-    classnames "^2.2.5"
 
 react-tag-input@^6.3.0:
   version "6.3.0"

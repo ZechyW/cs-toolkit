@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
-import { fetchLexicalItems } from "../actions";
+import { fetchLexicalItems, saveColumnState } from "../actions";
 import LexicalItemTable from "../components/LexicalItemTable";
 
 /**
@@ -69,17 +69,21 @@ LexicalItems.defaultProps = {
 
 let Wrapped = LexicalItems;
 
-// Wrapped = GridItemWrapper(Wrapped);
+Wrapped = GridItemWrapper(Wrapped);
 
 const actionCreators = {
   subscribeRequest: wsActions.wsSubscribeRequest,
-  fetchLexicalItems
+  fetchLexicalItems,
+
+  // ag-grid
+  saveColumnState
 };
 
 Wrapped = connect(
   createSelector({
     // Pass through to view
     lexicalItems: "lexicalItems.lexicalItems",
+    columnState: "lexicalItems.columnState",
 
     // Fetch the lexical item list on first load
     fetchedLexicalItems: "lexicalItems.fetchedLexicalItems",

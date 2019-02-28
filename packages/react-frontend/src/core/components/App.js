@@ -20,14 +20,16 @@ const gridItems = [];
 gridItems.push({
   id: "derivationInput",
   title: "Generate Derivations",
+  expand: true,
   contents: <DerivationInput />
 });
 
-// gridItems.push({
-//   id: "lexicalItemList",
-//   title: "Lexical Item List",
-//   contents: <LexicalItems />
-// });
+gridItems.push({
+  id: "lexicalItemList",
+  title: "Lexical Item List",
+  expand: false,
+  contents: <LexicalItems />
+});
 
 // function TestElement() {
 //   return <div>Test</div>;
@@ -54,15 +56,13 @@ function App() {
               key={gridItem.id}
               id={gridItem.id}
               title={gridItem.title}
-              expandContents={true}
+              expandContents={gridItem.expand}
             >
               {gridItem.contents}
             </GridItem>
           );
         })}
       </Grid>
-      <hr />
-      <LexicalItems />
     </>
   );
 }

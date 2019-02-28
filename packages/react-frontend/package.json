@@ -15,6 +15,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "ag-grid-community": "^20.1.0",
+    "ag-grid-react": "^20.1.0",
     "axios": "^0.18.0",
     "bulma": "^0.7.4",
     "bulma-helpers": "^0.3.6",
@@ -35,7 +37,6 @@
     "react-redux": "^6.0.0",
     "react-scripts": "2.1.5",
     "react-spring": "^8.0.7",
-    "react-table": "^6.9.2",
     "react-tag-input": "^6.3.0",
     "reconnecting-websocket": "^4.1.10",
     "redux": "^4.0.1",

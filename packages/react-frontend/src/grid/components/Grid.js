@@ -74,6 +74,13 @@ function Grid(props) {
   }, [props.minHeights, props.width]);
 
   // Helper functions
+
+  /**
+   * Helper function to handle grid layout changes.
+   * @param _ - The layout at the current breakpoint; unused.
+   * @param newLayouts - The layouts for all configured breakpoints; saved
+   *   to the store.
+   */
   function handleLayoutChange(_, newLayouts) {
     // N.B.: `react-grid-layout` may modify `newLayouts` directly after this
     // function, so we need to clone it before saving it if we want it to
@@ -90,16 +97,21 @@ function Grid(props) {
     }
   }
 
+  /**
+   * Helper function to handle grid item resizes.
+   * @param layout
+   * @param oldItem
+   * @param newItem
+   * @param placeholder
+   * @param e
+   * @param element
+   */
   function handleResize(layout, oldItem, newItem, placeholder, e, element) {
-    console.log("handleResize");
-    // `element` points at the resize handle, unfortunately.  Grab the actual
-    // grid element (2 levels up) instead.
-    const gridItem = element.parentElement.parentElement;
+    // `element` points at the resize handle, unfortunately.  Grab the
+    // actual content (1 level up) and grid (2 levels up) elements instead.
+    const content = element.parentElement;
+    const gridItem = content.parentElement;
     assert(gridItem.classList.contains("grid-box"));
-
-    // Clone it so we can figure out how high the placeholder should actually
-    // be, based on the placeholder's width
-    const gridItemClone = gridItem.cloneNode(true);
 
     // Figure out the placeholder's pixel width
     // (Adapted from `react-grid-layout/GridItem.js.flow`:)
@@ -114,24 +126,23 @@ function Grid(props) {
     );
 
     // Predict element minimum height
-    gridItemClone.style.width = `${sizingWidth}px`;
-    gridItemClone.style.position = "fixed";
-    gridItemClone.style.top = "100%";
-    document.body.appendChild(gridItemClone);
+    const originalWidth = gridItem.style.width;
+    gridItem.style.width = `${sizingWidth}px`;
+    content.style.height = "0";
 
-    const contentClone = gridItemClone.querySelector(".grid-child");
-    contentClone.style.height = "0";
-
-    // Done - Set the placeholder height and clean up.
+    // Set the placeholder height
     const id = newItem.i;
     const minHeight = calculateGridHeight(
-      contentClone.scrollHeight + Config.gridVerticalPadding
+      content.scrollHeight + Config.gridVerticalPadding
     );
     placeholder.minH = minHeight;
     if (Config.gridDefaultAutosize[id]) {
       placeholder.h = minHeight;
     }
-    document.body.removeChild(gridItemClone);
+
+    // Clean up
+    gridItem.style.width = originalWidth;
+    content.style.height = "100%";
   }
 
   // Render

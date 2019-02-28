@@ -37,3 +37,6 @@ export function fetchLexicalItems() {
 }
 fetchLexicalItems.toString = () => FETCH_LEXICAL_ITEMS;
 fetchLexicalItems.type = FETCH_LEXICAL_ITEMS;
+
+// Save various bits of ag-grid state
+export const saveColumnState = createAction("lexicalItems/saveColumnState");
