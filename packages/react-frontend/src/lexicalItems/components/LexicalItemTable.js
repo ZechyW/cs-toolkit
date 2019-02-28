@@ -1,14 +1,14 @@
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowsAltH, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { AgGridReact } from "ag-grid-react";
 import { isEqual } from "lodash-es";
 import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Config from "../../config";
 import "../styles/LexicalItemTable.scss";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
-library.add(faArrowsAltH);
+library.add(faArrowsAltH, faPlusSquare);
 
 /**
  * Presentational component for the lexical item list.
@@ -102,24 +102,58 @@ function LexicalItemTable(props) {
     }
   }
 
+  // The export button will only be active when there are selected rows.
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  /**
+   * When the selection changes.
+   * - Prepare for potential export to derivation input component.
+   */
+  function handleSelectionChanged() {
+    setSelectedRows(gridApi.current.getSelectedRows());
+  }
+
   return (
     <>
       <p className="has-margin-bottom-10">
+        Click on individual lexical items to select them; selected lexical items
+        can be added directly to the Lexical Array input.
+      </p>
+      <p className="has-margin-bottom-10">
         Double click on column resize handles to autosize columns.
       </p>
-      <div className="has-margin-bottom-10">
+
+      <div className="has-margin-bottom-10 buttons">
         <button className="button" onClick={sizeToFit}>
           <span className="icon">
             <i className="fas fa-arrows-alt-h" />
           </span>
           <span>Fit columns to table</span>
         </button>
+
+        <button
+          className="button"
+          disabled={selectedRows.length === 0}
+          onClick={() => props.exportLexicalItems(selectedRows)}
+        >
+          <span className="icon">
+            <i className="fas fa-plus-square" />
+          </span>
+          <span>Add selected to Lexical Array</span>
+        </button>
       </div>
 
       <div className="ag-theme-balham grid-expand">
         <AgGridReact
+          // - Columns
           columnDefs={Config.lexicalItemsColumnDefs}
           defaultColDef={Config.lexicalItemsDefaultColDef}
+          // - Selection
+          rowSelection="multiple"
+          rowMultiSelectWithClick={true}
+          suppressCellSelection={true}
+          onSelectionChanged={handleSelectionChanged}
+          // - Data and API
           rowData={props.lexicalItems}
           deltaRowDataMode={true}
           getRowNodeId={(data) => data.id}
@@ -134,7 +168,9 @@ LexicalItemTable.propTypes = {
   lexicalItems: PropTypes.array.isRequired,
 
   columnState: PropTypes.array,
-  saveColumnState: PropTypes.func.isRequired
+  saveColumnState: PropTypes.func.isRequired,
+
+  exportLexicalItems: PropTypes.func.isRequired
 };
 
 LexicalItemTable.defaultProps = {

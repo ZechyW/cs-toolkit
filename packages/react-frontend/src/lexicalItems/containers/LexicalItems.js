@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
-import { fetchLexicalItems, saveColumnState } from "../actions";
+import {
+  exportLexicalItems,
+  fetchLexicalItems,
+  saveColumnState
+} from "../actions";
 import LexicalItemTable from "../components/LexicalItemTable";
 
 /**
@@ -75,8 +79,11 @@ const actionCreators = {
   subscribeRequest: wsActions.wsSubscribeRequest,
   fetchLexicalItems,
 
-  // ag-grid
-  saveColumnState
+  // `ag-grid`
+  saveColumnState,
+
+  // Export to derivation input component
+  exportLexicalItems
 };
 
 Wrapped = connect(

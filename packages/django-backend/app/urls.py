@@ -19,8 +19,12 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
+    path("api/", include("rest_framework.urls")),
     path("api/", include("lexicon.urls")),
+    path("api/", include("grammar.urls")),
     # Catchalls for bare URL, and all frontend and unrecognised/unresolved
-    # paths
+    # paths.
+    # In particular, `sockjs-node/` is used by the React dev server and will
+    # always be proxied.
     path("", include("frontend.urls")),
 ]

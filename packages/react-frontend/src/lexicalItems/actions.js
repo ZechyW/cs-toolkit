@@ -1,6 +1,9 @@
 import { createAction } from "redux-starter-kit";
 import axios from "axios";
+import { lexicalItemToSuggestion } from "../derivationInput";
+import { actions as derivationActions } from "../derivationInput";
 
+// -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
 // Fetch full lexical item list
 const FETCH_LEXICAL_ITEMS = "lexicalItems/fetchLexicalItems";
 const FETCH_LEXICAL_ITEMS_LOADING = "lexicalItems/fetchLexicalItemsLoading";
@@ -16,7 +19,7 @@ export const fetchLexicalItemsSuccess = createAction(
 export const fetchLexicalItemsError = createAction(FETCH_LEXICAL_ITEMS_ERROR);
 
 /**
- * Thunk to fetch the list of current lexical items from the backend
+ * Thunk to fetch the list of current lexical items from the backend.
  * @return {Promise<void>}
  */
 export function fetchLexicalItems() {
@@ -38,5 +41,25 @@ export function fetchLexicalItems() {
 fetchLexicalItems.toString = () => FETCH_LEXICAL_ITEMS;
 fetchLexicalItems.type = FETCH_LEXICAL_ITEMS;
 
-// Save various bits of ag-grid state
+// -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+// `ag-grid` state
 export const saveColumnState = createAction("lexicalItems/saveColumnState");
+
+// -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+// Exporting lexical items to derivation input component
+const EXPORT_LEXICAL_ITEMS = "lexicalItems/exportLexicalItems";
+/**
+ * Thunk to export lexical items to derivation input component
+ * @param payload
+ */
+export function exportLexicalItems(payload) {
+  return (dispatch) => {
+    // Payload should be an array of lexical items
+    for (const lexicalItem of payload) {
+      const item = lexicalItemToSuggestion(lexicalItem);
+      dispatch(derivationActions.addItem({ item }));
+    }
+  };
+}
+exportLexicalItems.toString = () => EXPORT_LEXICAL_ITEMS;
+exportLexicalItems.type = EXPORT_LEXICAL_ITEMS;

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "notify",
     # Models
     "lexicon",
+    "grammar",
 ]
 
 MIDDLEWARE = [
@@ -183,8 +184,11 @@ CHANNEL_LAYERS = {
 
 # DRF
 REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
-    "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
+    # If the following lines are uncommented, the browser-based default
+    # DRF views will not be accessible, and the API endpoints will only
+    # produce/expect raw JSON.
+    # "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    # "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
 
 # Integration with React dev mode

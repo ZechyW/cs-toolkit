@@ -1,5 +1,5 @@
-import { createAction } from "redux-starter-kit";
 import axios from "axios";
+import { createAction } from "redux-starter-kit";
 
 // Lexical item input
 export const addItem = createAction("derivationInput/addItem");
@@ -8,39 +8,45 @@ export const deleteItemAtIndex = createAction(
 );
 export const changeItemIndex = createAction("derivationInput/changeItemIndex");
 
-// Suggestions list
-const FETCH_LEXICAL_ITEMS = "derivationInput/fetchLexicalItems";
-const FETCH_LEXICAL_ITEMS_LOADING = "derivationInput/fetchLexicalItemsLoading";
-const FETCH_LEXICAL_ITEMS_SUCCESS = "derivationInput/fetchLexicalItemsSuccess";
-const FETCH_LEXICAL_ITEMS_ERROR = "derivationInput/fetchLexicalItemsError";
+// -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+// Submit derivation generation request
+const POST_DERIVATION_REQUEST = "derivationInput/postRequest";
+const POST_DERIVATION_REQUEST_LOADING = "derivationInput/postRequestLoading";
+const POST_DERIVATION_REQUEST_SUCCESS = "derivationInput/postRequestSuccess";
+const POST_DERIVATION_REQUEST_ERROR = "derivationInput/postRequestError";
 
-export const fetchLexicalItemsLoading = createAction(
-  FETCH_LEXICAL_ITEMS_LOADING
+export const postDerivationRequestLoading = createAction(
+  POST_DERIVATION_REQUEST_LOADING
 );
-export const fetchLexicalItemsSuccess = createAction(
-  FETCH_LEXICAL_ITEMS_SUCCESS
+export const postDerivationRequestSuccess = createAction(
+  POST_DERIVATION_REQUEST_SUCCESS
 );
-export const fetchLexicalItemsError = createAction(FETCH_LEXICAL_ITEMS_ERROR);
+export const postDerivationRequestError = createAction(
+  POST_DERIVATION_REQUEST_ERROR
+);
 
 /**
- * Thunk to fetch the list of current lexical items from the backend
- * @return {Promise<void>}
+ * Thunk to post a derivation request to the backend.
+ * @return {Function}
  */
-export function fetchLexicalItems() {
+export function postDerivationRequest(payload) {
   return async (dispatch) => {
-    dispatch(fetchLexicalItemsLoading(true));
+    dispatch(postDerivationRequestLoading(true));
 
     try {
-      const response = await axios.get("/api/lexicon/?fields=id,text,language");
+      const response = await axios.post("/api/grammar/", {
+        derivationInput: payload
+      });
+
       if (response.status === 200) {
-        dispatch(fetchLexicalItemsSuccess(response.data));
+        dispatch(postDerivationRequestSuccess(response.data));
       } else {
-        dispatch(fetchLexicalItemsError(response));
+        dispatch(postDerivationRequestError(response));
       }
     } catch (err) {
-      dispatch(fetchLexicalItemsError(err));
+      dispatch(postDerivationRequestError(err));
     }
   };
 }
-fetchLexicalItems.toString = () => FETCH_LEXICAL_ITEMS;
-fetchLexicalItems.type = FETCH_LEXICAL_ITEMS;
+postDerivationRequest.toString = () => POST_DERIVATION_REQUEST;
+postDerivationRequest.type = POST_DERIVATION_REQUEST;

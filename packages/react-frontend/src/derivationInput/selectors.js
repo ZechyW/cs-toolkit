@@ -3,6 +3,7 @@
  */
 import { uniqBy } from "lodash-es";
 import createSelector from "selectorator";
+import { lexicalItemToSuggestion } from "./util";
 
 export const getSuggestions = createSelector(
   ["lexicalItems.lexicalItems"],
@@ -18,12 +19,7 @@ export const getSuggestions = createSelector(
     for (const lexicalItem of lexicalItems) {
       // Suggestions need to have an `id` field and `label` field, and we
       // also track the `text` and `language` fields of lexical items directly.
-      newSuggestions.push({
-        id: `${lexicalItem.text}`,
-        text: `${lexicalItem.text}`,
-        label: `${lexicalItem.text} (${lexicalItem.language})`,
-        language: lexicalItem.language
-      });
+      newSuggestions.push(lexicalItemToSuggestion(lexicalItem));
     }
 
     return newSuggestions;
