@@ -105,7 +105,8 @@ function Navbar(props) {
   return (
     <animated.nav
       className={classNames("navbar is-light is-fixed-top", {
-        "is-expanded": props.navbarExpanded
+        "is-expanded": props.navbarExpanded,
+        "is-offline": !props.wsConnected
       })}
       style={{
         height: spring.navbarHeight,

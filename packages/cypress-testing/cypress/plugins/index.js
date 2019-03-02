@@ -14,12 +14,17 @@
 const webpack = require("@cypress/webpack-preprocessor");
 const { initPlugin } = require("cypress-plugin-snapshots/plugin");
 
+const options = webpack.defaultOptions;
+options.webpackOptions.module.rules[0].use[0].options.plugins = [
+  "@babel/plugin-proposal-class-properties"
+];
+
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
 
   // Transpilation
-  on("file:preprocessor", webpack());
+  on("file:preprocessor", webpack(options));
 
   // Snapshots
   initPlugin(on, config);

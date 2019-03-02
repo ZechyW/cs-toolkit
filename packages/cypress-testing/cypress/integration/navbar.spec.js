@@ -1,13 +1,15 @@
-import { actions as coreActions } from "react-frontend/src/core";
+import { actions as coreActions } from "../../../react-frontend/src/core";
 
 describe("The main app navbar", () => {
   // Viewports
   function viewportBurger() {
     cy.viewport(1087, 500);
   }
+
   function viewportNoBurger() {
     cy.viewport(1088, 500);
   }
+
   function viewportScroll() {
     cy.viewport(1087, 161);
   }
@@ -15,8 +17,7 @@ describe("The main app navbar", () => {
   beforeEach(() => {
     cy.visit("/");
 
-    // Clear out any persisted Redux state
-    // noinspection JSCheckFunctionSignatures
+    // Clear out any persisted Redux state.
     cy.window()
       .its("store")
       .invoke("dispatch", coreActions.resetAll());
@@ -43,7 +44,7 @@ describe("The main app navbar", () => {
       cy.get(".navbar-burger").click();
       cy.get(".navbar-menu").should("be.visible");
 
-      cy.get("body").click("bottom");
+      cy.get("body").click(0, 500);
       cy.get(".navbar-menu").should("not.be.visible");
     });
   });
@@ -80,6 +81,7 @@ describe("The main app navbar", () => {
   it("Snapshot - Expanded", () => {
     cy.get(".navbar")
       .should("not.have.class", "is-animating")
+      .and("not.have.class", "is-offline")
       .and("have.class", "is-expanded");
     cy.get(".navbar").toMatchSnapshot();
   });

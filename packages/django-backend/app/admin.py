@@ -21,11 +21,12 @@ model_order.update(
         "Features": 3,
         "Feature properties": 4,
         # Grammar models
-        "Derivation requests": 5,
-        "Derivations": 6,
-        "Derivation steps": 7,
-        "Syntactic objects": 8,
-        "Syntactic object values": 9,
+        "Rule descriptions": 1,
+        "Derivation requests": 2,
+        "Derivations": 3,
+        "Derivation steps": 4,
+        "Syntactic objects": 5,
+        "Syntactic object values": 6,
     }
 )
 

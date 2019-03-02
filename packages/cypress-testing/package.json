@@ -15,6 +15,7 @@
     "cypress-plugin-snapshots": "^1.2.5"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.3.0",
     "eslint-plugin-cypress": "^2.2.0"
   }
 }

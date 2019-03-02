@@ -3,11 +3,9 @@ class Rule:
     Base template for a syntactic rule.
     """
 
-    # Rule names should be unique.
-    name = ""
     description = ""
 
-    def apply(self, syntactic_object, lexical_array_tail):
+    def apply(self, root_so, lexical_array_tail):
         """
         Given the currently built-up syntactic object and the remainder of
         the lexical array for some DerivationStep, checks whether the

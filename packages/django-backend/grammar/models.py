@@ -54,7 +54,12 @@ class DerivationRequest(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    lexical_array = models.TextField()
+
+    # String representation of a lexical array, as received from a client.
+    # Will be transformed into one or more lists of fully-specified
+    # LexicalItems and used to generate/retrieve the corresponding number of
+    # Derivations.
+    raw_lexical_array = models.TextField()
 
 
 class Derivation(models.Model):
@@ -67,32 +72,77 @@ class Derivation(models.Model):
     # Each DerivationRequest may correspond to multiple actual Derivations,
     # since the lexical array provided to a DerivationRequest is
     # underspecified with regard to actual LexicalItems.
-    derivation_request = models.ForeignKey(
-        "DerivationRequest", on_delete=models.CASCADE
-    )
+    derivation_requests = models.ManyToManyField("DerivationRequest")
 
     # All Derivations end...
     ended = models.BooleanField()
     # But not all Derivations converge.
     converged = models.BooleanField()
 
+    # The first DerivationStep is initialised with the list of fully-specified
+    # LexicalItems unique to the Derivation.
+    first_step = models.ForeignKey(
+        "DerivationStep", null=True, on_delete=models.SET_NULL
+    )
+
 
 class DerivationStep(models.Model):
     """
     A Django model representing an individual step in a grammatical derivation.
+
+    Each DerivationStep has a unique:
+    - `root_so` representing the currently built-up SyntacticObject
+    - `lexical_array_tail` representing the remainder of the input lexical
+      array
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+
+    # Multiple Derivations may include this particular DerivationStep (via
+    # fingerprinting and memoisation)
+    derivations = models.ManyToManyField("Derivation")
 
     # Each DerivationStep has one unique root SyntacticObject,
     # since SyntacticObjects encode specific hierarchical information --
     # Different DerivationSteps will have different hierarchies,
     # and therefore different sets of SyntacticObjects.
-    root_so = TreeOneToOneField("SyntacticObject", on_delete=models.CASCADE)
+    root_so = TreeOneToOneField(
+        "SyntacticObject", null=True, on_delete=models.SET_NULL
+    )
 
-    # Multiple Derivations may include this particular DerivationStep (via
-    # fingerprinting and memoisation)
-    derivation = models.ForeignKey("Derivation", on_delete=models.CASCADE)
+    # How the derivation proceeds depends on the remaining LexicalItems
+    # within the input, and which rules are currently active.
+    lexical_array_tail = models.ManyToManyField(
+        "lexicon.LexicalItem", blank=True, through="LexicalArray"
+    )
+    rules = models.ManyToManyField("RuleDescription")
+
+    # Has this DerivationStep been processed?
+    processed = models.BooleanField()
+    # If it has, it should have a reference to the next DerivationStep in
+    # the chain, unless this step crashed the derivation.
+    next_step = models.OneToOneField(
+        "self",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="previous_step",
+    )
+
+
+class LexicalArray(models.Model):
+    """
+    An intermediary model for managing ordered lists of LexicalItems for
+    DerivationSteps.
+    """
+
+    derivation_step = models.ForeignKey(
+        "DerivationStep", on_delete=models.CASCADE
+    )
+    lexical_item = models.ForeignKey(
+        "lexicon.LexicalItem", on_delete=models.CASCADE
+    )
+    order = models.IntegerField()
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
@@ -137,3 +187,18 @@ class SyntacticObjectValue(models.Model):
 
     def __str__(self):
         return self.text
+
+
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
+# Stub for describing syntactic rules so that the other models can reference
+# them -- Actual rule implementations are in `.rules`.
+
+
+class RuleDescription(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+
+    # When attempting to process DerivationSteps, the name given in the
+    # RuleDescription is normalised and used as the class name for the
+    # rule in `.rules`.
+    # Normalisation involves CamelCasing and removing hyphens.
+    name = models.TextField()

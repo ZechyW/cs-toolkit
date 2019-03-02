@@ -7,22 +7,14 @@ from grammar.models import (
     DerivationStep,
     SyntacticObject,
     SyntacticObjectValue,
+    RuleDescription,
 )
 
 admin.site.register(DerivationRequest)
-
-
-class DerivationStepInline(admin.TabularInline):
-    model = DerivationStep
-    extra = 0
-
-
-class DerivationAdmin(admin.ModelAdmin):
-    inlines = [DerivationStepInline]
-
-
-admin.site.register(Derivation, DerivationAdmin)
+admin.site.register(Derivation)
 admin.site.register(DerivationStep)
 
 admin.site.register(SyntacticObject, MPTTModelAdmin)
 admin.site.register(SyntacticObjectValue)
+
+admin.site.register(RuleDescription)
