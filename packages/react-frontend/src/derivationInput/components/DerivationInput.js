@@ -43,23 +43,10 @@ function DerivationInput(props) {
   /**
    * Posts the current lexical array to the backend for derivation.
    * - Prevents the default submit action from refreshing the page
-   * - Transforms `react-tag-input` items into lexical item skeletons (text
-   *   and language only)
    */
   function submitDerivationInput(event) {
     event.preventDefault();
-
-    // Transform current input elements into lexical item skeletons (text
-    // and language only)
-    const postArray = [];
-    for (const item of props.currentInput) {
-      postArray.push({
-        text: item.text,
-        language: item.language
-      });
-    }
-
-    props.postDerivationRequest(postArray);
+    props.postDerivationRequest(props.currentInput);
   }
 
   return (
@@ -164,7 +151,9 @@ const actionCreators = {
 Wrapped = connect(
   createSelector({
     currentInput: "derivationInput.currentInput",
-    suggestions: getSuggestions
+    suggestions: getSuggestions,
+
+    csrfToken: "core.csrfToken"
   }),
   actionCreators
 )(Wrapped);

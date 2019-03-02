@@ -55,7 +55,9 @@ def frontend_development(request):
 
     if content_type.startswith("text/html"):
         return http.HttpResponse(
-            content=engines["django"].from_string(response.text).render(),
+            content=engines["django"]
+            .from_string(response.text)
+            .render(request=request),
             status=response.status_code,
             reason=response.reason,
         )

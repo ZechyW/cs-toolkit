@@ -11,7 +11,6 @@ import { configureStore } from "redux-starter-kit";
 import thunk from "redux-thunk";
 
 import { actions as coreActions } from "./core";
-
 import { reducer as derivationInput } from "./derivationInput";
 import { reducer as grid } from "./grid";
 import { reducer as lexicalItems } from "./lexicalItems";
@@ -34,7 +33,7 @@ const rootPersistConfig = {
 // Either deal and not use nested persists, or apply:
 // https://github.com/ctrlplusb/easy-peasy/issues/40
 
-// Root reducer with reset functionality
+// Root reducer with top-level reset functionality
 const appReducer = combineReducers({
   derivationInput,
   grid,
@@ -43,9 +42,11 @@ const appReducer = combineReducers({
   websocket
 });
 const rootReducer = (state, action) => {
+  // Full reset
   if (action.type === coreActions.resetAll.toString()) {
     state = undefined;
   }
+
   return appReducer(state, action);
 };
 

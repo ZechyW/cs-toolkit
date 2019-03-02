@@ -61,6 +61,14 @@ class DerivationRequest(models.Model):
     # Derivations.
     raw_lexical_array = models.TextField()
 
+    # Each DerivationRequest may correspond to multiple actual Derivations,
+    # since the lexical array provided to a DerivationRequest is
+    # underspecified with regard to actual LexicalItems.
+    derivations = models.ManyToManyField("Derivation")
+
+    def __str__(self):
+        return str(self.raw_lexical_array)
+
 
 class Derivation(models.Model):
     """
@@ -68,11 +76,6 @@ class Derivation(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-
-    # Each DerivationRequest may correspond to multiple actual Derivations,
-    # since the lexical array provided to a DerivationRequest is
-    # underspecified with regard to actual LexicalItems.
-    derivation_requests = models.ManyToManyField("DerivationRequest")
 
     # All Derivations end...
     ended = models.BooleanField()

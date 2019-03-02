@@ -1,9 +1,12 @@
 /**
  * Main app entry point:
- * Configures the Redux store and renders the App component.
+ * - Configures the Redux store
+ * - Performs other app-level configuration
+ * - Renders the App component
  */
 
 import { config, dom } from "@fortawesome/fontawesome-svg-core";
+import axios from "axios";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -16,6 +19,10 @@ import { persistor, store } from "./store";
 // FontAwesome icons
 config.autoReplaceSvg = "nest";
 dom.watch();
+
+// Axios defaults for Django CSRF handling
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 // Main component render
 function mainRender() {

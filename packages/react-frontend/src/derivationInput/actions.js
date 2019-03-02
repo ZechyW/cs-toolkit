@@ -27,15 +27,25 @@ export const postDerivationRequestError = createAction(
 
 /**
  * Thunk to post a derivation request to the backend.
+ * - Transforms the input items into lexical item skeletons (text and
+ *   language only) before posting.
  * @return {Function}
  */
-export function postDerivationRequest(payload) {
+export function postDerivationRequest(currentInput) {
+  const postArray = [];
+  for (const item of currentInput) {
+    postArray.push({
+      text: item.text,
+      language: item.language
+    });
+  }
+
   return async (dispatch) => {
     dispatch(postDerivationRequestLoading(true));
 
     try {
       const response = await axios.post("/api/grammar/", {
-        derivationInput: payload
+        derivation_input: postArray
       });
 
       if (response.status === 200) {
