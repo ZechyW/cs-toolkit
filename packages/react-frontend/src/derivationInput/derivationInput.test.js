@@ -13,8 +13,20 @@ describe("The suggestion list selector", () => {
         }
       })
     ).toEqual([
-      { id: "word", label: "word (en)", language: "en", text: "word" },
-      { id: "word", label: "word (en_SG)", language: "en_SG", text: "word" }
+      {
+        id: "word",
+        text: "word",
+        label: "word (en)",
+        language: "en",
+        isValid: true
+      },
+      {
+        id: "word",
+        text: "word",
+        label: "word (en_SG)",
+        language: "en_SG",
+        isValid: true
+      }
     ]);
   });
 });
