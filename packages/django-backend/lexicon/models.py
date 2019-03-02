@@ -22,7 +22,6 @@ from model_utils import FieldTracker
 from notify.models import NotifyModel
 
 
-# Create your models here.
 class LexicalItem(NotifyModel):
     """
     A Django model representing a single lexical item.

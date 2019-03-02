@@ -25,8 +25,8 @@ class Config {
   gridDefaultLayout = {
     // lg: 12 columns
     lg: [
-      { w: 6, h: 10, x: 0, y: 0, i: "derivationInput", minW: 2 },
-      { w: 6, h: 10, x: 6, y: 0, i: "lexicalItemList", minW: 2 }
+      { w: 6, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
+      { w: 6, h: 11, x: 6, y: 0, i: "lexicalItemList", minW: 2 }
     ],
 
     // md: 10 columns

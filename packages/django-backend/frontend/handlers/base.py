@@ -1,9 +1,8 @@
-"""
-Base handler for client connections.
-"""
-
-
 class Handler:
+    """
+    Base handler for client connections.
+    """
+
     def disconnect(self, code):
         """
         The Consumer's connection was closed.

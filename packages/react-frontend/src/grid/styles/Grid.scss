@@ -33,10 +33,16 @@
   touch-action: auto !important;
 }
 
-// Top-level elements within the grid item's inner container
+// Top-level elements within the grid item's inner container.
+// Flexbox: By default, all children within the inner container are not allowed
+// to shrink.
 .grid-child {
   height: 100%;
   overflow: visible;
+}
+
+.grid-child > * {
+  flex-shrink: 0;
 }
 
 // Flexbox: All direct children of this element will expand to fill available
@@ -44,9 +50,12 @@
 // - Except the first child (the title)
 // - Except the last two children (the resize handle, and the last content item)
 // Without the `children` suffix, the item itself expands.
-.grid-expand-children > *:nth-child(n+2):nth-last-child(n+3),
-.grid-expand
-{
+.grid-expand-children > *:nth-child(n + 2):nth-last-child(n + 3),
+.grid-expand {
   flex-grow: 1;
+}
+
+// Flexbox: Override to allow element to shrink.
+.grid-shrink {
   flex-shrink: 1;
 }

@@ -20,6 +20,12 @@ model_order.update(
         "Feature sets": 2,
         "Features": 3,
         "Feature properties": 4,
+        # Grammar models
+        "Derivation requests": 5,
+        "Derivations": 6,
+        "Derivation steps": 7,
+        "Syntactic objects": 8,
+        "Syntactic object values": 9,
     }
 )
 
@@ -85,7 +91,8 @@ class AppAdminConfig(AdminConfig):
 
 class AppModelAdmin(admin.ModelAdmin):
     """
-    A ModelAdmin subclass that calls the Model.delete() even on bulk deletions.
+    A ModelAdmin subclass that calls the Model.delete() method even on bulk
+    deletions.
     """
 
     def delete_queryset(self, request, queryset):

@@ -50,6 +50,7 @@
     "utf8": "^3.0.0"
   },
   "devDependencies": {
+    "flow-bin": "^0.94.0",
     "opn": "^5.4.0",
     "webpack-bundle-analyzer": "^3.0.4"
   },

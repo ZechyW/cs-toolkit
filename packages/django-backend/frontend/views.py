@@ -43,8 +43,6 @@ def frontend_development(request):
         settings.REACT_HOST, settings.REACT_PORT, request.path
     )
 
-    logger.info("frontend_dev UPSTREAM_URL: {}".format(upstream_url))
-
     method = request.META["REQUEST_METHOD"].lower()
     response = getattr(requests, method)(upstream_url, stream=True)
     content_type = response.headers.get("Content-Type")

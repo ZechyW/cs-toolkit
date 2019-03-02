@@ -4,3 +4,9 @@ $secondary-font-size: $font-size;
 
 @import "~ag-grid-community/src/styles/ag-grid.scss";
 @import "~ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham.scss";
+
+// Container element for the ag-grid
+.lexical-item-list-container {
+  overflow:hidden;
+  min-height: 80px;
+}

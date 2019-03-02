@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     # Models
     "lexicon",
     "grammar",
+    # For representing tree structures
+    "mptt",
 ]
 
 MIDDLEWARE = [

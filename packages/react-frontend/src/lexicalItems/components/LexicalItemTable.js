@@ -1,6 +1,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowsAltH, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { AgGridReact } from "ag-grid-react";
+import classNames from "classnames";
 import { isEqual } from "lodash-es";
 import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
@@ -123,7 +124,7 @@ function LexicalItemTable(props) {
         Double click on column resize handles to autosize columns.
       </p>
 
-      <div className="has-margin-bottom-10 buttons">
+      <div className="has-margin-bottom-0 buttons">
         <button className="button" onClick={sizeToFit}>
           <span className="icon">
             <i className="fas fa-arrows-alt-h" />
@@ -143,7 +144,17 @@ function LexicalItemTable(props) {
         </button>
       </div>
 
-      <div className="ag-theme-balham grid-expand">
+      <div
+        className={classNames(
+          // `ag-grid` theme
+          "ag-theme-balham",
+          // Sets up the minimum dimensions and scrolling for the table itself
+          "lexical-item-list-container",
+          // Integrates the table into the grid layout by allowing it to
+          // expand/shrink as necessary when the grid item size changes
+          "grid-expand grid-shrink"
+        )}
+      >
         <AgGridReact
           // - Columns
           columnDefs={Config.lexicalItemsColumnDefs}
@@ -158,6 +169,8 @@ function LexicalItemTable(props) {
           deltaRowDataMode={true}
           getRowNodeId={(data) => data.id}
           onGridReady={handleGridReady}
+          // - Pagination
+          pagination={true}
         />
       </div>
     </>
