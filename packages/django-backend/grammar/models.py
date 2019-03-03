@@ -78,15 +78,18 @@ class Derivation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     # All Derivations end...
-    ended = models.BooleanField()
+    ended = models.BooleanField(default=False)
     # But not all Derivations converge.
-    converged = models.BooleanField()
+    converged = models.BooleanField(default=False)
 
     # The first DerivationStep is initialised with the list of fully-specified
     # LexicalItems unique to the Derivation.
     first_step = models.ForeignKey(
-        "DerivationStep", null=True, on_delete=models.SET_NULL
+        "DerivationStep", blank=True, null=True, on_delete=models.SET_NULL
     )
+
+    def __str__(self):
+        return str(self.first_step)
 
 
 class DerivationStep(models.Model):
@@ -110,18 +113,24 @@ class DerivationStep(models.Model):
     # Different DerivationSteps will have different hierarchies,
     # and therefore different sets of SyntacticObjects.
     root_so = TreeOneToOneField(
-        "SyntacticObject", null=True, on_delete=models.SET_NULL
+        "SyntacticObject", blank=True, null=True, on_delete=models.SET_NULL
     )
 
     # How the derivation proceeds depends on the remaining LexicalItems
     # within the input, and which rules are currently active.
-    lexical_array_tail = models.ManyToManyField(
-        "lexicon.LexicalItem", blank=True, through="LexicalArray"
-    )
-    rules = models.ManyToManyField("RuleDescription")
+    # The rules are set here; the lexical array tail is managed by the
+    # LexicalArrayItem model, which tracks order as well.
+    rules = models.ManyToManyField("RuleDescription", blank=True, null=True)
+
+    @property
+    def lexical_array_tail(self):
+        return [
+            lexical_array_item.lexical_item
+            for lexical_array_item in self.lexical_array_items.all()
+        ]
 
     # Has this DerivationStep been processed?
-    processed = models.BooleanField()
+    processed = models.BooleanField(default=False)
     # If it has, it should have a reference to the next DerivationStep in
     # the chain, unless this step crashed the derivation.
     next_step = models.OneToOneField(
@@ -132,20 +141,29 @@ class DerivationStep(models.Model):
         related_name="previous_step",
     )
 
+    def __str__(self):
+        return ", ".join(map("<{}>".format, self.lexical_array_tail))
 
-class LexicalArray(models.Model):
+
+class LexicalArrayItem(models.Model):
     """
     An intermediary model for managing ordered lists of LexicalItems for
     DerivationSteps.
     """
 
     derivation_step = models.ForeignKey(
-        "DerivationStep", on_delete=models.CASCADE
+        "DerivationStep",
+        on_delete=models.CASCADE,
+        related_name="lexical_array_items",
     )
     lexical_item = models.ForeignKey(
-        "lexicon.LexicalItem", on_delete=models.CASCADE
+        "lexicon.LexicalItem", on_delete=models.CASCADE, related_name="+"
     )
     order = models.IntegerField()
+
+    class Meta:
+        unique_together = ("derivation_step", "lexical_item", "order")
+        ordering = ["order"]
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,

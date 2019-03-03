@@ -32,6 +32,7 @@ django-mptt = "^0.9.1"
 pylint = "^2.2"
 black = { version = "*", allows-prereleases = true }
 white = "^0.1.2"
+ipython = {version = "^7.3",extras = ["shell"]}
 
 [tool.poetry.extras]
 windows = ["pywin32"]

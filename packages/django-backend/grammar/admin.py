@@ -8,11 +8,23 @@ from grammar.models import (
     SyntacticObject,
     SyntacticObjectValue,
     RuleDescription,
+    LexicalArrayItem,
 )
 
 admin.site.register(DerivationRequest)
 admin.site.register(Derivation)
-admin.site.register(DerivationStep)
+
+
+class LexicalArrayInline(admin.TabularInline):
+    model = LexicalArrayItem
+    extra = 0
+
+
+class DerivationStepAdmin(admin.ModelAdmin):
+    inlines = [LexicalArrayInline]
+
+
+admin.site.register(DerivationStep, DerivationStepAdmin)
 
 admin.site.register(SyntacticObject, MPTTModelAdmin)
 admin.site.register(SyntacticObjectValue)
