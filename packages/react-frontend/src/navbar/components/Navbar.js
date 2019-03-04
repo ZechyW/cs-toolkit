@@ -46,12 +46,6 @@ function Navbar(props) {
     logoSize: props.navbarExpanded ? "4rem" : "1.75rem",
     logoMarginRight: props.navbarExpanded ? "1rem" : "0.5rem",
     subtitleHeight: props.navbarExpanded ? "1.6rem" : "0rem",
-    onStart: () => {
-      // Note the animation in progress, if we've started
-      if (navbarRef.current) {
-        navbarRef.current.classList.add("is-animating");
-      }
-    },
     onFrame: ({ navbarHeight }) => {
       // Adjust the body's top padding to account for the fixed navbar
       if (document.body.style.paddingTop !== navbarHeight) {
@@ -59,6 +53,7 @@ function Navbar(props) {
       }
     },
     onRest: () => {
+      // The animation should be done.
       navbarRef.current.classList.remove("is-animating");
     }
   });
@@ -104,10 +99,16 @@ function Navbar(props) {
   // Render
   return (
     <animated.nav
-      className={classNames("navbar is-light is-fixed-top", {
-        "is-expanded": props.navbarExpanded,
-        "is-offline": !props.wsConnected
-      })}
+      className={classNames(
+        "navbar is-light is-fixed-top",
+        {
+          "is-expanded": props.navbarExpanded,
+          "is-offline": !props.wsConnected
+        },
+        // Presume we start in an animating state; we will get `react-spring`
+        // to remove the class via an animation callback when/if it is done.
+        "is-animating"
+      )}
       style={{
         height: spring.navbarHeight,
         paddingTop: spring.navbarPaddingY,
