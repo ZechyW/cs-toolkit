@@ -94,10 +94,8 @@ class SubscribeRequestHandler(base.Handler):
         if model in self.watched_models:
             self.consumer.send_to_client(
                 {
-                    "topic": "notify",
-                    "type": "change",
-                    "model": model,
-                    "data": event.get("data"),
+                    "type": "subscribe/change",
+                    "payload": {"model": model, "data": event.get("data")},
                 }
             )
 

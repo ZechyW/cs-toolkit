@@ -1,8 +1,8 @@
 import itertools
 import json
 import logging
-from pprint import pprint
 
+from django.db.models import Count
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,16 +10,15 @@ from rest_framework.views import APIView
 
 from grammar.models import (
     Derivation,
+    DerivationRequest,
     DerivationStep,
     LexicalArrayItem,
-    DerivationRequest,
 )
 from grammar.serializers import (
     DerivationInputSerializer,
     DerivationRequestSerializer,
 )
 from lexicon.models import LexicalItem
-from lexicon.serializers import LexicalItemSerializer
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -70,7 +69,12 @@ class GenerateDerivation(APIView):
         for lexical_array in lexical_arrays:
             # We have to add `.filter()` once per lexical item/order pair,
             # because of the way ManyToMany filtering works.
-            existing = Derivation.objects
+            # We also add a count annotation to make sure we don't pick up
+            # any Derivations that start with the same lexical items,
+            # but whose lexical arrays continue after.
+            existing = Derivation.objects.annotate(
+                count=Count("first_step__lexical_array_items")
+            ).filter(count=len(lexical_array))
             for [idx, lexical_item] in enumerate(lexical_array):
                 existing = existing.filter(
                     first_step__lexical_array_items__lexical_item=lexical_item,
@@ -105,4 +109,5 @@ def create_derivation(lexical_array):
 
     # Create and return a Derivation
     derivation = Derivation.objects.create(first_step=first_step)
+    first_step.derivations.add(derivation)
     return derivation

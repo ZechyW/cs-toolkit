@@ -7,5 +7,6 @@ class CoreNoUninterpretable(Rule):
         "object at the end of the derivation."
     )
 
-    def apply(self, root_so, lexical_array_tail):
+    @staticmethod
+    def apply(root_so, lexical_array_tail):
         pass

@@ -5,7 +5,8 @@ class Rule:
 
     description = ""
 
-    def apply(self, root_so, lexical_array_tail):
+    @staticmethod
+    def apply(root_so, lexical_array_tail):
         """
         Given the currently built-up syntactic object and the remainder of
         the lexical array for some DerivationStep, checks whether the

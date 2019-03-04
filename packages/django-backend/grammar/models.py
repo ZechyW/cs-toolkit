@@ -27,6 +27,7 @@ Also contains the Django model used to represent syntactic objects.
 """
 
 import uuid
+from collections import deque
 
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
@@ -128,13 +129,22 @@ class DerivationStep(models.Model):
 
     @property
     def lexical_array_tail(self):
-        return [
-            lexical_array_item.lexical_item
-            for lexical_array_item in self.lexical_array_items.all()
-        ]
+        """
+        Convenience function to return the tail of LexicalItems left in this
+        Derivation as a deque.
+        :return:
+        """
+
+        return deque(
+            [
+                lexical_array_item.lexical_item
+                for lexical_array_item in self.lexical_array_items.all()
+            ]
+        )
 
     # Has this DerivationStep been processed?
     processed = models.BooleanField(default=False)
+    crashed = models.BooleanField(default=False)
     # If it has, it should have a reference to the next DerivationStep in
     # the chain, unless this step crashed the derivation.
     next_step = models.OneToOneField(
@@ -146,7 +156,10 @@ class DerivationStep(models.Model):
     )
 
     def __str__(self):
-        return ", ".join(map("<{}>".format, self.lexical_array_tail))
+        tail_string = ", ".join(map("<{}>".format, self.lexical_array_tail))
+        if not tail_string.strip():
+            tail_string = "<<Finished Derivation>>"
+        return tail_string
 
 
 class LexicalArrayItem(models.Model):
@@ -210,8 +223,18 @@ class SyntacticObjectValue(models.Model):
     current_language = models.CharField(max_length=50)
     features = models.ManyToManyField("lexicon.Feature", blank=True)
 
+    # For display in the admin interface
+    def feature_string(self):
+        return ", ".join(
+            [str(feature) for feature in sorted(self.features.all(), key=str)]
+        )
+
+    feature_string.short_description = "Features"
+
     def __str__(self):
-        return self.text
+        return "{} ({}) {}".format(
+            self.text, self.current_language, self.feature_string()
+        )
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,

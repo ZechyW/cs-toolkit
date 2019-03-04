@@ -53,7 +53,10 @@ class NotifyModel(models.Model):
 
     @property
     def model_name(self):
-        return self.__class__.__module__ + "." + self.__class__.__name__
+        # We no longer track the fully-specified module path in the Channels
+        # handler; individual class names should be unique enough.
+        # return self.__class__.__module__ + "." + self.__class__.__name__
+        return self.__class__.__name__
 
     def subclass_valid(self):
         """
