@@ -1,5 +1,8 @@
 """
 Sets up the customised Admin site for the project.
+Should only contain abstract classes -- Actual admin site registrations and
+other concrete actions have to be undertaken from `admin.py` in one of the
+project's apps.
 """
 from collections import defaultdict
 
@@ -9,7 +12,6 @@ from django.contrib.admin.apps import AdminConfig
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext_lazy as _
-
 
 #: Custom ordering for project models based on their names
 model_order = defaultdict(int)

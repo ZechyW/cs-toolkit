@@ -48,15 +48,18 @@ INSTALLED_APPS = [
     # operations
     "rest_framework",
     "channels",
+    # For representing tree structures
+    "mptt",
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.
     # App to manage the frontend-Channels integration
     "frontend",
     # For auto-notifying clients of changes
     "notify",
+    # Custom authentication
+    "app_auth",
     # Models
     "lexicon",
     "grammar",
-    # For representing tree structures
-    "mptt",
 ]
 
 MIDDLEWARE = [
@@ -139,6 +142,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
+# Custom authentication
+AUTH_USER_MODEL = "app_auth.AppUser"
+
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Logging
 LOGGING = {
     "version": 1,
@@ -154,19 +162,20 @@ LOGGING = {
     },
 }
 
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = "/static/"
 
 # Frontend bundles and other static files are saved/built into the
-# `FRONTEND-dir/build` folder, and they are served directly from there if
-# `DEBUG` or `WHITENOISE_USE_FINDERS` is True.
+# `FRONTEND_DIR/build/static` folder, and are collected from there for
+# deployment.
+# In addition, files can be served directly from there if `DEBUG` or
+# `WHITENOISE_USE_FINDERS` is True, but this is disabled by default (because
+# in DEBUG mode all frontend requests are transparently proxied to the React
+# dev server.)
 STATICFILES_DIRS = [os.path.join(FRONTEND_DIR, "build", "static")]
-
-# These files will be served at the server root
-WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, "root")
-
 
 # Whitenoise
 # To serve compressed static files, `DEBUG` or `WHITENOISE_USE_FINDERS` must be
@@ -175,6 +184,10 @@ WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, "root")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Files in this directory will be served at the server root.
+WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, "root")
+
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Channels
 ASGI_APPLICATION = "app.routing.application"
 CHANNEL_LAYERS = {
@@ -184,6 +197,7 @@ CHANNEL_LAYERS = {
     }
 }
 
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # DRF
 REST_FRAMEWORK = {
     # If the following lines are uncommented, the browser-based default
@@ -193,6 +207,7 @@ REST_FRAMEWORK = {
     # "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
 }
 
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Integration with React dev mode
 # Host/Port for the React dev server (the upstream default is
 # localhost:3000, but this might cause problems for our proxy view since it

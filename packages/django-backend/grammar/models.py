@@ -66,6 +66,10 @@ class DerivationRequest(models.Model):
     # underspecified with regard to actual LexicalItems.
     derivations = models.ManyToManyField("Derivation")
 
+    # Meta details
+    creation_time = models.DateTimeField()
+    created_by = models.CharField(max_length=255, blank=True, null=True)
+
     def __str__(self):
         return str(self.raw_lexical_array)
 
@@ -120,7 +124,7 @@ class DerivationStep(models.Model):
     # within the input, and which rules are currently active.
     # The rules are set here; the lexical array tail is managed by the
     # LexicalArrayItem model, which tracks order as well.
-    rules = models.ManyToManyField("RuleDescription", blank=True, null=True)
+    rules = models.ManyToManyField("RuleDescription", blank=True)
 
     @property
     def lexical_array_tail(self):
@@ -221,5 +225,20 @@ class RuleDescription(models.Model):
     # When attempting to process DerivationSteps, the name given in the
     # RuleDescription is normalised and used as the class name for the
     # rule in `.rules`.
-    # Normalisation involves CamelCasing and removing hyphens.
-    name = models.TextField()
+    # Normalisation involves CamelCasing and removing non-alphanumeric
+    # characters.
+    name = models.CharField(max_length=255)
+
+    description = models.TextField()
+
+    def rule_class(self):
+        """
+        Turns our user-friendly rule name into the class name for a
+        corresponding Rule in `grammar.rules`.
+        :return:
+        """
+        # CamelCase and remove non-alphanumeric
+        return "".join(x for x in self.name.title() if x.isalnum())
+
+    def __str__(self):
+        return self.name

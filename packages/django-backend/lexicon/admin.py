@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from app.admin import AppModelAdmin
-from .models import LexicalItem, Feature, FeatureProperty
-from .forms import LexicalItemForm, FeatureForm, FeaturePropertyForm
+from .forms import FeatureForm, FeaturePropertyForm, LexicalItemForm
+from .models import Feature, FeatureProperty, LexicalItem
 
 
 # Register your models here.

@@ -3,6 +3,7 @@ import json
 import logging
 from pprint import pprint
 
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,7 +14,10 @@ from grammar.models import (
     LexicalArrayItem,
     DerivationRequest,
 )
-from grammar.serializers import DerivationInputSerializer
+from grammar.serializers import (
+    DerivationInputSerializer,
+    DerivationRequestSerializer,
+)
 from lexicon.models import LexicalItem
 from lexicon.serializers import LexicalItemSerializer
 
@@ -38,8 +42,15 @@ class GenerateDerivation(APIView):
             )
 
         # Create new DerivationRequest.
+        if request.user.is_authenticated:
+            username = request.user.username
+        else:
+            username = None
+
         derivation_request = DerivationRequest.objects.create(
-            raw_lexical_array=json.dumps(serializer.data["derivation_input"])
+            raw_lexical_array=json.dumps(serializer.data["derivation_input"]),
+            creation_time=timezone.now(),
+            created_by=username,
         )
 
         # Find fully specified LexicalItems for the given input array.
@@ -73,7 +84,10 @@ class GenerateDerivation(APIView):
                     create_derivation(lexical_array)
                 )
 
-        return Response("OK", status=status.HTTP_200_OK)
+        # Serialise and return DerivationRequest
+        serializer = DerivationRequestSerializer(derivation_request)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def create_derivation(lexical_array):

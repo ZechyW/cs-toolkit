@@ -4,6 +4,8 @@ Grammar-related model serializers
 
 from rest_framework import serializers
 
+from grammar.models import DerivationRequest
+
 
 class DerivationInputSerializer(serializers.Serializer):
     """
@@ -32,3 +34,13 @@ class DerivationInputSerializer(serializers.Serializer):
                 )
 
         return value
+
+
+class DerivationRequestSerializer(serializers.ModelSerializer):
+    """
+    For serializing a full DerivationRequest
+    """
+
+    class Meta:
+        model = DerivationRequest
+        fields = "__all__"
