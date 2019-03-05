@@ -36,6 +36,10 @@ DJANGO_PORT=${DJANGO_PORT:-8080}
 REACT_HOST=${REACT_HOST:-127.0.0.1}
 REACT_PORT=${REACT_PORT:-3000}
 
+DB_NAME=${DB_NAME:-cs_toolkit}
+DB_USER=${DB_USER:-cs_toolkit}
+DB_PASS=${DB_PASS:-cs_toolkit}
+
 # Update-notifier sometimes causes permissions errors on Windows
 NO_UPDATE_NOTIFIER=1
 

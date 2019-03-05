@@ -106,11 +106,21 @@ WSGI_APPLICATION = "app.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# Settings for default SQLite database
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, "db.sqlite3")
+#     }
+# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-        "OPTIONS": {"timeout": 10},
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "cs_toolkit",
+        "USER": "cs_toolkit",
+        "PASSWORD": "cs_toolkit",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
     }
 }
 

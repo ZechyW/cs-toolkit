@@ -27,6 +27,7 @@ twisted = "^18.9"
 dramatiq = {version = "^1.5",extras = ["watch", "redis"]}
 django-dramatiq = "^0.5.3"
 django-mptt = "^0.9.1"
+psycopg2 = "^2.7"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.2"
