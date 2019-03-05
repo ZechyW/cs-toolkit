@@ -12,10 +12,10 @@ import thunk from "redux-thunk";
 
 import { actions as coreActions } from "./core";
 import { reducer as derivationInput } from "./derivationInput";
+import { reducer as derivations, saga as derivationsSaga } from "./derivations";
 import { reducer as grid } from "./grid";
 import { reducer as lexicalItems } from "./lexicalItems";
 import { reducer as navbar } from "./navbar";
-
 import { saga as notificationSaga } from "./notifications";
 
 import { userTiming } from "./util";
@@ -36,6 +36,7 @@ const rootPersistConfig = {
 // Root reducer with top-level reset functionality
 const appReducer = combineReducers({
   derivationInput,
+  derivations,
   grid,
   lexicalItems,
   navbar,
@@ -73,5 +74,5 @@ export const persistor = persistStore(store);
 // Sagas
 // (Must be run after the store is configured)
 sagaMiddleware.run(function*() {
-  yield all([notificationSaga()]);
+  yield all([derivationsSaga(), notificationSaga()]);
 });

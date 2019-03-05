@@ -7,7 +7,7 @@ import logging
 from asgiref.sync import async_to_sync
 from rest_framework import serializers
 
-import frontend.models
+import frontend.subscribe_models
 from . import base
 
 logger = logging.getLogger("cs-toolkit")
@@ -23,7 +23,7 @@ class SubscribeRequestHandler(base.Handler):
     def __init__(self, consumer):
         self.consumer = consumer
         self.in_group = False
-        self.watched_models = []
+        self.watched_items = []
 
         setattr(self.consumer, "notify_change", self.notify_change)
         setattr(self.consumer, "notify_delete", self.notify_delete)
@@ -42,10 +42,10 @@ class SubscribeRequestHandler(base.Handler):
             )
             return self.send_error("No model specified.")
 
-        # Try to subscribe to the given model
+        # Check the model name provided.
         model_name = serializer.validated_data["model"]
         try:
-            model = getattr(frontend.models, model_name)
+            model = getattr(frontend.subscribe_models, model_name)
         except AttributeError:
             logger.warning(
                 "SubscribeRequest made with invalid model name: {}".format(
@@ -54,8 +54,16 @@ class SubscribeRequestHandler(base.Handler):
             )
             return self.send_error("Invalid model.")
 
-        if model_name not in self.watched_models:
-            self.watched_models.append(model_name)
+        # Check if an instance id was specified
+        item_id = serializer.validated_data.get("id")
+
+        if item_id is None:
+            item = model_name
+        else:
+            item = "{}:{}".format(model_name, item_id)
+
+        if item not in self.watched_items:
+            self.watched_items.append(item)
 
         # And the layer group
         if not self.in_group:
@@ -64,14 +72,20 @@ class SubscribeRequestHandler(base.Handler):
             )
 
         # Send back the full dataset as an initial response
-        self.consumer.send_to_client(
-            {
-                "type": "subscribe/acknowledge",
-                "payload": {
-                    "model": model_name,
-                    "data": model.get_all_serialized_data(),
-                },
+        if item_id is None:
+            payload = {
+                "model": model_name,
+                "data": model.get_all_serialized_data(),
             }
+        else:
+            payload = {
+                "model": model_name,
+                "id": item_id,
+                "data": model.objects.get(id=item_id).serialized_data,
+            }
+
+        self.consumer.send_to_client(
+            {"type": "subscribe/acknowledge", "payload": payload}
         )
 
     def send_error(self, error_text):
@@ -91,11 +105,25 @@ class SubscribeRequestHandler(base.Handler):
         :return:
         """
         model = event.get("model")
-        if model in self.watched_models:
+        data = event.get("data")
+        item_id = data.id
+
+        # Model-level subscriptions
+        if model in self.watched_items:
             self.consumer.send_to_client(
                 {
                     "type": "subscribe/change",
-                    "payload": {"model": model, "data": event.get("data")},
+                    "payload": {"model": model, "data": data},
+                }
+            )
+
+        # Instance-level subscriptions
+        item = "{}:{}".format(model, item_id)
+        if item in self.watched_items:
+            self.consumer.send_to_client(
+                {
+                    "type": "subscribe/change",
+                    "payload": {"model": model, "id": item_id, "data": data},
                 }
             )
 
@@ -107,11 +135,25 @@ class SubscribeRequestHandler(base.Handler):
         :return:
         """
         model = event.get("model")
-        if model in self.watched_models:
+        data = event.get("data")
+        item_id = data.id
+
+        # Model-level subscriptions
+        if model in self.watched_items:
             self.consumer.send_to_client(
                 {
                     "type": "subscribe/delete",
-                    "payload": {"model": model, "data": event.get("data")},
+                    "payload": {"model": model, "data": data},
+                }
+            )
+
+        # Instance-level subscriptions
+        item = "{}:{}".format(model, item_id)
+        if item in self.watched_items:
+            self.consumer.send_to_client(
+                {
+                    "type": "subscribe/delete",
+                    "payload": {"model": model, "id": item_id, "data": data},
                 }
             )
 
@@ -128,3 +170,4 @@ class SubscribeRequestSerializer(serializers.Serializer):
         pass
 
     model = serializers.CharField(max_length=200)
+    id = serializers.CharField(max_length=200, required=False)

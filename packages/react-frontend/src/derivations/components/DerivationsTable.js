@@ -1,22 +1,22 @@
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsAltH, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { AgGridReact } from "ag-grid-react";
 import classNames from "classnames";
 import { isEqual } from "lodash-es";
-import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { connect } from "react-redux";
 import Config from "../../config";
-
-library.add(faArrowsAltH, faPlusSquare);
+import { GridItemWrapper } from "../../grid";
+import createSelector from "selectorator";
+import { saveColumnState } from "../actions";
+import { getDerivationsAsList } from "../selectors";
 
 /**
- * Presentational component for the lexical item list.
- * Uses `ag-grid` to display a list of currently defined lexical items.
+ * Presentational component for the derivation request status tracker.
+ * Uses `ag-grid` to display a list of tracked derivation requests.
  * @param props
  * @constructor
  */
-function LexicalItemTable(props) {
+function DerivationsTable(props) {
   // Grid api (will be set when the grid is ready)
   const gridApi = useRef(null);
   const gridColumnApi = useRef(null);
@@ -99,53 +99,16 @@ function LexicalItemTable(props) {
     }
   }
 
-  // The export button will only be active when there are selected rows.
-  const [selectedRows, setSelectedRows] = useState([]);
-
-  /**
-   * When the selection changes.
-   * - Prepare for potential export to derivation input component.
-   */
-  function handleSelectionChanged() {
-    setSelectedRows(gridApi.current.getSelectedRows());
-  }
-
   return (
     <>
-      <p className="has-margin-bottom-10">
-        Click on individual lexical items to select them; selected lexical items
-        can be added directly to the Lexical Array input.
-      </p>
-      <p className="has-margin-bottom-10">
-        Double click on column resize handles to autosize columns.
-      </p>
-
-      <div className="has-margin-bottom-0 buttons">
-        <button className="button" onClick={sizeToFit}>
-          <span className="icon">
-            <i className="fas fa-arrows-alt-h" />
-          </span>
-          <span>Fit columns to table</span>
-        </button>
-
-        <button
-          className="button"
-          disabled={selectedRows.length === 0}
-          onClick={() => props.exportLexicalItems(selectedRows)}
-        >
-          <span className="icon">
-            <i className="fas fa-plus-square" />
-          </span>
-          <span>Add selected to Lexical Array</span>
-        </button>
-      </div>
+      <p>Derivations being tracked:</p>
 
       <div
         className={classNames(
           // `ag-grid` theme
           "ag-theme-balham",
           // Sets up the minimum dimensions and scrolling for the table itself
-          "ag-grid-container",
+          "lexical-item-list-container",
           // Integrates the table into the grid layout by allowing it to
           // expand/shrink as necessary when the grid item size changes
           "grid-expand grid-shrink"
@@ -153,15 +116,15 @@ function LexicalItemTable(props) {
       >
         <AgGridReact
           // - Columns
-          columnDefs={Config.lexicalItemsColumnDefs}
-          defaultColDef={Config.lexicalItemsDefaultColDef}
+          columnDefs={Config.derivationsColumnDefs}
+          defaultColDef={Config.derivationsDefaultColDef}
           // - Selection
           rowSelection="multiple"
           rowMultiSelectWithClick={true}
           suppressCellSelection={true}
-          onSelectionChanged={handleSelectionChanged}
+          // onSelectionChanged={handleSelectionChanged}
           // - Data and API
-          rowData={props.lexicalItems}
+          rowData={props.derivations}
           deltaRowDataMode={true}
           getRowNodeId={(data) => data.id}
           onGridReady={handleGridReady}
@@ -173,17 +136,25 @@ function LexicalItemTable(props) {
   );
 }
 
-LexicalItemTable.propTypes = {
-  lexicalItems: PropTypes.array.isRequired,
+/**
+ * HOCs and React-redux binding
+ */
+let Wrapped = DerivationsTable;
 
-  columnState: PropTypes.array,
-  saveColumnState: PropTypes.func.isRequired,
+Wrapped = GridItemWrapper(Wrapped);
 
-  exportLexicalItems: PropTypes.func.isRequired
+const actionCreators = {
+  // `ag-grid`
+  saveColumnState
 };
 
-LexicalItemTable.defaultProps = {
-  columnState: []
-};
+Wrapped = connect(
+  createSelector({
+    // Pass through to view
+    derivations: getDerivationsAsList,
+    columnState: "derivations.columnState"
+  }),
+  actionCreators
+)(Wrapped);
 
-export default LexicalItemTable;
+export default Wrapped;

@@ -4,9 +4,13 @@
  */
 import React from "react";
 import { DerivationInput } from "../../derivationInput";
+import { DerivationsTable } from "../../derivations";
 import { Grid, GridItem } from "../../grid";
 import { LexicalItems } from "../../lexicalItems";
 import { Navbar } from "../../navbar/";
+
+import "../styles/ag-grid.scss";
+import "../styles/theme.scss";
 
 // Define grid items.
 // The main content component for each grid item should be wrapped in
@@ -29,6 +33,13 @@ gridItems.push({
   title: "Lexical Item List",
   expand: false,
   contents: <LexicalItems />
+});
+
+gridItems.push({
+  id: "derivationStatusList",
+  title: "Derivation Status",
+  expand: false,
+  contents: <DerivationsTable />
 });
 
 // function TestElement() {

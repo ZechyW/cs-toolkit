@@ -30,13 +30,14 @@ import uuid
 from collections import deque
 
 from django.db import models
+from model_utils import FieldTracker
 from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
+
+from notify.models import NotifyModel
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Models for derivation requests and associated derivations.
-
-
 class DerivationRequest(models.Model):
     """
     A Django model representing a request to generate a derivation.
@@ -75,7 +76,7 @@ class DerivationRequest(models.Model):
         return str(self.raw_lexical_array)
 
 
-class Derivation(models.Model):
+class Derivation(NotifyModel):
     """
     A Django model representing a grammatical derivation.
     """
@@ -92,6 +93,14 @@ class Derivation(models.Model):
     first_step = models.ForeignKey(
         "DerivationStep", blank=True, null=True, on_delete=models.SET_NULL
     )
+
+    #: Used for change notifications. Subscribers will only be alerted when a
+    #: substantive change is made to a model instance.
+    tracker = FieldTracker()
+
+    #: Used for change notifications. Subscribers will receive the latest model
+    #: data processed via this serializer.
+    serializer_class = "grammar.serializers.DerivationSerializer"
 
     def __str__(self):
         return str(self.first_step)
@@ -185,8 +194,6 @@ class LexicalArrayItem(models.Model):
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Models for syntactic objects.
-
-
 class SyntacticObject(MPTTModel):
     """
     A `django-mptt` model for representing SyntacticObjects hierarchically.
@@ -240,8 +247,6 @@ class SyntacticObjectValue(models.Model):
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Stub for describing syntactic rules so that the other models can reference
 # them -- Actual rule implementations are in `.rules`.
-
-
 class RuleDescription(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 

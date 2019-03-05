@@ -13,7 +13,6 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import App from "./core/components/App";
-import "./core/styles/theme.scss";
 import { persistor, store } from "./store";
 
 // FontAwesome icons

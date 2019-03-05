@@ -76,6 +76,26 @@ class Config {
     { headerName: "Language", field: "language", width: 110 },
     { headerName: "Features", field: "features", width: 200 }
   ];
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // DerivationStatusList
+
+  // Default column definition: Will be applied to all columns unless
+  // individually overwritten.
+  derivationsDefaultColDef = {
+    filter: true,
+    lockVisible: true,
+    sortable: true,
+    resizable: true
+  };
+
+  // Initial column definitions: Will be overwritten by individual users'
+  // settings.
+  derivationsColumnDefs = [
+    { headerName: "Lexical Array", field: "lexicalArray", width: 150 },
+    { headerName: "Status", field: "status", width: 110 },
+    { headerName: "Created on", field: "creationTime", width: 110 }
+  ];
 }
 
 export default new Config();

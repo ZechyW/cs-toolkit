@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+  <object model="grammar.ruledescription" pk="ca815b10-41d0-40da-8553-9049542a4fe3">
+    <field name="name" type="CharField">core-no-uninterpretable</field>
+    <field name="description" type="TextField">There should be no uninterpretable values left on the syntactic object at the end of the derivation.</field>
+  </object>
+</django-objects>

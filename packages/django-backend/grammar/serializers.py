@@ -4,7 +4,7 @@ Grammar-related model serializers
 
 from rest_framework import serializers
 
-from grammar.models import DerivationRequest
+from grammar.models import Derivation, DerivationRequest
 
 
 class DerivationInputSerializer(serializers.Serializer):
@@ -44,3 +44,16 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = DerivationRequest
         fields = "__all__"
+
+
+class DerivationSerializer(serializers.ModelSerializer):
+    """
+    For serializing a Derivation
+    """
+
+    class Meta:
+        model = Derivation
+        fields = ["id", "ended", "converged", "first_step"]
+
+    id = serializers.CharField(read_only=True)
+    first_step = serializers.StringRelatedField()

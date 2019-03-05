@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+  <object model="lexicon.lexicalitem" pk="1">
+    <field name="text" type="CharField">c</field>
+    <field name="language" type="CharField">func</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="1"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="2">
+    <field name="text" type="CharField">c</field>
+    <field name="language" type="CharField">func</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="1"></object><object pk="3"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="3">
+    <field name="text" type="CharField">John</field>
+    <field name="language" type="CharField">en</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="4">
+    <field name="text" type="CharField">d</field>
+    <field name="language" type="CharField">func</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="5">
+    <field name="text" type="CharField">Mary</field>
+    <field name="language" type="CharField">en</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="7">
+    <field name="text" type="CharField">n</field>
+    <field name="language" type="CharField">func</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.feature" pk="1">
+    <field name="name" type="CharField">Wh</field>
+    <field name="description" type="TextField">An uninterpretable Wh feature with the EPP property.</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="2"></object><object pk="3"></object></field>
+  </object>
+  <object model="lexicon.feature" pk="2">
+    <field name="name" type="CharField">Rel</field>
+    <field name="description" type="TextField">An interpretable Relative feature.</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="1"></object></field>
+  </object>
+  <object model="lexicon.feature" pk="3">
+    <field name="name" type="CharField">Rel</field>
+    <field name="description" type="TextField">An uninterpretable Relative feature that has the EPP property.</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="2"></object><object pk="3"></object></field>
+  </object>
+  <object model="lexicon.feature" pk="4">
+    <field name="name" type="CharField">Phi</field>
+    <field name="description" type="TextField">Phi-feature bundle: 3rd person, singular.</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="4"></object><object pk="5"></object></field>
+  </object>
+  <object model="lexicon.featureproperty" pk="1">
+    <field name="name" type="CharField">interpretable</field>
+    <field name="type" type="CharField">Boolean</field>
+    <field name="raw_value" type="CharField">True</field>
+    <field name="description" type="TextField">Interpretable features may be present on the Syntactic Object at the end of the derivation, when the SO is passed off to the Labelling Algorithm, etc.</field>
+  </object>
+  <object model="lexicon.featureproperty" pk="2">
+    <field name="name" type="CharField">interpretable</field>
+    <field name="type" type="CharField">Boolean</field>
+    <field name="raw_value" type="CharField">False</field>
+    <field name="description" type="TextField">Uninterpretable features must not be present in the Syntactic Object at the end of the derivation, when the SO is passed off to the Labelling Algorithm, etc.</field>
+  </object>
+  <object model="lexicon.featureproperty" pk="3">
+    <field name="name" type="CharField">EPP</field>
+    <field name="type" type="CharField">Boolean</field>
+    <field name="raw_value" type="CharField">True</field>
+    <field name="description" type="TextField">Probe features that have the EPP property check to ensure that their Goals are internal-Merged immediately above them after they are valued by the Agree operation. (Pesetsky and Torrego, 2001)</field>
+  </object>
+  <object model="lexicon.featureproperty" pk="4">
+    <field name="name" type="CharField">person</field>
+    <field name="type" type="CharField">Integer</field>
+    <field name="raw_value" type="CharField">3</field>
+    <field name="description" type="TextField">Phi-feature: 3rd person.</field>
+  </object>
+  <object model="lexicon.featureproperty" pk="5">
+    <field name="name" type="CharField">number</field>
+    <field name="type" type="CharField">Text</field>
+    <field name="raw_value" type="CharField">singular</field>
+    <field name="description" type="TextField">Phi-feature: Singular number</field>
+  </object>
+</django-objects>
