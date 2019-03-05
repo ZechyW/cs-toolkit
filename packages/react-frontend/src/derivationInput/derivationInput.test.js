@@ -5,11 +5,11 @@ describe("The suggestion list selector", () => {
     expect(
       getSuggestions({
         lexicalItems: {
-          lexicalItems: [
-            { text: "word", language: "en" },
-            { text: "word", language: "en_SG" },
-            { text: "word", language: "en" }
-          ]
+          lexicalItemsById: {
+            0: { text: "word", language: "en" },
+            1: { text: "word", language: "en_SG" },
+            2: { text: "word", language: "en" }
+          }
         }
       })
     ).toEqual([
