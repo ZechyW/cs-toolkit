@@ -51,6 +51,8 @@ function Navbar(props) {
       if (document.body.style.paddingTop !== navbarHeight) {
         document.body.style.paddingTop = navbarHeight;
       }
+
+      navbarRef.current.classList.add("is-animating");
     },
     onRest: () => {
       // The animation should be done.

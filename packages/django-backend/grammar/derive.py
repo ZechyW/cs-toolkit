@@ -8,8 +8,6 @@ from django.db.models import Count
 
 import grammar.rules
 from grammar.models import (
-    DerivationStep,
-    LexicalArrayItem,
     RuleDescription,
     SyntacticObject,
     SyntacticObjectValue,
@@ -17,49 +15,6 @@ from grammar.models import (
 from lexicon.models import Feature, LexicalItem
 
 logger = logging.getLogger("cs-toolkit")
-
-
-def process_derivation_step(step: DerivationStep):
-    """
-    Idempotent function to process the given DerivationStep and generate the
-    next one in the derivation.
-    :param step:
-    :return:
-    """
-    # Have we already processed this step?
-    if step.processed:
-        logger.warning(
-            "Tried to process a DerivationStep that has already been "
-            "processed: {}".format(step.id)
-        )
-        return
-
-    # Is the derivation over?
-    if len(step.lexical_array_tail) == 0:
-        for derivation in step.derivations.all():
-            derivation.ended = True
-            derivation.save()
-        return
-
-    # Get the next step.
-    root_so, lexical_array_tail = merge(
-        root_so=step.root_so,
-        lexical_array_tail=step.lexical_array_tail,
-        rules=step.rules.all(),
-    )
-
-    next_step = DerivationStep.objects.create(root_so=root_so)
-    for [idx, lexical_item] in enumerate(lexical_array_tail):
-        LexicalArrayItem.objects.create(
-            derivation_step=next_step, lexical_item=lexical_item, order=idx
-        )
-    for derivation in step.derivations.all():
-        next_step.derivations.add(derivation)
-
-    # Clean up this one.
-    step.processed = True
-    step.next_step = next_step
-    step.save()
 
 
 def merge(

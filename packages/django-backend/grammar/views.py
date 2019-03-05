@@ -8,17 +8,15 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from grammar.models import (
+from lexicon.models import LexicalItem
+from .models import (
     Derivation,
     DerivationRequest,
     DerivationStep,
     LexicalArrayItem,
 )
-from grammar.serializers import (
-    DerivationInputSerializer,
-    DerivationRequestSerializer,
-)
-from lexicon.models import LexicalItem
+from .serializers import DerivationInputSerializer, DerivationRequestSerializer
+from .tasks import process_derivation_step
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -66,6 +64,7 @@ class GenerateDerivation(APIView):
         lexical_arrays = itertools.product(*lexical_item_sets)
 
         # Retrieve/create corresponding Derivations.
+        derivations = []
         for lexical_array in lexical_arrays:
             # We have to add `.filter()` once per lexical item/order pair,
             # because of the way ManyToMany filtering works.
@@ -82,11 +81,14 @@ class GenerateDerivation(APIView):
                 )
 
             if len(existing) > 0:
-                derivation_request.derivations.add(existing.get())
+                derivations.append(existing.get())
             else:
-                derivation_request.derivations.add(
-                    create_derivation(lexical_array)
-                )
+                derivations.append(create_derivation(lexical_array))
+
+        # Request processing of all the Derivations.
+        for derivation in derivations:
+            derivation_request.derivations.add(derivation)
+            process_derivation_step.send(derivation.first_step.id.hex)
 
         # Serialise and return DerivationRequest
         serializer = DerivationRequestSerializer(derivation_request)

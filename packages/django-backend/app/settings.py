@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import redis
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRONTEND_DIR = os.path.join(BASE_DIR, "..", "react-frontend")
@@ -45,9 +47,10 @@ INSTALLED_APPS = [
     "app.admin.AppAdminConfig",
     "django.contrib.admindocs",
     # 3rd-party libraries: Django REST Framework and Channels for API/Async
-    # operations
+    # operations, Dramatiq for tasks
     "rest_framework",
     "channels",
+    "django_dramatiq",
     # For representing tree structures
     "mptt",
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.
@@ -107,6 +110,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "OPTIONS": {"timeout": 10},
     }
 }
 
@@ -217,3 +221,20 @@ REACT_PORT = os.environ.get("REACT_PORT") or 3000
 
 # Port that Django is running on, for internal API requests etc.
 DJANGO_PORT = os.environ.get("DJANGO_PORT") or 8080
+
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
+# Tasks
+DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {
+        "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL)
+    },
+    "MIDDLEWARE": [
+        "dramatiq.middleware.AgeLimit",
+        "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Retries",
+        "django_dramatiq.middleware.AdminMiddleware",
+        "django_dramatiq.middleware.DbConnectionsMiddleware",
+    ],
+}
