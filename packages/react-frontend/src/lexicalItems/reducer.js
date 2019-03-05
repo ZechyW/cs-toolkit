@@ -7,7 +7,7 @@ import { saveColumnState } from "./actions";
  * TODO: Make `lexicalItems` an Object keyed by `id`
  */
 const initialState = {
-  lexicalItems: [],
+  lexicalItemsById: {},
 
   // ag-grid view
   columnState: []
@@ -28,13 +28,15 @@ export default createReducer(initialState, {
    * @param state
    * @param action
    */
-  [wsActions.wsSubscribeAcknowledge]: (state, action) => {
+  [wsActions.subscribeAcknowledge]: (state, action) => {
     if (action.payload.model !== "LexicalItem") {
       return;
     }
 
     // Set
-    state.lexicalItems = action.payload.data;
+    for (const lexicalItem of action.payload.data) {
+      state.lexicalItemsById[lexicalItem.id] = lexicalItem;
+    }
   },
 
   /**
@@ -42,22 +44,14 @@ export default createReducer(initialState, {
    * @param state
    * @param action
    */
-  [wsActions.wsSubscribeChange]: (state, action) => {
+  [wsActions.subscribeChange]: (state, action) => {
     if (action.payload.model !== "LexicalItem") {
       return;
     }
 
     // Update
-    for (const lexicalItem of state.lexicalItems) {
-      if (lexicalItem.id === action.payload.data.id) {
-        const index = state.lexicalItems.indexOf(lexicalItem);
-        state.lexicalItems.splice(index, 1, action.payload.data);
-        return;
-      }
-    }
-
-    // New item
-    state.lexicalItems.push(action.payload.data);
+    const lexicalItem = action.payload.data;
+    state.lexicalItemsById[lexicalItem.id] = lexicalItem;
   },
 
   /**
@@ -65,18 +59,12 @@ export default createReducer(initialState, {
    * @param state
    * @param action
    */
-  [wsActions.wsSubscribeDelete]: (state, action) => {
+  [wsActions.subscribeDelete]: (state, action) => {
     if (action.payload.model !== "LexicalItem") {
       return;
     }
 
     // Delete
-    for (const lexicalItem of state.lexicalItems) {
-      if (lexicalItem.id === action.payload.data.id) {
-        const index = state.lexicalItems.indexOf(lexicalItem);
-        state.lexicalItems.splice(index, 1);
-        return;
-      }
-    }
+    delete state.lexicalItemsById[action.payload.data.id];
   }
 });

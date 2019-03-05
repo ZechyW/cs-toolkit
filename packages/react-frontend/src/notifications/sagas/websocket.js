@@ -17,8 +17,8 @@ export function* webSocketNotification() {
 
   while (true) {
     const { open, close } = yield race({
-      open: take([wsActions.wsOpen]),
-      close: take([wsActions.wsClose])
+      open: take([wsActions.open]),
+      close: take([wsActions.close])
     });
 
     if (open) {
@@ -39,7 +39,8 @@ export function* webSocketNotification() {
         .setText(
           '<p class="has-text-weight-bold">Connection to server lost</p>\n<p class="has-margin-top-10">\n  We will keep trying to reconnect even if this notification is closed.\n</p>' +
             '\n<p class="has-margin-top-10">\n  The lexical item list and other data views may be inaccurate while we are\n  offline, but changes you make to the derivation input and other forms will\n  continue to be saved.' +
-            "\n</p>\n"
+            "\n</p>\n",
+          true
         );
     }
   }

@@ -3,8 +3,8 @@ import { CLOSE, OPEN } from "redux-websocket-bridge";
 
 // Websocket action types are defined by the `redux-websocket-bridge`
 // library; we just wrap them up here for other parts of the application to use.
-export const wsOpen = createAction(`@@websocket/${OPEN}`);
-export const wsClose = createAction(`@@websocket/${CLOSE}`);
+export const open = createAction(`@@websocket/${OPEN}`);
+export const close = createAction(`@@websocket/${CLOSE}`);
 
 // Actions that can be dispatched by other components
 // `meta.send` will be set to true for WS request actions so that they can
@@ -12,18 +12,18 @@ export const wsClose = createAction(`@@websocket/${CLOSE}`);
 
 const SUBSCRIBE_REQUEST = "subscribe/request";
 
-export function wsSubscribeRequest(payload) {
+export function subscribeRequest(payload) {
   return {
     type: SUBSCRIBE_REQUEST,
     payload: payload,
     meta: { send: true }
   };
 }
-wsSubscribeRequest.toString = () => SUBSCRIBE_REQUEST;
-wsSubscribeRequest.type = SUBSCRIBE_REQUEST;
+subscribeRequest.toString = () => SUBSCRIBE_REQUEST;
+subscribeRequest.type = SUBSCRIBE_REQUEST;
 
 // Actions that can be received by other components (essentially just string
 // constants, synced with the server code, that other reducers can watch for)
-export const wsSubscribeAcknowledge = "subscribe/acknowledge";
-export const wsSubscribeChange = "subscribe/change";
-export const wsSubscribeDelete = "subscribe/delete";
+export const subscribeAcknowledge = "subscribe/acknowledge";
+export const subscribeChange = "subscribe/change";
+export const subscribeDelete = "subscribe/delete";

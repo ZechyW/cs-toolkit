@@ -1,5 +1,5 @@
 import { createReducer } from "redux-starter-kit";
-import { wsOpen, wsClose, wsSubscribeAcknowledge } from "./actions";
+import { open, close, subscribeAcknowledge } from "./actions";
 
 /**
  * Handles WebSocket-related actions.
@@ -11,14 +11,14 @@ const initialState = {
 };
 
 const wsReducer = createReducer(initialState, {
-  [wsOpen]: (state) => {
+  [open]: (state) => {
     state.connected = true;
   },
-  [wsClose]: (state) => {
+  [close]: (state) => {
     state.connected = false;
     state.subscriptions = {};
   },
-  [wsSubscribeAcknowledge]: (state, action) => {
+  [subscribeAcknowledge]: (state, action) => {
     const model = action.payload.model;
     state.subscriptions[model] = true;
   }

@@ -6,9 +6,12 @@ import createSelector from "selectorator";
 import { lexicalItemToSuggestion } from "./util";
 
 export const getSuggestions = createSelector(
-  ["lexicalItems.lexicalItems"],
+  ["lexicalItems.lexicalItemsById"],
   (lexicalItems) => {
     const newSuggestions = [];
+
+    // Convert to array
+    lexicalItems = Object.values(lexicalItems);
 
     // Deduplicate by suggestion label
     lexicalItems = uniqBy(

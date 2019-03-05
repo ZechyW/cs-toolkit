@@ -6,6 +6,7 @@ import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
 import { exportLexicalItems, saveColumnState } from "../actions";
 import LexicalItemTable from "../components/LexicalItemTable";
+import { getLexicalItemsAsList } from "../selectors";
 
 /**
  * Container component for the lexical item list.
@@ -57,7 +58,7 @@ let Wrapped = LexicalItems;
 Wrapped = GridItemWrapper(Wrapped);
 
 const actionCreators = {
-  subscribeRequest: wsActions.wsSubscribeRequest,
+  subscribeRequest: wsActions.subscribeRequest,
 
   // `ag-grid`
   saveColumnState,
@@ -69,7 +70,7 @@ const actionCreators = {
 Wrapped = connect(
   createSelector({
     // Pass through to view
-    lexicalItems: "lexicalItems.lexicalItems",
+    lexicalItems: getLexicalItemsAsList,
     columnState: "lexicalItems.columnState",
 
     // Websocket management
