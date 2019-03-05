@@ -5,6 +5,8 @@ import { actions as derivationActions } from "../derivationInput";
 
 // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
 // Fetch full lexical item list
+// DEPRECATED: Full LexicalItem list is sent when our subscription is
+// acknowledged.  Kept here as example of async actions.
 const FETCH_LEXICAL_ITEMS = "lexicalItems/fetchLexicalItems";
 const FETCH_LEXICAL_ITEMS_LOADING = "lexicalItems/fetchLexicalItemsLoading";
 const FETCH_LEXICAL_ITEMS_SUCCESS = "lexicalItems/fetchLexicalItemsSuccess";

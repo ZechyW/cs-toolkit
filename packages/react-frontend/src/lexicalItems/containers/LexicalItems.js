@@ -4,11 +4,7 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
-import {
-  exportLexicalItems,
-  fetchLexicalItems,
-  saveColumnState
-} from "../actions";
+import { exportLexicalItems, saveColumnState } from "../actions";
 import LexicalItemTable from "../components/LexicalItemTable";
 
 /**
@@ -23,10 +19,6 @@ function LexicalItems(props) {
     wsSubscribed,
     subscribeRequest,
 
-    // Suggestion list management
-    fetchLexicalItems,
-    fetchedLexicalItems,
-
     ...otherProps
   } = props;
 
@@ -39,13 +31,6 @@ function LexicalItems(props) {
     }
   }, [wsConnected, wsSubscribed]);
 
-  // Fetch the lexical item list if we haven't done so yet
-  useEffect(() => {
-    if (!fetchedLexicalItems) {
-      fetchLexicalItems();
-    }
-  }, [fetchedLexicalItems]);
-
   return <LexicalItemTable {...otherProps} />;
 }
 
@@ -53,10 +38,6 @@ LexicalItems.propTypes = {
   // Websocket subscription management
   wsConnected: PropTypes.bool.isRequired,
   wsSubscribed: PropTypes.bool,
-
-  // Direct API call for fetching lexical item list
-  fetchLexicalItems: PropTypes.func.isRequired,
-  fetchedLexicalItems: PropTypes.bool.isRequired,
 
   // Actual lexical item list data
   lexicalItems: PropTypes.array
@@ -77,7 +58,6 @@ Wrapped = GridItemWrapper(Wrapped);
 
 const actionCreators = {
   subscribeRequest: wsActions.wsSubscribeRequest,
-  fetchLexicalItems,
 
   // `ag-grid`
   saveColumnState,
@@ -91,9 +71,6 @@ Wrapped = connect(
     // Pass through to view
     lexicalItems: "lexicalItems.lexicalItems",
     columnState: "lexicalItems.columnState",
-
-    // Fetch the lexical item list on first load
-    fetchedLexicalItems: "lexicalItems.fetchedLexicalItems",
 
     // Websocket management
     wsConnected: "websocket.connected",

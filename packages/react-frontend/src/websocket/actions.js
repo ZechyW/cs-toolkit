@@ -26,3 +26,4 @@ wsSubscribeRequest.type = SUBSCRIBE_REQUEST;
 // constants, synced with the server code, that other reducers can watch for)
 export const wsSubscribeAcknowledge = "subscribe/acknowledge";
 export const wsSubscribeChange = "subscribe/change";
+export const wsSubscribeDelete = "subscribe/delete";
