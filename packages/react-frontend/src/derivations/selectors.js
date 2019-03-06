@@ -1,8 +1,10 @@
 /**
  * Selectors for the derivation tracking component
  */
+import { format } from "date-fns";
 import { forOwn } from "lodash-es";
 import createSelector from "selectorator";
+import Config from "../config";
 
 /**
  * Pools data for DerivationRequests and their Derivations to present in
@@ -23,7 +25,10 @@ export const getDerivationsAsList = createSelector(
           const derivationListItem = {
             id: `${request.id}:${derivation.id}`,
             lexicalArray: derivation.first_step,
-            creationTime: request.creation_time
+            creationTime: format(
+              new Date(request.creation_time),
+              Config.timestampFormat
+            )
           };
 
           if (!derivation.ended) {

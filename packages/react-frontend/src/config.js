@@ -4,6 +4,14 @@
 
 class Config {
   /**
+   * Default format for displaying timestamps.  Will be passed to the
+   * `format` function from  `date-fns`.
+   * (https://date-fns.org/v2.0.0-alpha.27/docs/format)
+   * @type {string}
+   */
+  timestampFormat = "yyyy-MM-dd HH:mm:ss";
+
+  /**
    * WebSocket URL to connect to, including protocol.
    * @type {string}
    * @example `ws://${window.location.host}/ws/`

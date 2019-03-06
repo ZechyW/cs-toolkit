@@ -4,6 +4,7 @@
 import Noty from "noty";
 import "noty/src/noty.scss";
 import "noty/src/themes/bootstrap-v4.scss";
+import { assign } from "lodash-es";
 
 Noty.overrideDefaults({
   type: "info",
@@ -12,16 +13,12 @@ Noty.overrideDefaults({
   closeWith: ["click", "button"]
 });
 
-export function successNoty(text) {
-  return new Noty({
-    type: "success",
-    text: text || ""
-  });
+export function successNoty(text, options) {
+  options = assign(options, { type: "success", text: text || "" });
+  return new Noty(options);
 }
 
-export function errorNoty(text) {
-  return new Noty({
-    type: "error",
-    text: text || ""
-  });
+export function errorNoty(text, options) {
+  options = assign(options, { type: "error", text: text || "" });
+  return new Noty(options);
 }

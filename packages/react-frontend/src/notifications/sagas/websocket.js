@@ -1,5 +1,5 @@
 /**
- * Websocket-related sagas
+ * Websocket-related notifications
  */
 import { race, take } from "redux-saga/effects";
 

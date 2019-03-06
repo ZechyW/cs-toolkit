@@ -38,6 +38,8 @@ class GenerateDerivation(APIView):
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
+        derivation_input = serializer.validated_data["derivation_input"]
+
         # Create new DerivationRequest.
         if request.user.is_authenticated:
             username = request.user.username
@@ -45,14 +47,14 @@ class GenerateDerivation(APIView):
             username = None
 
         derivation_request = DerivationRequest.objects.create(
-            raw_lexical_array=json.dumps(serializer.data["derivation_input"]),
+            raw_lexical_array=json.dumps(derivation_input),
             creation_time=timezone.now(),
             created_by=username,
         )
 
         # Find fully specified LexicalItems for the given input array.
         lexical_item_sets = []
-        for lexical_skeleton in serializer.data["derivation_input"]:
+        for lexical_skeleton in derivation_input:
             lexical_item_set = LexicalItem.objects.filter(
                 text=lexical_skeleton["text"],
                 language=lexical_skeleton["language"],

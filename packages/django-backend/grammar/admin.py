@@ -16,13 +16,15 @@ from grammar.models import (
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Derivations
+@admin.register(DerivationRequest)
 class DerivationRequestAdmin(AppModelAdmin):
     list_display = ["__str__", "created_by", "creation_time"]
     readonly_fields = ["id", "created_by", "creation_time"]
 
 
-admin.site.register(DerivationRequest, DerivationRequestAdmin)
-admin.site.register(Derivation)
+@admin.register(Derivation)
+class DerivationAdmin(AppModelAdmin):
+    readonly_fields = ["id"]
 
 
 class LexicalArrayInline(admin.TabularInline):

@@ -51,10 +51,15 @@ export function postDerivationRequest(currentInput) {
       if (response.status === 200) {
         dispatch(postDerivationRequestSuccess(response.data));
       } else {
-        dispatch(postDerivationRequestError(response));
+        dispatch(postDerivationRequestError(response.data));
       }
-    } catch (err) {
-      dispatch(postDerivationRequestError(err));
+    } catch (error) {
+      // Something went wrong
+      if (error.response) {
+        dispatch(postDerivationRequestError(error.response.data));
+      } else {
+        dispatch(postDerivationRequestError("Something went wrong."));
+      }
     }
   };
 }

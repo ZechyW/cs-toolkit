@@ -24,13 +24,18 @@ class DerivationInputSerializer(serializers.Serializer):
 
     @staticmethod
     def validate_derivation_input(value):
+        if not value:
+            raise serializers.ValidationError(
+                "Derivation input array must not be empty."
+            )
+
         for lexical_item_skeleton in value:
             if (
                 "text" not in lexical_item_skeleton
                 or "language" not in lexical_item_skeleton
             ):
                 raise serializers.ValidationError(
-                    "Client sent invalid derivation input array."
+                    "Derivation input array contained invalid items."
                 )
 
         return value
