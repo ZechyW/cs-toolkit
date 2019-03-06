@@ -1,3 +1,5 @@
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
@@ -12,6 +14,9 @@ import {
   expandNavbar
 } from "../actions";
 import logo from "../images/logo.png";
+import { actions as optionsActions } from "../../options";
+
+library.add(faCog);
 
 /**
  * Animated collapsible navbar component.
@@ -59,6 +64,7 @@ function Navbar(props) {
       navbarRef.current.classList.remove("is-animating");
     }
   });
+  // Faster spring for the subtitle
   const fastSpring = useSpring({
     opacity: props.navbarExpanded ? "1" : "0",
     config: { mass: 1, tension: 300, friction: 26 }
@@ -169,7 +175,10 @@ function Navbar(props) {
                 opacity: fastSpring.opacity
               }}
             >
-              A (roughly) Minimalist framework for exploring code switching data
+              {props.navbarExpanded
+                ? "A (roughly) Minimalist framework for exploring code" +
+                  " switching data"
+                : ""}
             </animated.p>
           </div>
         </animated.div>
@@ -203,6 +212,21 @@ function Navbar(props) {
           <div className="navbar-item">
             <div className="buttons">
               <button
+                className="button"
+                onClick={() => {
+                  if (props.optionsShowing) {
+                    props.optionsHide();
+                  } else {
+                    props.optionsShow();
+                  }
+                }}
+              >
+                <span className="icon">
+                  <i className="fas fa-cog" />
+                </span>
+              </button>
+
+              <button
                 className="button is-primary"
                 onClick={() => {
                   if (!props.navbarExpanded) props.expandNavbar();
@@ -228,7 +252,10 @@ const actionCreators = {
   expandBurger,
   collapseBurger,
 
-  resetGrid: coreActions.resetGrid
+  resetGrid: coreActions.resetGrid,
+
+  optionsShow: optionsActions.show,
+  optionsHide: optionsActions.hide
 };
 
 let WrappedNavbar = connect(
@@ -236,7 +263,9 @@ let WrappedNavbar = connect(
     navbarExpanded: "navbar.navbarExpanded",
     burgerExpanded: "navbar.burgerExpanded",
 
-    wsConnected: "websocket.connected"
+    wsConnected: "websocket.connected",
+
+    optionsShowing: "options.showModal"
   }),
   actionCreators
 )(Navbar);

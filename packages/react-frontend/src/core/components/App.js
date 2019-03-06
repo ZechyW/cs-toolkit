@@ -2,12 +2,16 @@
  * Main app component
  * - Contains the header/footer and main UI grid definitions
  */
+import PropTypes from "prop-types";
 import React from "react";
+import { connect } from "react-redux";
+import createSelector from "selectorator";
 import { DerivationInput } from "../../derivationInput";
 import { DerivationsTable } from "../../derivations";
 import { Grid, GridItem } from "../../grid";
 import { LexicalItems } from "../../lexicalItems";
 import { Navbar } from "../../navbar/";
+import { Options } from "../../options";
 
 import "../styles/ag-grid.scss";
 import "../styles/theme.scss";
@@ -42,40 +46,54 @@ gridItems.push({
   contents: <DerivationsTable />
 });
 
-// function TestElement() {
-//   return <div>Test</div>;
-// }
-// gridItems.push({
-//   id: "wsEcho",
-//   title: "WS Echo Test",
-//   contents: <TestElement />
-// });
-
 /**
  * Main app React component
  * @returns {*}
  * @constructor
  */
-function App() {
+function App(props) {
+  // Prepare to render visible grid items, removing disabled ones.
+  const visibleGridItems = gridItems
+    .map((gridItem) => {
+      // Don't render any currently disabled items
+      if (!props.itemVisibility[gridItem.id]) {
+        return null;
+      }
+
+      return (
+        <GridItem
+          key={gridItem.id}
+          id={gridItem.id}
+          title={gridItem.title}
+          expandContents={gridItem.expand}
+        >
+          {gridItem.contents}
+        </GridItem>
+      );
+    })
+    .filter((el) => el !== null);
+
   return (
     <>
       <Navbar />
-      <Grid>
-        {gridItems.map((gridItem) => {
-          return (
-            <GridItem
-              key={gridItem.id}
-              id={gridItem.id}
-              title={gridItem.title}
-              expandContents={gridItem.expand}
-            >
-              {gridItem.contents}
-            </GridItem>
-          );
-        })}
-      </Grid>
+      <Grid>{visibleGridItems}</Grid>
+      <Options />
     </>
   );
 }
+App.propTypes = {
+  itemVisibility: PropTypes.objectOf(PropTypes.bool).isRequired
+};
 
-export default App;
+/**
+ * HOCs and React-redux binding
+ */
+let Wrapped = App;
+
+Wrapped = connect(
+  createSelector({
+    itemVisibility: "core.itemVisibility"
+  })
+)(Wrapped);
+
+export default Wrapped;

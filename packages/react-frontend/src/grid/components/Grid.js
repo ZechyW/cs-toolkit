@@ -1,4 +1,4 @@
-import { cloneDeep, isMatch, throttle } from "lodash-es";
+import { cloneDeep, forOwn, isMatch, keys, throttle } from "lodash-es";
 import assert from "minimalistic-assert";
 import React, { useLayoutEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -23,6 +23,47 @@ function Grid(props) {
     staticGridOptions.breakpoints,
     props.width
   );
+
+  // Checking layout definitions
+  // When the items in the grid are hidden and re-shown, their layout
+  // configurations need to be reloaded.
+  useLayoutEffect(() => {
+    const visibleChildren = {};
+    React.Children.forEach(props.children, (child) => {
+      visibleChildren[child["key"]] = true;
+    });
+
+    // Pick up as many valid config objects as we can from the current
+    // layout state.
+    const newLayout = [];
+    for (const currentItem of props.layouts[currentBreakpoint]) {
+      delete visibleChildren[currentItem.i];
+      newLayout.push(currentItem);
+    }
+
+    if (keys(visibleChildren).length === 0) {
+      // We accounted for every visible item.
+      return;
+    }
+
+    // Still here?
+    // Pull defaults from Config for any remaining items.
+    forOwn(visibleChildren, (_, id) => {
+      for (const defaultItem of Config.gridDefaultLayout[currentBreakpoint]) {
+        if (id === defaultItem.i) {
+          newLayout.push(defaultItem);
+          break;
+        }
+      }
+    });
+
+    const newLayouts = {
+      ...props.layouts,
+      [currentBreakpoint]: newLayout
+    };
+
+    props.saveLayouts(newLayouts);
+  });
 
   // Auto-sizing
   // (`useLayoutEffect` because it might affect the visible height of grid

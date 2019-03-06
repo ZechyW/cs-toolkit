@@ -10,13 +10,14 @@ import { all } from "redux-saga/effects";
 import { configureStore } from "redux-starter-kit";
 import thunk from "redux-thunk";
 
-import { actions as coreActions } from "./core";
+import { actions as coreActions, reducer as core } from "./core";
 import { reducer as derivationInput } from "./derivationInput";
 import { reducer as derivations, saga as derivationsSaga } from "./derivations";
 import { reducer as grid } from "./grid";
 import { reducer as lexicalItems } from "./lexicalItems";
 import { reducer as navbar } from "./navbar";
 import { saga as notificationSaga } from "./notifications";
+import { reducer as options } from "./options";
 
 import { userTiming } from "./util";
 import { middleware as wsMiddleware, reducer as websocket } from "./websocket";
@@ -35,11 +36,13 @@ const rootPersistConfig = {
 
 // Root reducer with top-level reset functionality
 const appReducer = combineReducers({
+  core,
   derivationInput,
   derivations,
   grid,
   lexicalItems,
   navbar,
+  options,
   websocket
 });
 const rootReducer = (state, action) => {

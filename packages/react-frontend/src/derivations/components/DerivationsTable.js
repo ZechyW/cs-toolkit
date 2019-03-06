@@ -103,6 +103,15 @@ function DerivationsTable(props) {
     <>
       <p>Derivations being tracked:</p>
 
+      <div className="has-margin-bottom-0 buttons">
+        <button className="button" onClick={sizeToFit}>
+          <span className="icon">
+            <i className="fas fa-arrows-alt-h" />
+          </span>
+          <span>Fit columns to table</span>
+        </button>
+      </div>
+
       <div
         className={classNames(
           // `ag-grid` theme
@@ -119,10 +128,7 @@ function DerivationsTable(props) {
           columnDefs={Config.derivationsColumnDefs}
           defaultColDef={Config.derivationsDefaultColDef}
           // - Selection
-          rowSelection="multiple"
-          rowMultiSelectWithClick={true}
           suppressCellSelection={true}
-          // onSelectionChanged={handleSelectionChanged}
           // - Data and API
           rowData={props.derivations}
           deltaRowDataMode={true}

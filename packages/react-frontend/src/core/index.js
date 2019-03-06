@@ -1,2 +1,3 @@
 import * as actions from "./actions";
-export { actions };
+import reducer from "./reducer";
+export { actions, reducer };
