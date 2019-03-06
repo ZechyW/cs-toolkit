@@ -81,12 +81,20 @@ class Derivation(NotifyModel):
     A Django model representing a grammatical derivation.
     """
 
+    STATUS_PENDING = "Pending"
+    STATUS_DONE = "Done"
+    STATUS_CRASHED = "Crashed"
+    STATUSES = (
+        (STATUS_PENDING, "Pending"),
+        (STATUS_DONE, "Done"),
+        (STATUS_CRASHED, "Crashed"),
+    )
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
-    # All Derivations end...
-    ended = models.BooleanField(default=False)
-    # But not all Derivations converge.
-    converged = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=10, choices=STATUSES, default=STATUS_PENDING
+    )
 
     # The first DerivationStep is initialised with the list of fully-specified
     # LexicalItems unique to the Derivation.
@@ -110,13 +118,37 @@ class DerivationStep(models.Model):
     """
     A Django model representing an individual step in a grammatical derivation.
 
-    Each DerivationStep has a unique:
+    Each DerivationStep has a unique combination of:
     - `root_so` representing the currently built-up SyntacticObject
+    - `rules` representing the rules active for this derivation
     - `lexical_array_tail` representing the remainder of the input lexical
       array
+
+    DerivationSteps go through a number of phases when processed:
+    - Before processing (STATUS_PENDING).
+    - Rule applications - Crashes (STATUS_CRASHED) if any rules raise errors.
+    - Generator applications - Generates the next DerivationSteps in the
+      Derivation based on the configured generators.
+    - Finished processing (STATUS_DONE).
+    - If any DerivationSteps were generated, processing continues with them.
+      If no new DerivationSteps were generated, the Derivation is marked as
+      complete.
     """
 
+    STATUS_PENDING = "Pending"
+    STATUS_DONE = "Done"
+    STATUS_CRASHED = "Crashed"
+    STATUSES = (
+        (STATUS_PENDING, "Pending"),
+        (STATUS_DONE, "Done"),
+        (STATUS_CRASHED, "Crashed"),
+    )
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+
+    status = models.CharField(
+        max_length=10, choices=STATUSES, default=STATUS_PENDING
+    )
 
     # Multiple Derivations may include this particular DerivationStep (via
     # fingerprinting and memoisation)
@@ -156,12 +188,12 @@ class DerivationStep(models.Model):
     crashed = models.BooleanField(default=False)
     # If it has, it should have a reference to the next DerivationStep in
     # the chain, unless this step crashed the derivation.
-    next_step = models.OneToOneField(
+    previous_step = models.ForeignKey(
         "self",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="previous_step",
+        related_name="next_steps",
     )
 
     def __str__(self):

@@ -25,19 +25,12 @@ export const getDerivationsAsList = createSelector(
           const derivationListItem = {
             id: `${request.id}:${derivation.id}`,
             lexicalArray: derivation.first_step,
+            status: derivation.status,
             creationTime: format(
               new Date(request.creation_time),
               Config.timestampFormat
             )
           };
-
-          if (!derivation.ended) {
-            derivationListItem.status = "Pending";
-          } else if (derivation.converged) {
-            derivationListItem.status = "Done";
-          } else {
-            derivationListItem.status = "Crashed";
-          }
 
           derivationList.push(derivationListItem);
         }

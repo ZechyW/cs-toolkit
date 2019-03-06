@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+/**
+ * Styles for the options panel
+ */
+
+@import "../../core/styles/variables.scss";
+
+// Add bottom radius to options modal body without adding an unnecessary footer
+.options-body {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}

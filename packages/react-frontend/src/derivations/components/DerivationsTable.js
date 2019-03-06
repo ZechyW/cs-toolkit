@@ -101,8 +101,6 @@ function DerivationsTable(props) {
 
   return (
     <>
-      <p>Derivations being tracked:</p>
-
       <div className="has-margin-bottom-0 buttons">
         <button className="button" onClick={sizeToFit}>
           <span className="icon">

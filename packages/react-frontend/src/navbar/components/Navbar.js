@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import createSelector from "selectorator";
-import { actions as coreActions } from "../../core";
+import { actions as optionsActions } from "../../options";
 import { useMedia } from "../../util";
 import {
   collapseBurger,
@@ -14,7 +14,6 @@ import {
   expandNavbar
 } from "../actions";
 import logo from "../images/logo.png";
-import { actions as optionsActions } from "../../options";
 
 library.add(faCog);
 
@@ -225,16 +224,6 @@ function Navbar(props) {
                   <i className="fas fa-cog" />
                 </span>
               </button>
-
-              <button
-                className="button is-primary"
-                onClick={() => {
-                  if (!props.navbarExpanded) props.expandNavbar();
-                  props.resetGrid();
-                }}
-              >
-                <strong>Reset Layout</strong>
-              </button>
             </div>
           </div>
         </div>
@@ -251,8 +240,6 @@ const actionCreators = {
   collapseNavbar,
   expandBurger,
   collapseBurger,
-
-  resetGrid: coreActions.resetGrid,
 
   optionsShow: optionsActions.show,
   optionsHide: optionsActions.hide

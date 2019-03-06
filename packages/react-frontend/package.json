@@ -28,6 +28,7 @@
     "node-sass": "^4.11.0",
     "noty": "^3.2.0-beta",
     "pako": "^1.0.8",
+    "pretty-checkbox": "^3.0.3",
     "prop-types": "^15.7.2",
     "raf-schd": "^4.0.0",
     "react": "^16.8.1",

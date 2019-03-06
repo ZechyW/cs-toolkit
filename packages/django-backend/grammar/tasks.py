@@ -7,7 +7,7 @@ import uuid
 import dramatiq
 
 from .derive import merge
-from .models import DerivationStep, LexicalArrayItem
+from .models import Derivation, DerivationStep, LexicalArrayItem
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -39,7 +39,7 @@ def process_derivation_step(step_id_hex: str):
     # Is the derivation over?
     if len(step.lexical_array_tail) == 0:
         for derivation in step.derivations.all():
-            derivation.ended = True
+            derivation.status = Derivation.STATUS_DONE
             derivation.save()
 
         step.processed = True
