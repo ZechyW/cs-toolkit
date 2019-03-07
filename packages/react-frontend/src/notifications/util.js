@@ -13,6 +13,11 @@ Noty.overrideDefaults({
   closeWith: ["click", "button"]
 });
 
+export function infoNoty(text, options) {
+  options = assign(options, { type: "info", text: text || "" });
+  return new Noty(options);
+}
+
 export function successNoty(text, options) {
   options = assign(options, { type: "success", text: text || "" });
   return new Noty(options);

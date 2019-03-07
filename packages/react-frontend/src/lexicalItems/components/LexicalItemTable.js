@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { isEqual } from "lodash-es";
 import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Config from "../../config";
 
 library.add(faArrowsAltH, faPlusSquare);
@@ -47,7 +47,7 @@ function LexicalItemTable(props) {
    * Attempts to restore the saved column state from `props.columnState`, doing
    * some sanity checks along the way.
    */
-  function restoreColumnState() {
+  let restoreColumnState = () => {
     // The number of columns defined in the state should at least be the same
     // as the number of columns currently in the table, or we will be
     // missing columns.
@@ -58,19 +58,21 @@ function LexicalItemTable(props) {
     }
 
     gridColumnApi.current.setColumnState(props.columnState);
-  }
+  };
+  restoreColumnState = rafSchd(restoreColumnState);
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Event handlers
 
-  // Restore column state every time it changes after the initial load.
-  useEffect(() => {
-    // The first time this hook is called, the API instances might not be
-    // ready yet.
-    if (!gridColumnApi.current) return;
-
-    restoreColumnState();
-  }, [props.columnState]);
+  // DEPRECATE?
+  // // Restore column state every time it changes after the initial load.
+  // useEffect(() => {
+  //   // The first time this hook is called, the API instances might not be
+  //   // ready yet.
+  //   if (!gridColumnApi.current) return;
+  //
+  //    restoreColumnState();
+  // }, [props.columnState]);
 
   /**
    * When the grid is first fully loaded.
@@ -131,7 +133,10 @@ function LexicalItemTable(props) {
         <button
           className="button"
           disabled={selectedRows.length === 0}
-          onClick={() => props.exportLexicalItems(selectedRows)}
+          onClick={() => {
+            props.exportLexicalItems(selectedRows);
+            gridApi.current.deselectAll();
+          }}
         >
           <span className="icon">
             <i className="fas fa-plus-square" />

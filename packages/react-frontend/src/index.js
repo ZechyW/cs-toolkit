@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== "production") {
   // until it gets fixed upstream
   setTimeout(() => {
     mainRender();
-  }, 1000);
+  }, 1500);
 } else {
   mainRender();
 }

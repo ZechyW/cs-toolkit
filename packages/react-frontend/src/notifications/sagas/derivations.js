@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { forOwn } from "lodash-es";
 import { all, takeEvery } from "redux-saga/effects";
 import { actions as derivationInputActions } from "../../derivationInput";
-import { errorNoty, successNoty } from "../util";
+import { errorNoty, infoNoty, successNoty } from "../util";
 import Config from "../../config";
 import { actions as wsActions } from "../../websocket";
 
@@ -77,10 +77,28 @@ function* derivationRequestErrorNotification(action) {
 }
 
 /**
- * Displays notifications for successfully completed derivation requests.
+ * Displays notifications for completed derivation requests.
+ * May have crashed or completed; either way, it's done.
  */
 function* derivationRequestCompleteNotification(action) {
-  if (action.payload.model === "DerivationRequest") {
+  if (
+    action.payload.model === "DerivationRequest" &&
+    action.payload.data["completion_time"]
+  ) {
+    const timestamp = format(
+      new Date(action.payload.data["completion_time"]),
+      Config.timestampFormat
+    );
+
+    infoNoty(
+      `<p class="has-text-weight-bold">Derivation complete</p>
+<p class="has-margin-top-10">
+  The server has finished processing a derivation request.
+</p>
+<p class="has-margin-top-10">(${timestamp})</p>
+`,
+      { timeout: 3000 }
+    ).show();
   }
   yield;
 }
