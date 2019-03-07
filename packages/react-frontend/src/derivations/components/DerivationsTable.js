@@ -1,18 +1,14 @@
 import { AgGridReact } from "ag-grid-react";
 import classNames from "classnames";
 import { isEqual } from "lodash-es";
+import PropTypes from "prop-types";
 import rafSchd from "raf-schd";
 import React, { useEffect, useRef } from "react";
-import { connect } from "react-redux";
 import Config from "../../config";
-import { GridItemWrapper } from "../../grid";
-import createSelector from "selectorator";
-import { saveColumnState } from "../actions";
-import { getDerivationsAsList } from "../selectors";
 
 /**
- * Presentational component for the derivation request status tracker.
- * Uses `ag-grid` to display a list of tracked derivation requests.
+ * Presentational component for the derivation status tracker.
+ * Uses `ag-grid` to display a list of tracked derivations.
  * @param props
  * @constructor
  */
@@ -139,26 +135,14 @@ function DerivationsTable(props) {
     </>
   );
 }
+DerivationsTable.propTypes = {
+  derivations: PropTypes.array.isRequired,
 
-/**
- * HOCs and React-redux binding
- */
-let Wrapped = DerivationsTable;
-
-Wrapped = GridItemWrapper(Wrapped);
-
-const actionCreators = {
-  // `ag-grid`
-  saveColumnState
+  columnState: PropTypes.array,
+  saveColumnState: PropTypes.func.isRequired
+};
+DerivationsTable.defaultProps = {
+  columnState: []
 };
 
-Wrapped = connect(
-  createSelector({
-    // Pass through to view
-    derivations: getDerivationsAsList,
-    columnState: "derivations.columnState"
-  }),
-  actionCreators
-)(Wrapped);
-
-export default Wrapped;
+export default DerivationsTable;

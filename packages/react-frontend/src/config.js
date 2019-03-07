@@ -107,7 +107,8 @@ class Config {
   derivationsColumnDefs = [
     { headerName: "Lexical Array", field: "lexicalArray", width: 150 },
     { headerName: "Status", field: "status", width: 110 },
-    { headerName: "Created on", field: "creationTime", width: 110 }
+    { headerName: "Created on", field: "creationTime", width: 110 },
+    { headerName: "Completed on", field: "completionTime", width: 110 }
   ];
 }
 

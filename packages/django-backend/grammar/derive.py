@@ -29,6 +29,10 @@ def merge(
     :param rules:
     :return:
     """
+    # We may have been called with no more items in our tail.
+    if not lexical_array_tail:
+        return False
+
     # Pop an item and create a SyntacticObject out of it.
     next_item = lexical_array_tail.popleft()
     next_so_value = get_or_create_so_value(

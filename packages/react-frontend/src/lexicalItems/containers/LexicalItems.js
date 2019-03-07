@@ -38,7 +38,11 @@ function LexicalItems(props) {
 LexicalItems.propTypes = {
   // Websocket subscription management
   wsConnected: PropTypes.bool.isRequired,
-  wsSubscribed: PropTypes.bool,
+  wsSubscribed: PropTypes.oneOfType([
+    PropTypes.bool,
+    // Could have string value "pending"
+    PropTypes.string
+  ]),
 
   // Actual lexical item list data
   lexicalItems: PropTypes.array

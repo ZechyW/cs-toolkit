@@ -40,7 +40,7 @@ class SubscribeRequestHandler(base.Handler):
             logger.warning(
                 "SubscribeRequest made without specifying a valid model name."
             )
-            return self.send_error("No model specified.")
+            return self.send_error({"error": serializer.errors})
 
         # Check the model name provided.
         model_name = serializer.validated_data["model"]
@@ -52,15 +52,26 @@ class SubscribeRequestHandler(base.Handler):
                     model_name
                 )
             )
-            return self.send_error("Invalid model.")
+            return self.send_error(
+                {"model": model_name, "error": "Invalid model."}
+            )
 
-        # Check if an instance id was specified
+        # Check if a valid instance id was specified
         item_id = serializer.validated_data.get("id")
 
         if item_id is None:
             item = model_name
         else:
             item = "{}:{}".format(model_name, item_id)
+            if not model.objects.filter(id=item_id).count():
+                return self.send_error(
+                    {
+                        "model": model_name,
+                        "id": item_id,
+                        "error": "Model {} does not have any objects with ID "
+                        "{}.".format(model_name, item_id),
+                    }
+                )
 
         if item not in self.watched_items:
             self.watched_items.append(item)
@@ -88,13 +99,17 @@ class SubscribeRequestHandler(base.Handler):
             {"type": "subscribe/acknowledge", "payload": payload}
         )
 
-    def send_error(self, error_text):
+    def send_error(self, error_payload):
         """
         Sends an error message back to the client
         :return:
         """
         self.consumer.send_to_client(
-            {"type": "subscribe/error", "payload": error_text, "error": True}
+            {
+                "type": "subscribe/error",
+                "payload": error_payload,
+                "error": True,
+            }
         )
 
     def notify_change(self, event):
@@ -106,7 +121,7 @@ class SubscribeRequestHandler(base.Handler):
         """
         model = event.get("model")
         data = event.get("data")
-        item_id = data.id
+        item_id = data.get("id")
 
         # Model-level subscriptions
         if model in self.watched_items:
@@ -136,7 +151,7 @@ class SubscribeRequestHandler(base.Handler):
         """
         model = event.get("model")
         data = event.get("data")
-        item_id = data.id
+        item_id = data.get("id")
 
         # Model-level subscriptions
         if model in self.watched_items:

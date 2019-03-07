@@ -36,68 +36,71 @@ export default createReducer(initialState, {
   },
 
   /**
-   * Successfully subscribed to a particular Derivation.
+   * Successfully subscribed to a particular Derivation/DerivationRequest.
    * @param state
    * @param action
    */
   [wsActions.subscribeAcknowledge]: (state, action) => {
-    if (action.payload.model !== "Derivation") {
-      return;
+    if (action.payload.model === "Derivation") {
+      const derivation = action.payload.data;
+      state.derivationsById[derivation.id] = derivation;
     }
 
-    // Set
-    const derivation = action.payload.data;
-    state.derivationsById[derivation.id] = derivation;
-  }
-});
-
-const test = {
-  type: "derivationInput/postRequestSuccess",
-  payload: {
-    id: "fc979d19-e82f-4f5d-9eb8-b89fe57f1ffe",
-    raw_lexical_array:
-      '[{"text": "John", "language": "en"}, {"text": "d", "language": "func"}]',
-    creation_time: "2019-03-05T17:34:46.811854Z",
-    created_by: "zechy",
-    derivations: ["4da1c734-f0c8-4cec-9d3f-9f867e32806a"]
-  }
-};
-
-const test2 = {
-  type: "subscribe/acknowledge",
-  payload: {
-    model: "Derivation",
-    id: "4da1c734-f0c8-4cec-9d3f-9f867e32806a",
-    data: {
-      id: "4da1c734-f0c8-4cec-9d3f-9f867e32806a",
-      ended: true,
-      converged: false,
-      first_step: "<John (en) [Phi, person:3, number:singular]>, <d (func) >"
+    if (action.payload.model === "DerivationRequest") {
+      const request = action.payload.data;
+      state.requestsById[request.id] = request;
     }
   },
-  meta: {
-    webSocket: {
-      _listeners: {
-        error: [],
-        message: [],
-        open: [],
-        close: []
-      },
-      _retryCount: 0,
-      _shouldReconnect: true,
-      _connectLock: false,
-      _binaryType: "blob",
-      _closeCalled: false,
-      _messageQueue: [],
-      _url: "ws://localhost:8080/redux/",
-      _protocols: "",
-      _options: {
-        minReconnectionDelay: 100,
-        reconnectionDelayGrowFactor: 1.75
-      },
-      _ws: {},
-      _connectTimeout: 20,
-      _uptimeTimeout: 33
+
+  /**
+   * A Derivation/DerivationRequest was changed/added.
+   * @param state
+   * @param action
+   */
+  [wsActions.subscribeChange]: (state, action) => {
+    if (action.payload.model === "Derivation") {
+      const derivation = action.payload.data;
+      state.derivationsById[derivation.id] = derivation;
+    }
+
+    if (action.payload.model === "DerivationRequest") {
+      const request = action.payload.data;
+      state.requestsById[request.id] = request;
+    }
+  },
+
+  /**
+   * A Derivation/DerivationRequest was deleted.
+   * @param state
+   * @param action
+   */
+  [wsActions.subscribeDelete]: (state, action) => {
+    if (action.payload.model === "Derivation") {
+      const derivation = action.payload.data;
+      delete state.derivationsById[derivation.id];
+    }
+
+    if (action.payload.model === "DerivationRequest") {
+      const request = action.payload.data;
+      delete state.requestsById[request.id];
+    }
+  },
+
+  /**
+   * There was a problem subscribing to the given Derivation/DerivationRequest.
+   * @param state
+   * @param action
+   */
+  [wsActions.subscribeError]: (state, action) => {
+    // Stop tracking any Derivations/DerivationRequests that are no longer
+    // valid.  (This could happen if the database is cleared out from the
+    // server end)
+    if (action.payload.model === "Derivation") {
+      delete state.derivationsById[action.payload.id];
+    }
+
+    if (action.payload.model === "DerivationRequest") {
+      delete state.requestsById[action.payload.id];
     }
   }
-};
+});

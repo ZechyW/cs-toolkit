@@ -19,7 +19,7 @@ from grammar.models import (
 @admin.register(DerivationRequest)
 class DerivationRequestAdmin(AppModelAdmin):
     list_display = ["__str__", "created_by", "creation_time"]
-    readonly_fields = ["id", "created_by", "creation_time"]
+    readonly_fields = ["id", "created_by", "creation_time", "completion_time"]
 
 
 @admin.register(Derivation)
@@ -32,13 +32,12 @@ class LexicalArrayInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(DerivationStep)
 class DerivationStepAdmin(AppModelAdmin):
     inlines = [LexicalArrayInline]
     readonly_fields = ["id"]
     filter_horizontal = ["rules"]
 
-
-admin.site.register(DerivationStep, DerivationStepAdmin)
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Syntactic objects

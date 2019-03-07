@@ -7,19 +7,27 @@ import { all, takeEvery } from "redux-saga/effects";
 import { actions as derivationInputActions } from "../../derivationInput";
 import { errorNoty, successNoty } from "../util";
 import Config from "../../config";
+import { actions as wsActions } from "../../websocket";
 
 /**
  * Displays notifications for derivation requests.
  */
 export function* derivationNotifications() {
   yield all([
+    // Posting derivation requests to the server
     takeEvery(
       [derivationInputActions.postDerivationRequestSuccess],
-      derivationSuccessNotification
+      derivationRequestSuccessNotification
     ),
     takeEvery(
       [derivationInputActions.postDerivationRequestError],
-      derivationErrorNotification
+      derivationRequestErrorNotification
+    ),
+
+    // Completed derivation requests
+    takeEvery(
+      [wsActions.subscribeChange],
+      derivationRequestCompleteNotification
     )
   ]);
 }
@@ -27,9 +35,9 @@ export function* derivationNotifications() {
 /**
  * Displays notifications for successfully posted derivation requests.
  */
-export function* derivationSuccessNotification(action) {
+function* derivationRequestSuccessNotification(action) {
   const timestamp = format(
-    new Date(action.payload.creation_time),
+    new Date(action.payload["creation_time"]),
     Config.timestampFormat
   );
   successNoty(
@@ -47,7 +55,7 @@ export function* derivationSuccessNotification(action) {
 /**
  * Displays notifications for derivation request errors.
  */
-export function* derivationErrorNotification(action) {
+function* derivationRequestErrorNotification(action) {
   const errors = action.payload;
   const errorList = [];
   // `errors` is an Object of Arrays of error strings.
@@ -65,5 +73,14 @@ export function* derivationErrorNotification(action) {
 `,
     { timeout: 3000 }
   ).show();
+  yield;
+}
+
+/**
+ * Displays notifications for successfully completed derivation requests.
+ */
+function* derivationRequestCompleteNotification(action) {
+  if (action.payload.model === "DerivationRequest") {
+  }
   yield;
 }

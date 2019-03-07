@@ -48,7 +48,20 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DerivationRequest
-        fields = "__all__"
+        fields = [
+            "id",
+            "raw_lexical_array",
+            "derivations",
+            "creation_time",
+            "created_by",
+            "completion_time",
+        ]
+
+    id = serializers.UUIDField()
+    # noinspection PyArgumentList
+    derivations = serializers.PrimaryKeyRelatedField(
+        read_only=True, many=True, pk_field=serializers.UUIDField()
+    )
 
 
 class DerivationSerializer(serializers.ModelSerializer):
@@ -58,7 +71,7 @@ class DerivationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Derivation
-        fields = ["id", "ended", "converged", "first_step"]
+        fields = ["id", "status", "first_step"]
 
-    id = serializers.CharField(read_only=True)
+    id = serializers.UUIDField()
     first_step = serializers.StringRelatedField()

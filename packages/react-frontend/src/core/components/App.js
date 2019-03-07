@@ -7,7 +7,7 @@ import React from "react";
 import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { DerivationInput } from "../../derivationInput";
-import { DerivationsTable } from "../../derivations";
+import { Derivations } from "../../derivations";
 import { Grid, GridItem } from "../../grid";
 import { LexicalItems } from "../../lexicalItems";
 import { Navbar } from "../../navbar/";
@@ -43,7 +43,7 @@ gridItems.push({
   id: "derivationStatusList",
   title: "Derivation Status",
   expand: false,
-  contents: <DerivationsTable />
+  contents: <Derivations />
 });
 
 /**

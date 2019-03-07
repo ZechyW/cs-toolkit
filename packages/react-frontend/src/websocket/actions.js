@@ -27,3 +27,4 @@ subscribeRequest.type = SUBSCRIBE_REQUEST;
 export const subscribeAcknowledge = "subscribe/acknowledge";
 export const subscribeChange = "subscribe/change";
 export const subscribeDelete = "subscribe/delete";
+export const subscribeError = "subscribe/error";

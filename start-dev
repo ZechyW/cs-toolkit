@@ -51,4 +51,4 @@ echo -e "${YELLOW}Django is running debug mode.\nStatic bundles will not be comp
 eval ${yarn} workspace django-backend run dev ${DJANGO_PORT} &
 
 # React
-DJANGO_PORT=${DJANGO_PORT} HOST=${REACT_HOST} PORT=${REACT_PORT} eval ${yarn} workspace react-frontend run dev
+DJANGO_PORT=${DJANGO_PORT} HOST=${REACT_HOST} PORT=${REACT_PORT} eval ${yarn} workspace react-frontend run dev-no-browser

@@ -1,5 +1,5 @@
 import { createReducer } from "redux-starter-kit";
-import { open, close, subscribeAcknowledge } from "./actions";
+import { open, close, subscribeAcknowledge, subscribeRequest } from "./actions";
 
 /**
  * Handles WebSocket-related actions.
@@ -18,9 +18,25 @@ const wsReducer = createReducer(initialState, {
     state.connected = false;
     state.subscriptions = {};
   },
-  [subscribeAcknowledge]: (state, action) => {
+  [subscribeRequest]: (state, action) => {
+    // If we have already started a subscription request to a model/instance,
+    // we don't want other components to keep resending subscription
+    // requests even if we haven't received a response yet.
     const model = action.payload.model;
-    state.subscriptions[model] = true;
+    const id = action.payload.id;
+
+    const subscriptionId = id ? `${model}:${id}` : `${model}`;
+
+    state.subscriptions[subscriptionId] = "pending";
+  },
+  [subscribeAcknowledge]: (state, action) => {
+    // Subscriptions may be to entire models, or specific model instances.
+    const model = action.payload.model;
+    const id = action.payload.id;
+
+    const subscriptionId = id ? `${model}:${id}` : `${model}`;
+
+    state.subscriptions[subscriptionId] = true;
   }
 });
 

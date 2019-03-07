@@ -24,13 +24,22 @@ export const getDerivationsAsList = createSelector(
         if (derivation) {
           const derivationListItem = {
             id: `${request.id}:${derivation.id}`,
-            lexicalArray: derivation.first_step,
+            lexicalArray: derivation["first_step"],
             status: derivation.status,
             creationTime: format(
-              new Date(request.creation_time),
+              new Date(request["creation_time"]),
               Config.timestampFormat
             )
           };
+
+          if (request["completion_time"]) {
+            derivationListItem.completionTime = format(
+              new Date(request["completion_time"]),
+              Config.timestampFormat
+            );
+          } else {
+            derivationListItem.completionTime = "-";
+          }
 
           derivationList.push(derivationListItem);
         }

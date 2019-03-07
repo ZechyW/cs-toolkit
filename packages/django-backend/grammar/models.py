@@ -38,7 +38,7 @@ from notify.models import NotifyModel
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Models for derivation requests and associated derivations.
-class DerivationRequest(models.Model):
+class DerivationRequest(NotifyModel):
     """
     A Django model representing a request to generate a derivation.
 
@@ -66,11 +66,22 @@ class DerivationRequest(models.Model):
     # Each DerivationRequest may correspond to multiple actual Derivations,
     # since the lexical array provided to a DerivationRequest is
     # underspecified with regard to actual LexicalItems.
-    derivations = models.ManyToManyField("Derivation")
+    derivations = models.ManyToManyField(
+        "Derivation", related_name="derivation_requests"
+    )
 
     # Meta details
     creation_time = models.DateTimeField()
     created_by = models.CharField(max_length=255, blank=True, null=True)
+    completion_time = models.DateTimeField(null=True, blank=True)
+
+    #: Used for change notifications. Subscribers will only be alerted when a
+    #: substantive change is made to a model instance.
+    tracker = FieldTracker()
+
+    #: Used for change notifications. Subscribers will receive the latest model
+    #: data processed via this serializer.
+    serializer_class = "grammar.serializers.DerivationRequestSerializer"
 
     def __str__(self):
         return str(self.raw_lexical_array)
@@ -183,11 +194,8 @@ class DerivationStep(models.Model):
             ]
         )
 
-    # Has this DerivationStep been processed?
-    processed = models.BooleanField(default=False)
-    crashed = models.BooleanField(default=False)
-    # If it has, it should have a reference to the next DerivationStep in
-    # the chain, unless this step crashed the derivation.
+    # If this isn't the first step in a Derivation, it should have a
+    # reference to the previous step in the chain.
     previous_step = models.ForeignKey(
         "self",
         blank=True,
