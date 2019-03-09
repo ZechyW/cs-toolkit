@@ -113,6 +113,19 @@ class Derivation(NotifyModel):
         "DerivationStep", blank=True, null=True, on_delete=models.SET_NULL
     )
 
+    @property
+    def derivation_steps(self):
+        """
+        Returns all the DerivationSteps associated with this Derivation,
+        in order.
+        :return:
+        """
+        derivation_steps = []
+        derivation_steps.append(self.first_step)
+        current_step = self.first_step
+
+        return derivation_steps
+
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
     tracker = FieldTracker()

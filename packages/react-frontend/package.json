@@ -8,7 +8,7 @@
     "analyze": "source-map-explorer build/static/js/main.*",
     "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "dev": "cross-env BROWSER=browser.js react-scripts start",
-    "dev-no-browser": "cross-env BROWSER=false react-scripts start",
+    "dev-no-browser": "cross-env BROWSER=none react-scripts start",
     "eject": "react-scripts eject",
     "profile": "react-scripts build --stats && webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html -O",
     "test": "react-scripts test --runInBand --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\""

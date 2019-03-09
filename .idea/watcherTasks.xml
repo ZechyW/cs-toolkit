@@ -14,7 +14,7 @@
         <array />
       </option>
       <option name="outputFromStdout" value="false" />
-      <option name="program" value="$ProjectFileDir$/node_modules/.bin/prettier" />
+      <option name="program" value="prettier" />
       <option name="runOnExternalChanges" value="true" />
       <option name="scopeName" value="JS/SCSS/CSS Sources" />
       <option name="trackOnlyRoot" value="false" />
@@ -54,7 +54,7 @@
         <array />
       </option>
       <option name="outputFromStdout" value="false" />
-      <option name="program" value="$ProjectFileDir$/node_modules/.bin/prettier-package-json" />
+      <option name="program" value="prettier-package-json" />
       <option name="runOnExternalChanges" value="true" />
       <option name="scopeName" value="package.json files" />
       <option name="trackOnlyRoot" value="false" />

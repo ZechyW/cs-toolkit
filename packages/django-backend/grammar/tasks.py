@@ -23,7 +23,12 @@ def process_derivation_step(step_id_hex: str):
     """
     # Retrieve DerivationStep
     step_id = uuid.UUID(step_id_hex)
-    step: DerivationStep = DerivationStep.objects.get(id=step_id)
+
+    try:
+        step: DerivationStep = DerivationStep.objects.get(id=step_id)
+    except DerivationStep.DoesNotExist:
+        logger.warning("Could not find DerivationStep: {}".format(step_id))
+        return
 
     # This function will be called for all matching DerivationSteps whenever
     # a DerivationRequest is made; if we have already processed the

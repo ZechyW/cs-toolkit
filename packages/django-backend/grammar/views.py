@@ -4,7 +4,7 @@ import logging
 
 from django.db.models import Count
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,7 +15,11 @@ from .models import (
     DerivationStep,
     LexicalArrayItem,
 )
-from .serializers import DerivationInputSerializer, DerivationRequestSerializer
+from .serializers import (
+    DerivationInputSerializer,
+    DerivationRequestSerializer,
+    DerivationSerializer,
+)
 from .tasks import process_derivation_step
 
 logger = logging.getLogger("cs-toolkit")
@@ -115,3 +119,13 @@ def create_derivation(lexical_array):
     derivation = Derivation.objects.create(first_step=first_step)
     first_step.derivations.add(derivation)
     return derivation
+
+
+class DerivationList(generics.ListAPIView):
+    queryset = Derivation.objects.all()
+    serializer_class = DerivationSerializer
+
+
+class DerivationDetail(generics.RetrieveAPIView):
+    queryset = Derivation.objects.all()
+    serializer_class = DerivationSerializer

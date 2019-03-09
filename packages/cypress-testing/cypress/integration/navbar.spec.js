@@ -51,12 +51,18 @@ describe("The main app navbar", () => {
 
   describe("toggles", () => {
     it("on click", () => {
+      // Starts expanded
+      cy.get(".navbar").should("have.class", "is-expanded");
+      cy.get(".navbar .title").click();
+
+      // Wait until it's done collapsing
       cy.get(".navbar")
-        .should("have.class", "is-expanded")
-        .click()
         .should("not.have.class", "is-expanded")
-        .click()
-        .should("have.class", "is-expanded");
+        .and("not.have.class", "is-animating");
+      cy.get(".navbar .title").click();
+
+      // Expand again
+      cy.get(".navbar").should("have.class", "is-expanded");
     });
 
     it("only if the burger menu is collapsed", () => {
