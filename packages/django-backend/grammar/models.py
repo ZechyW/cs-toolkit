@@ -73,7 +73,10 @@ class DerivationRequest(NotifyModel):
     # Meta details
     creation_time = models.DateTimeField()
     created_by = models.CharField(max_length=255, blank=True, null=True)
-    completion_time = models.DateTimeField(null=True, blank=True)
+    # Each DerivationRequest is associated with one or more Derivations,
+    # which may be associated with one or more DerivationStep chains.
+    # Record the time the last chain converged/crashed.
+    last_completion_time = models.DateTimeField(null=True, blank=True)
 
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
@@ -90,41 +93,70 @@ class DerivationRequest(NotifyModel):
 class Derivation(NotifyModel):
     """
     A Django model representing a grammatical derivation.
-    """
 
-    STATUS_PENDING = "Pending"
-    STATUS_DONE = "Done"
-    STATUS_CRASHED = "Crashed"
-    STATUSES = (
-        (STATUS_PENDING, "Pending"),
-        (STATUS_DONE, "Done"),
-        (STATUS_CRASHED, "Crashed"),
-    )
+    Each Derivation can host multiple DerivationStep chains, since multiple
+    operation types can result in multiple branching paths at each
+    individual DerivationStep.
+
+    Each DerivationStep chain should either converge or crash, as determined
+    by the last step in the chain.
+    """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
-    status = models.CharField(
-        max_length=10, choices=STATUSES, default=STATUS_PENDING
+    # The first DerivationStep is initialised with the list of fully-specified
+    # LexicalItems unique to the Derivation and an empty built-up
+    # SyntacticObject.
+    first_step = models.ForeignKey(
+        "DerivationStep",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="first_step_derivations",
     )
 
-    # The first DerivationStep is initialised with the list of fully-specified
-    # LexicalItems unique to the Derivation.
-    first_step = models.ForeignKey(
-        "DerivationStep", blank=True, null=True, on_delete=models.SET_NULL
+    # Record the final step in any related DerivationStep chain -- As a
+    # final step, it either converged or crashed.
+    converged_steps = models.ManyToManyField(
+        "DerivationStep", related_name="converged_derivations"
+    )
+    crashed_steps = models.ManyToManyField(
+        "DerivationStep", related_name="crashed_derivations"
     )
 
     @property
-    def derivation_steps(self):
+    def converged_count(self):
+        return self.converged_steps.count()
+
+    @property
+    def crashed_count(self):
+        return self.crashed_steps.count()
+
+    @property
+    def derivation_step_chains(self):
         """
-        Returns all the DerivationSteps associated with this Derivation,
-        in order.
+        Returns all the DerivationStep chains associated with this Derivation.
         :return:
         """
-        derivation_steps = []
-        derivation_steps.append(self.first_step)
-        current_step = self.first_step
+        chains = []
+        all_chains = self.converged_steps.all().union(self.crashed_steps.all())
+        for converged_step in all_chains:
+            this_chain = [converged_step]
+            this_step = converged_step
 
-        return derivation_steps
+            # Each DerivationStep may have multiple `next_steps`, but only one
+            # `previous_step`.  If we follow the chain backward, we will get
+            # back to the `first_step`.
+            while this_step.previous_step:
+                this_chain.append(this_step.previous_step)
+                this_step = this_step.previous_step
+
+            # We now have a chain from last step to first -- Reverse it and
+            # append it to the list of all chains for this Derivation.
+            this_chain.reverse()
+            chains.append(this_chain)
+
+        return chains
 
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
@@ -160,11 +192,11 @@ class DerivationStep(models.Model):
     """
 
     STATUS_PENDING = "Pending"
-    STATUS_DONE = "Done"
+    STATUS_CONVERGED = "Converged"
     STATUS_CRASHED = "Crashed"
     STATUSES = (
         (STATUS_PENDING, "Pending"),
-        (STATUS_DONE, "Done"),
+        (STATUS_CONVERGED, "Converged"),
         (STATUS_CRASHED, "Crashed"),
     )
 

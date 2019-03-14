@@ -105,10 +105,15 @@ class Config {
   // Initial column definitions: Will be overwritten by individual users'
   // settings.
   derivationsColumnDefs = [
-    { headerName: "Lexical Array", field: "lexicalArray", width: 150 },
-    { headerName: "Status", field: "status", width: 110 },
-    { headerName: "Created on", field: "creationTime", width: 110 },
-    { headerName: "Completed on", field: "completionTime", width: 110 }
+    { headerName: "Lexical Array", field: "lexicalArray", width: 250 },
+    { headerName: "Convergences", field: "convergedCount", width: 150 },
+    { headerName: "Crashes", field: "crashedCount", width: 150 },
+    { headerName: "Creation Time", field: "creationTime", width: 190 },
+    {
+      headerName: "Last Chain Time",
+      field: "lastCompletionTime",
+      width: 190
+    }
   ];
 }
 

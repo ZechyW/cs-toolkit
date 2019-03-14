@@ -25,20 +25,21 @@ export const getDerivationsAsList = createSelector(
           const derivationListItem = {
             id: `${request.id}:${derivation.id}`,
             lexicalArray: derivation["first_step"],
-            status: derivation.status,
+            convergedCount: derivation["converged_count"],
+            crashedCount: derivation["crashed_count"],
             creationTime: format(
               new Date(request["creation_time"]),
               Config.timestampFormat
             )
           };
 
-          if (request["completion_time"]) {
-            derivationListItem.completionTime = format(
-              new Date(request["completion_time"]),
+          if (request["last_completion_time"]) {
+            derivationListItem.lastCompletionTime = format(
+              new Date(request["last_completion_time"]),
               Config.timestampFormat
             );
           } else {
-            derivationListItem.completionTime = "-";
+            derivationListItem.lastCompletionTime = "-";
           }
 
           derivationList.push(derivationListItem);

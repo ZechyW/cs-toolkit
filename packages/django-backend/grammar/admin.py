@@ -19,7 +19,12 @@ from grammar.models import (
 @admin.register(DerivationRequest)
 class DerivationRequestAdmin(AppModelAdmin):
     list_display = ["__str__", "created_by", "creation_time"]
-    readonly_fields = ["id", "created_by", "creation_time", "completion_time"]
+    readonly_fields = [
+        "id",
+        "created_by",
+        "creation_time",
+        "last_completion_time",
+    ]
 
 
 @admin.register(Derivation)

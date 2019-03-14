@@ -33,7 +33,7 @@ def process_derivation_step(step_id_hex: str):
     # This function will be called for all matching DerivationSteps whenever
     # a DerivationRequest is made; if we have already processed the
     # DerivationStep, we can short-circuit here.
-    if step.status == DerivationStep.STATUS_DONE:
+    if step.status == DerivationStep.STATUS_CONVERGED:
         # Our workers may have died halfway and processed this step but not
         # the next one(s) -- Keep processing through the chain just in case.
         logger.info("Re-processing DerivationStep: {}".format(step_id))
@@ -43,12 +43,12 @@ def process_derivation_step(step_id_hex: str):
 
         # If we are the last in the chain, mark completion
         if not next_steps:
-            mark_derivation_step_complete(step)
+            mark_derivation_chain_converged(step)
         return
 
     if step.status == DerivationStep.STATUS_CRASHED:
         # Whoo boy
-        mark_derivation_step_crashed(step)
+        mark_derivation_chain_crashed(step)
         return
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -85,45 +85,41 @@ def process_derivation_step(step_id_hex: str):
         next_steps.append(next_step)
 
     # Clean up this step
-    step.status = DerivationStep.STATUS_DONE
+    step.status = DerivationStep.STATUS_CONVERGED
     step.save()
 
     # Go!
     for next_step in next_steps:
         process_derivation_step.send(next_step.id.hex)
 
-    # This might be the end of the derivation
+    # This might be the end of this derivation chain.
     if not next_steps:
-        mark_derivation_step_complete(step)
+        mark_derivation_chain_converged(step)
 
 
-def mark_derivation_step_complete(step: DerivationStep):
+def mark_derivation_chain_converged(step: DerivationStep):
     """
     Given a DerivationStep, mark all its related Derivations and
     DerivationRequests as complete.
     :return:
     """
     for derivation in step.derivations.all():
-        derivation.status = Derivation.STATUS_DONE
-        derivation.save()
+        derivation.converged_steps.add(step)
 
         for derivation_request in derivation.derivation_requests.all():
-            if derivation_request.completion_time is None:
-                derivation_request.completion_time = timezone.now()
-                derivation_request.save()
+            derivation_request.last_completion_time = timezone.now()
+            derivation_request.save()
 
 
-def mark_derivation_step_crashed(step: DerivationStep):
+def mark_derivation_chain_crashed(step: DerivationStep):
     """
     Given a DerivationStep, mark all its related Derivations and
     DerivationRequests as having crashed.
     :return:
     """
     for derivation in step.derivations.all():
-        derivation.status = Derivation.STATUS_CRASHED
-        derivation.save()
+        derivation.crashed_steps.add(step)
 
         for derivation_request in derivation.derivation_requests.all():
-            if derivation_request.completion_time is None:
-                derivation_request.completion_time = timezone.now()
-                derivation_request.save()
+            derivation_request.last_completion_time = timezone.now()
+            derivation_request.save()

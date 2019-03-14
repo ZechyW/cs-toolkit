@@ -12,7 +12,7 @@
     "build": "poetry run python manage.py collectstatic --clear --noinput",
     "dev": "cross-env DJANGO_DEBUG=1 poetry run python manage.py runserver",
     "django-shell": "poetry run python manage.py shell",
-    "predramatiq": ": \n\n\n=-=-=-=-=-=-=-=-=-=-=\nIf you see an error below, you probably meant to run the `start-workers` script rather than start this task manually.\n=-=-=-=-=-=-=-=-=-=-=\n\n\n",
+    "predramatiq": ": \"\n\n\n=-=-=-=-=-=-=-=-=-=-=\nIf you see an error below, you probably meant to run the `start-workers` script rather than start this task manually.\n=-=-=-=-=-=-=-=-=-=-=\n\n\n\"",
     "dramatiq": "cross-env DJANGO_SETTINGS_MODULE=app.settings poetry run dramatiq --path .",
     "dramatiq-native": "poetry run python manage.py rundramatiq",
     "load-basic": "poetry run python manage.py loaddata lexicon rules users",

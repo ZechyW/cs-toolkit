@@ -4,7 +4,8 @@ Grammar-related model serializers
 
 from rest_framework import serializers
 
-from grammar.models import Derivation, DerivationRequest
+from .models import Derivation, DerivationRequest, DerivationStep
+from lexicon.serializers import LexicalItemSerializer
 
 
 class DerivationInputSerializer(serializers.Serializer):
@@ -54,7 +55,7 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
             "derivations",
             "creation_time",
             "created_by",
-            "completion_time",
+            "last_completion_time",
         ]
 
     id = serializers.UUIDField()
@@ -64,6 +65,20 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
     )
 
 
+class DerivationStepSerializer(serializers.ModelSerializer):
+    """
+    For serializing a derivational chain (essentially a List of
+    DerivationSteps)
+    """
+
+    class Meta:
+        model = DerivationStep
+        fields = ["id", "status", "lexical_array_tail"]
+
+    id = serializers.UUIDField()
+    lexical_array_tail = serializers.ListField(child=LexicalItemSerializer())
+
+
 class DerivationSerializer(serializers.ModelSerializer):
     """
     For serializing a Derivation
@@ -71,7 +86,16 @@ class DerivationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Derivation
-        fields = ["id", "status", "first_step"]
+        fields = [
+            "id",
+            "first_step",
+            "converged_count",
+            "crashed_count",
+            "derivation_step_chains",
+        ]
 
     id = serializers.UUIDField()
     first_step = serializers.StringRelatedField()
+    derivation_step_chains = serializers.ListField(
+        child=serializers.ListField(child=DerivationStepSerializer())
+    )

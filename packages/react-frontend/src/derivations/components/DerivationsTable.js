@@ -93,6 +93,12 @@ function DerivationsTable(props) {
 
   return (
     <>
+      <p className="has-margin-bottom-10">
+        Each derivation follows multiple paths as different operations are
+        applied to the items in the lexical array, and each of these
+        derivational chains can end in either a Convergence or a Crash.
+      </p>
+
       <div className="has-margin-bottom-0 buttons">
         <button className="button" onClick={sizeToFit}>
           <span className="icon">
