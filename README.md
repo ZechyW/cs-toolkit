@@ -58,6 +58,24 @@ If the Docker container is stopped for any reason (e.g., if the system is restar
 docker container start redis
 ```
 
+### Postgres server
+
+In addition, the backend uses a Postgres server for data storage by default.  If you have Docker installed, you can spin up a local Postgres instance with:
+
+```bash
+docker run -p 5432:5432 --name postgres -d postgres
+```
+
+You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be "cs_toolkit".  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
+
+#### Data fixtures
+
+Once the Postgres server is up and running, use the following command to initialise the required tables and load the basic lexicon/grammar data into the database:
+
+```bash
+yarn workspace django-backend run load-basic
+```
+
 ### Build the production files and start the server
 
 Start by installing the frontend production dependencies:
@@ -87,6 +105,8 @@ From the project root, install the frontend development dependencies:
 ```bash
 yarn
 ```
+
+**N.B.:** If you are using WSL and getting timeout errors, try `yarn --network-timeout 100000`. (https://github.com/yarnpkg/yarn/issues/5259)
 
 The shell script `start-dev` will spin up the Django server in debug mode and the React dev server at the same time, automatically monitoring both the frontend and backend sources for changes.
 
