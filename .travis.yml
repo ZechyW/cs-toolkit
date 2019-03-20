@@ -10,6 +10,9 @@ services:
   - redis-server
   - postgresql
 
+addons:
+  chrome: stable
+
 cache:
   yarn: true
   pip: true

@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "7.3.0",
     "@cypress/webpack-preprocessor": "^4.0.3",
-    "cypress": "^3.1.5",
+    "cypress": "^3.2.0",
     "cypress-plugin-snapshots": "^1.2.5"
   },
   "devDependencies": {

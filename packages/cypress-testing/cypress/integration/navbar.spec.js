@@ -11,7 +11,7 @@ describe("The main app navbar", () => {
   }
 
   function viewportScroll() {
-    cy.viewport(1087, 161);
+    cy.viewport(1088, 161);
   }
 
   beforeEach(() => {
@@ -21,6 +21,8 @@ describe("The main app navbar", () => {
     cy.window()
       .its("store")
       .invoke("dispatch", coreActions.resetAll());
+
+    viewportScroll();
   });
 
   describe("burger menu", () => {
