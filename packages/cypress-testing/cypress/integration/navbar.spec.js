@@ -99,7 +99,8 @@ describe("The main app navbar", () => {
 
     cy.get(".navbar")
       .should("not.have.class", "is-animating")
-      .and("not.have.class", "is-expanded");
+      .and("not.have.class", "is-expanded")
+      .and("not.have.class", "is-offline");
     cy.get(".navbar").toMatchSnapshot();
   });
 });
