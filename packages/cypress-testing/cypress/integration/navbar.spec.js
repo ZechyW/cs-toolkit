@@ -94,8 +94,10 @@ describe("The main app navbar", () => {
 
   it("Snapshot - Collapsed", () => {
     // Should collapse on click
+    cy.get(".navbar").should("have.class", "is-expanded");
+    cy.get(".navbar .title").click();
+
     cy.get(".navbar")
-      .click()
       .should("not.have.class", "is-animating")
       .and("not.have.class", "is-expanded");
     cy.get(".navbar").toMatchSnapshot();
