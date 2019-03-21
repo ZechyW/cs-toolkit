@@ -30,7 +30,7 @@ The project is structured as a multi-package repository via Lerna (https://lerna
 
 Start by cloning this repository and ensuring that Poetry (https://poetry.eustace.io/docs/), Node.js (https://nodejs.org/) and Yarn (https://yarnpkg.com/) are installed.
 
-### Python dependencies
+### Install Python dependencies
 
 From the project root, install the Python dependencies:
 
@@ -44,7 +44,7 @@ If you are running the server on a Windows machine, specify the `windows` extra 
 poetry install --extras "windows"
 ```
 
-### Redis server
+### Start Redis server
 
 In order for the Channels portion of the backend to work properly, the project expects a Redis server to be accessible (on `127.0.0.1:6379` by default).  An easy way to do this is to install Docker (https://www.docker.com/), then run:
 
@@ -58,17 +58,17 @@ If the Docker container is stopped for any reason (e.g., if the system is restar
 docker container start redis
 ```
 
-### Postgres server
+### Start Postgres server
 
-In addition, the backend uses a Postgres server for data storage by default.  If you have Docker installed, you can spin up a local Postgres instance with:
+In addition, the backend uses a Postgres server for data storage (on `127.0.0.1:5432` by default).  If you have Docker installed, you can spin up a local Postgres instance with:
 
 ```bash
 docker run -p 5432:5432 --name postgres -d postgres
 ```
 
-You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be "cs_toolkit".  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
+You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be `cs_toolkit`.  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
 
-#### Data fixtures
+#### Optional: Load basic data fixtures
 
 Once the Postgres server is up and running, use the following command to initialise the required tables and load the basic lexicon/grammar data into the database:
 
@@ -76,9 +76,21 @@ Once the Postgres server is up and running, use the following command to initial
 yarn workspace django-backend run load-basic
 ```
 
-### Build the production files and start the server
+### Start Dramatiq task queue workers
 
-Start by installing the frontend production dependencies:
+The system uses a distributed task queue (https://dramatiq.io/) to process multiple syntactic computations in parallel, and the queue needs to have at least one worker thread up and running.
+
+Use the `start-workers` shell script to start up a bunch of worker threads.  By default, one worker process is spawned for each CPU core on the machine, with 8 worker threads per process.  You can use the `NUM_PROCESSES` and `NUM_THREADS` environmental variables to change these if necessary.
+
+For example, to only spawn 8 worker processes with 4 threads each:
+
+```bash
+NUM_PROCESSES=8 NUM_THREADS=4 ./start-workers
+```
+
+### Build the frontend assets and start the server
+
+First, install the frontend production dependencies:
 
 ```bash
 yarn --prod
@@ -93,7 +105,7 @@ Next, run the `build-prod` shell script to build the production frontend bundles
 Finally, use the `serve-prod` shell script to start the Django production server (Daphne) on port `8080`.  You can set the `DJANGO_PORT` environmental variable to use a non-default port:
 
 ```bash
-DJANGO_PORT=8080 ./start-server
+DJANGO_PORT=8080 ./serve-prod
 ```
 
 Then point your browser to http://localhost:8000 (replacing 8000 with your chosen port, if you set one) to view the main interface.

@@ -32,7 +32,11 @@ esac
 
 # ----------------------------------
 # Set default options
-CPU_COUNT=${CPU_COUNT:-4}
+CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
+
+NUM_PROCESSES=${NUM_PROCESSES:-$CPU_COUNT}
+NUM_THREADS=${NUM_THREADS:-8}
+
 TASK_MODULES=${TASK_MODULES:-django_dramatiq.setup django_dramatiq.tasks grammar.tasks}
 
 # Update-notifier sometimes causes permissions errors on Windows
@@ -40,4 +44,4 @@ NO_UPDATE_NOTIFIER=1
 
 echo -e "${CYAN}Starting Python task workers (Dramatiq)...${NOCOLOR}"
 
-eval ${yarn} workspace django-backend run dramatiq --processes ${CPU_COUNT} --threads ${CPU_COUNT} ${TASK_MODULES}
+eval ${yarn} workspace django-backend run dramatiq-script --processes ${NUM_PROCESSES} --threads ${NUM_THREADS} ${TASK_MODULES}
