@@ -1,11 +1,13 @@
 import { createReducer } from "redux-starter-kit";
 import { actions as derivationInputActions } from "../derivationInput";
 import { actions as wsActions } from "../websocket";
-import { reset, saveColumnState } from "./actions";
+import { reset, saveColumnState, selectDerivation, selectRow } from "./actions";
 
 const initialState = {
   requestsById: {},
   derivationsById: {},
+
+  selectedDerivation: "",
 
   // ag-grid view
   columnState: []
@@ -24,6 +26,29 @@ export default createReducer(initialState, {
   [saveColumnState]: (state, action) => {
     state.columnState = action.payload;
   },
+
+  /**
+   * The user selected some row in the table -- Mark the corresponding
+   * row ID.
+   * @param state
+   * @param action
+   */
+  [selectRow]: (state, action) => {
+    state.selectedRow = action.payload;
+  },
+
+  /**
+   * The user selected some row in the table -- Mark the corresponding
+   * Derivation.
+   * @param state
+   * @param action
+   */
+  [selectDerivation]: (state, action) => {
+    state.selectedDerivation = action.payload;
+  },
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Tracked Derivations and DerivationRequests
 
   /**
    * A DerivationRequest was successfully posted to the backend.

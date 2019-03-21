@@ -133,16 +133,35 @@ class Derivation(NotifyModel):
         return self.crashed_steps.count()
 
     @property
-    def derivation_step_chains(self):
+    def converged_chains(self):
         """
-        Returns all the DerivationStep chains associated with this Derivation.
+        Returns all the DerivationStep chains associated with this
+        Derivation which converged.
+        :return:
+        """
+        return Derivation.get_chains_from_steps(self.converged_steps.all())
+
+    @property
+    def crashed_chains(self):
+        """
+        Returns all the DerivationStep chains associated with this
+        Derivation which converged.
+        :return:
+        """
+        return Derivation.get_chains_from_steps(self.crashed_steps.all())
+
+    @staticmethod
+    def get_chains_from_steps(end_steps):
+        """
+        From a given iterable of end DerivationSteps, retrieve all the
+        corresponding full chains.
+        :param end_steps:
         :return:
         """
         chains = []
-        all_chains = self.converged_steps.all().union(self.crashed_steps.all())
-        for converged_step in all_chains:
-            this_chain = [converged_step]
-            this_step = converged_step
+        for end_step in end_steps:
+            this_chain = [end_step]
+            this_step = end_step
 
             # Each DerivationStep may have multiple `next_steps`, but only one
             # `previous_step`.  If we follow the chain backward, we will get

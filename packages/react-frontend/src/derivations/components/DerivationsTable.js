@@ -20,6 +20,7 @@ function DerivationsTable(props) {
   // Grid api (will be set when the grid is ready)
   const gridApi = useRef(null);
   const gridColumnApi = useRef(null);
+  window.dGridApi = gridApi;
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Helper functions
@@ -74,9 +75,18 @@ function DerivationsTable(props) {
     gridApi.current = params.api;
     gridColumnApi.current = params.columnApi;
 
+    // Column State
     restoreColumnState();
-
     gridApi.current.addGlobalListener(handleColumnStateEvent);
+
+    // Restore the last row selection, if any
+    if (props.selectedRow) {
+      gridApi.current.forEachNode((node) => {
+        if (node.id === props.selectedRow) {
+          node.setSelected(true);
+        }
+      });
+    }
   }
 
   /**
@@ -88,6 +98,21 @@ function DerivationsTable(props) {
 
     if (watchedEvents.indexOf(type) >= 0) {
       saveColumnState();
+    }
+  }
+
+  /**
+   * When the selection changes.
+   * - Save to external store for other widgets to reference
+   */
+  function handleSelectionChanged() {
+    const selection = gridApi.current.getSelectedRows();
+    if (selection.length === 0) {
+      props.selectRow(null);
+      props.selectDerivation(null);
+    } else {
+      props.selectRow(selection[0].id);
+      props.selectDerivation(selection[0].derivationId);
     }
   }
 
@@ -124,7 +149,10 @@ function DerivationsTable(props) {
           columnDefs={Config.derivationsColumnDefs}
           defaultColDef={Config.derivationsDefaultColDef}
           // - Selection
+          rowSelection="single"
+          rowDeselection={true}
           suppressCellSelection={true}
+          onSelectionChanged={handleSelectionChanged}
           // - Data and API
           rowData={props.derivations}
           deltaRowDataMode={true}
@@ -141,10 +169,16 @@ DerivationsTable.propTypes = {
   derivations: PropTypes.array.isRequired,
 
   columnState: PropTypes.array,
-  saveColumnState: PropTypes.func.isRequired
+  saveColumnState: PropTypes.func.isRequired,
+
+  selectRow: PropTypes.func.isRequired,
+  selectDerivation: PropTypes.func.isRequired,
+
+  selectedRow: PropTypes.string
 };
 DerivationsTable.defaultProps = {
-  columnState: []
+  columnState: [],
+  selectedRow: null
 };
 
 export default DerivationsTable;

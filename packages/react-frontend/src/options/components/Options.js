@@ -31,6 +31,10 @@ function Options(props) {
     {
       id: "derivationStatusList",
       name: "Derivation Status"
+    },
+    {
+      id: "derivationViewer",
+      name: "Derivation Viewer"
     }
   ];
 

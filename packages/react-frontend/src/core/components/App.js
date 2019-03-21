@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { DerivationInput } from "../../derivationInput";
 import { Derivations } from "../../derivations";
+import { DerivationViewer } from "../../derivationViewer";
 import { Grid, GridItem } from "../../grid";
 import { LexicalItems } from "../../lexicalItems";
 import { Navbar } from "../../navbar/";
@@ -44,6 +45,13 @@ gridItems.push({
   title: "Derivation Status",
   expand: false,
   contents: <Derivations />
+});
+
+gridItems.push({
+  id: "derivationViewer",
+  title: "Derivation Viewer",
+  expand: false,
+  contents: <DerivationViewer />
 });
 
 /**

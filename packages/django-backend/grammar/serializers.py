@@ -91,11 +91,15 @@ class DerivationSerializer(serializers.ModelSerializer):
             "first_step",
             "converged_count",
             "crashed_count",
-            "derivation_step_chains",
+            "converged_chains",
+            "crashed_chains",
         ]
 
     id = serializers.UUIDField()
     first_step = serializers.StringRelatedField()
-    derivation_step_chains = serializers.ListField(
+    converged_chains = serializers.ListField(
+        child=serializers.ListField(child=DerivationStepSerializer())
+    )
+    crashed_chains = serializers.ListField(
         child=serializers.ListField(child=DerivationStepSerializer())
     )

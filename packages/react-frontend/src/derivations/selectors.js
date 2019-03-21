@@ -23,7 +23,11 @@ export const getDerivationsAsList = createSelector(
 
         if (derivation) {
           const derivationListItem = {
+            // Unique ID for this row (needed by ag-grid for `deltaRowDataMode`)
             id: `${request.id}:${derivation.id}`,
+
+            requestId: request.id,
+            derivationId: derivation.id,
             lexicalArray: derivation["first_step"],
             convergedCount: derivation["converged_count"],
             crashedCount: derivation["crashed_count"],

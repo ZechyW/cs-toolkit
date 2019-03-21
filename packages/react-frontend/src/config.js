@@ -35,40 +35,50 @@ class Config {
     lg: [
       { w: 6, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 6, h: 11, x: 6, y: 0, i: "lexicalItemList", minW: 2 },
-      { w: 12, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 }
+      { w: 12, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 },
+      { w: 12, h: 9, x: 0, y: 20, i: "derivationViewer", minW: 2 }
     ],
 
     // md: 10 columns
     md: [
       { w: 5, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 5, h: 11, x: 5, y: 0, i: "lexicalItemList", minW: 2 },
-      { w: 10, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 }
+      { w: 10, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 },
+      { w: 10, h: 9, x: 0, y: 20, i: "derivationViewer", minW: 2 }
     ],
 
     // sm: 6 columns
     sm: [
       { w: 3, h: 12, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 3, h: 12, x: 3, y: 0, i: "lexicalItemList", minW: 2 },
-      { w: 6, h: 9, x: 0, y: 12, i: "derivationStatusList", minW: 2 }
+      { w: 6, h: 9, x: 0, y: 12, i: "derivationStatusList", minW: 2 },
+      { w: 6, h: 9, x: 0, y: 21, i: "derivationViewer", minW: 2 }
     ],
 
     // xs: 4 columns
     xs: [
       { w: 4, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 4, h: 9, x: 0, y: 11, i: "lexicalItemList", minW: 2 },
-      { w: 8, h: 9, x: 0, y: 20, i: "derivationStatusList", minW: 2 }
+      { w: 8, h: 9, x: 0, y: 20, i: "derivationStatusList", minW: 2 },
+      { w: 8, h: 9, x: 0, y: 29, i: "derivationViewer", minW: 2 }
     ],
 
     // xxs: 2 columns
     xxs: [
       { w: 2, h: 13, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 2, h: 9, x: 0, y: 13, i: "lexicalItemList", minW: 2 },
-      { w: 4, h: 9, x: 0, y: 22, i: "derivationStatusList", minW: 2 }
+      { w: 4, h: 9, x: 0, y: 22, i: "derivationStatusList", minW: 2 },
+      { w: 4, h: 9, x: 0, y: 31, i: "derivationViewer", minW: 2 }
     ]
   };
 
   // Which grid items to autosize (keeping them at their natural height)
-  gridDefaultAutosize = { derivationInput: true, lexicalItemList: false };
+  gridDefaultAutosize = {
+    derivationInput: true,
+    lexicalItemList: false,
+    derivationStatusList: false,
+    derivationViewer: true
+  };
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // LexicalItemList

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
-import { saveColumnState } from "../actions";
+import { saveColumnState, selectDerivation, selectRow } from "../actions";
 import DerivationsTable from "../components/DerivationsTable";
 import { getDerivationsAsList } from "../selectors";
 
@@ -82,7 +82,11 @@ const actionCreators = {
   subscribeRequest: wsActions.subscribeRequest,
 
   // `ag-grid`
-  saveColumnState
+  saveColumnState,
+
+  // Selection for detailed view
+  selectRow,
+  selectDerivation
 };
 
 Wrapped = connect(
@@ -90,6 +94,7 @@ Wrapped = connect(
     // Pass through to view
     derivations: getDerivationsAsList,
     columnState: "derivations.columnState",
+    selectedRow: "derivations.selectedRow",
 
     // Subscription management
     wsConnected: "websocket.connected",
