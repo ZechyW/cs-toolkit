@@ -3,6 +3,10 @@ import React from "react";
 import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
+import { selectChain, selectFrame } from "../actions";
+import { derivationDetails } from "../selectors";
+import DerivationTimeline from "./DerivationTimeline";
+import Select from "react-select";
 
 /**
  * Component for viewing individual Derivation chain trees.
@@ -17,39 +21,102 @@ function DerivationViewer(props) {
   // Helper functions
 
   /**
-   * Render the list of chains for the currently selected Derivation, if any
+   * Render the selector and timeline view for converged/crashed chains
+   * for the currently selected Derivation, if any.
    */
   function renderChains() {
-    if (!props.selectedDerivation) {
-      return "No Derivation selected.";
+    if (!props.derivationDetails) return "";
+
+    // Prepare options list of chains available for viewing (converged ones
+    // first, then crashed ones).
+    // `allChains` holds the actual chain data; `allOptions` holds
+    // suggestions for the select box.
+    const allChains = [];
+    let currentIndex = 0;
+    const allOptions = [];
+    let selectedOption = false;
+
+    // Converged chains
+    const convergedOptions = [];
+    for (const chain of props.derivationDetails["converged_chains"]) {
+      allChains[currentIndex] = chain;
+      const option = {
+        value: currentIndex,
+        label: `Chain ${currentIndex + 1} (converged)`
+      };
+
+      // Was this the last selected option?
+      convergedOptions.push(option);
+      if (props.selectedChain === currentIndex) {
+        selectedOption = option;
+      }
+
+      currentIndex += 1;
     }
+    allOptions.push({
+      label: "Converged chains",
+      options: convergedOptions
+    });
 
-    const converged_chains = props.derivationsById[props.selectedDerivation][
-      "converged_chains"
-    ].map((chain, id) => (
-      <div className="has-margin-5" key={id}>
-        <p>Chain {id} (converged)</p>
-        <pre>
-          <code>{JSON.stringify(chain, null, 2)}</code>
-        </pre>
-      </div>
-    ));
+    // Crashed chains
+    const crashedOptions = [];
+    for (const chain of props.derivationDetails["crashed_chains"]) {
+      allChains[currentIndex] = chain;
+      const option = {
+        value: currentIndex,
+        label: `Chain ${currentIndex + 1} (crashed)`
+      };
 
-    const crashed_chains = props.derivationsById[props.selectedDerivation][
-      "crashed_chains"
-    ].map((chain, id) => (
-      <div className="has-margin-5" key={id}>
-        <p>Chain {id} (converged)</p>
-        <pre>
-          <code>{JSON.stringify(chain, null, 2)}</code>
-        </pre>
-      </div>
-    ));
+      // Was this the last selected option?
+      convergedOptions.push(option);
+      if (props.selectedChain === currentIndex) {
+        selectedOption = option;
+      }
+
+      currentIndex += 1;
+    }
+    allOptions.push({
+      label: "Crashed chains",
+      options: crashedOptions
+    });
+
+    // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+    // Select box event handlers
+
+    /**
+     * The selected option in the chain selection box changed.
+     * @param option
+     * @param action
+     */
+    function handleChange(option, action) {
+      props.selectChain(option.value);
+      props.selectFrame(0);
+    }
 
     return (
       <div>
-        {converged_chains}
-        {crashed_chains}
+        <div className="has-margin-bottom-5">Derivational chains:</div>
+        <div className="has-margin-bottom-5">
+          <Select
+            menuPortalTarget={document.body}
+            onChange={handleChange}
+            options={allOptions}
+            placeholder="Select a chain to view..."
+            value={selectedOption}
+          />
+        </div>
+        <div>
+          <DerivationTimeline
+            title={
+              props.selectedChain === null
+                ? ""
+                : `Chain ${props.selectedChain + 1}`
+            }
+            chain={allChains[props.selectedChain]}
+            selectedFrame={props.selectedFrame}
+            selectFrame={props.selectFrame}
+          />
+        </div>
       </div>
     );
   }
@@ -63,22 +130,22 @@ function DerivationViewer(props) {
 
       <p className="has-margin-bottom-10">
         Currently selected Derivation:{" "}
-        {props.selectedDerivation || "No Derivation selected."}
+        {props.derivationDetails
+          ? props.derivationDetails.id
+          : "No Derivation selected."}
       </p>
 
-      <div className="has-margin-bottom-10">
-        Derivational chains: {renderChains()}
-      </div>
+      {renderChains()}
     </>
   );
 }
 
 DerivationViewer.propTypes = {
-  selectedDerivation: PropTypes.string
+  derivationDetails: PropTypes.object
 };
 
 DerivationViewer.defaultProps = {
-  selectedDerivation: null
+  derivationDetails: null
 };
 
 /**
@@ -89,15 +156,17 @@ let Wrapped = DerivationViewer;
 
 Wrapped = GridItemWrapper(Wrapped);
 
-const actionCreators = {};
+const actionCreators = {
+  selectChain,
+  selectFrame
+};
 
 Wrapped = connect(
   createSelector({
     // Currently selected derivation
-    selectedDerivation: "derivations.selectedDerivation",
-
-    // All derivations
-    derivationsById: "derivations.derivationsById"
+    derivationDetails,
+    selectedChain: "derivationViewer.selectedChain",
+    selectedFrame: "derivationViewer.selectedFrame"
   }),
   actionCreators
 )(Wrapped);

@@ -13,6 +13,7 @@ import thunk from "redux-thunk";
 import { actions as coreActions, reducer as core } from "./core";
 import { reducer as derivationInput } from "./derivationInput";
 import { reducer as derivations, saga as derivationsSaga } from "./derivations";
+import { reducer as derivationViewer } from "./derivationViewer";
 import { reducer as grid } from "./grid";
 import { reducer as lexicalItems } from "./lexicalItems";
 import { reducer as navbar } from "./navbar";
@@ -39,6 +40,7 @@ const appReducer = combineReducers({
   core,
   derivationInput,
   derivations,
+  derivationViewer,
   grid,
   lexicalItems,
   navbar,

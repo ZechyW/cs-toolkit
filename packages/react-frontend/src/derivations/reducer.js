@@ -14,9 +14,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [reset]: () => {
-    return initialState;
-  },
+  [reset]: () => initialState,
 
   /**
    * The UI wants to save the current `ag-grid` column state.

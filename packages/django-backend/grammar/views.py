@@ -14,11 +14,13 @@ from .models import (
     DerivationRequest,
     DerivationStep,
     LexicalArrayItem,
+    SyntacticObject,
 )
 from .serializers import (
     DerivationInputSerializer,
     DerivationRequestSerializer,
     DerivationSerializer,
+    SyntacticObjectSerializer,
 )
 from .tasks import process_derivation_step
 
@@ -129,3 +131,13 @@ class DerivationList(generics.ListAPIView):
 class DerivationDetail(generics.RetrieveAPIView):
     queryset = Derivation.objects.all()
     serializer_class = DerivationSerializer
+
+
+class SyntacticObjectList(generics.ListAPIView):
+    queryset = SyntacticObject.objects.all()
+    serializer_class = SyntacticObjectSerializer
+
+
+class SyntacticObjectDetail(generics.RetrieveAPIView):
+    queryset = SyntacticObject.objects.all()
+    serializer_class = SyntacticObjectSerializer

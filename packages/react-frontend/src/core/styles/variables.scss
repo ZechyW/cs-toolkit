@@ -10,7 +10,7 @@
  ******************************************************************************/
 @import "~bulma/sass/utilities/_all";
 
-$family-sans-serif: "Nunito", sans-serif;
+$family-primary: "Nunito", $family-sans-serif;
 
 // Pagination colours
 $link: $primary;

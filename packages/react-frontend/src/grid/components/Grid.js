@@ -1,4 +1,4 @@
-import { cloneDeep, forOwn, isMatch, keys, throttle } from "lodash-es";
+import { cloneDeep, forOwn, isMatch, throttle } from "lodash-es";
 import assert from "minimalistic-assert";
 import React, { useLayoutEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -24,98 +24,100 @@ function Grid(props) {
     props.width
   );
 
-  // Checking layout definitions
-  // When the items in the grid are hidden and re-shown, their layout
-  // configurations need to be reloaded.
-  useLayoutEffect(() => {
-    const visibleChildren = {};
-    React.Children.forEach(props.children, (child) => {
-      visibleChildren[child["key"]] = true;
-    });
+  // Make any necessary modifications to the provided layout and re-save it.
+  // - If a previously hidden item is re-shown, it won't have a layout
+  //   configuration in memory; pull the default from the config.
+  // - After making sure that every item has a layout config, make sure that
+  //   every item is at least as tall as it needs to be.
+  // (`useLayoutEffect` instead of `useEffect` because it might affect the
+  // visible height of grid items and should therefore be executed before
+  // the main render frame)
+  useLayoutEffect(
+    () => {
+      // If any changes to the layout at the current breakpoint are made, they
+      // will be reflected in this array.
+      const newLayout = [];
+      let changed = false;
 
-    // Pick up as many valid config objects as we can from the current
-    // layout state.
-    const newLayout = [];
-    for (const currentItem of props.layouts[currentBreakpoint]) {
-      delete visibleChildren[currentItem.i];
-      newLayout.push(currentItem);
-    }
+      // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+      // Pick up as many valid GridItem config objects as we can from the current
+      // layout state (which is an array, unfortunately -- We have to iterate
+      // over each element)
 
-    if (keys(visibleChildren).length === 0) {
-      // We accounted for every visible item.
-      return;
-    }
+      // Clone the visibility map, and determine which items we don't have
+      // configs for in the current layout.
+      // As we save them to `newLayout`, we clone them as we go (since they
+      // are Objects themselves and we don't want to accidentally mutate them).
+      const gridChildren = { ...props.itemVisibility };
+      for (const currentItem of props.layouts[currentBreakpoint]) {
+        delete gridChildren[currentItem.i];
+        newLayout.push({ ...currentItem });
+      }
 
-    // Still here?
-    // Pull defaults from Config for any remaining items.
-    forOwn(visibleChildren, (_, id) => {
-      for (const defaultItem of Config.gridDefaultLayout[currentBreakpoint]) {
-        if (id === defaultItem.i) {
-          newLayout.push(defaultItem);
-          break;
+      // Pull defaults for the (visible) items without configs.
+      forOwn(gridChildren, (isVisible, id) => {
+        if (!isVisible) return;
+
+        // Unfortunately, the default Configs are also held in an array.
+        for (const defaultItem of Config.gridDefaultLayout[currentBreakpoint]) {
+          if (id === defaultItem.i) {
+            newLayout.push({ ...defaultItem });
+            changed = true;
+            break;
+          }
         }
-      }
-    });
+      });
 
-    const newLayouts = {
-      ...props.layouts,
-      [currentBreakpoint]: newLayout
-    };
+      // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+      // Auto-sizing
+      for (const item of newLayout) {
+        // Determine minimum item height
+        const id = item.i;
+        if (!props.minHeights[id]) {
+          continue;
+        }
+        const minGridHeight = calculateGridHeight(
+          props.minHeights[id] + Config.gridVerticalPadding
+        );
 
-    props.saveLayouts(newLayouts);
-  });
-
-  // Auto-sizing
-  // (`useLayoutEffect` because it might affect the visible height of grid
-  // items and should therefore be executed before the main render frame)
-  useLayoutEffect(() => {
-    let changed = false;
-    const newLayout = [];
-    for (const currentItem of props.layouts[currentBreakpoint]) {
-      // Clone first
-      const item = { ...currentItem };
-      newLayout.push(item);
-
-      const id = item.i;
-      if (!props.minHeights[id]) {
-        continue;
-      }
-      const minGridHeight = calculateGridHeight(
-        props.minHeights[id] + Config.gridVerticalPadding
-      );
-
-      // Set .minH, and either .h (for non-autosized items) or .maxH (for
-      // autosized items)
-      if (item.minH !== minGridHeight) {
-        item.minH = minGridHeight;
-        changed = true;
-      }
-      if (item.h < item.minH) {
-        item.h = item.minH;
-        changed = true;
-      }
-
-      if (Config.gridDefaultAutosize[id]) {
-        if (item.maxH !== minGridHeight || item.h !== minGridHeight) {
+        // Set .minH, and either .h (for non-autosized items) or .maxH (for
+        // autosized items)
+        if (item.minH !== minGridHeight) {
+          item.minH = minGridHeight;
           changed = true;
         }
-        item.maxH = minGridHeight;
-        item.h = minGridHeight;
+        if (item.h < item.minH) {
+          item.h = item.minH;
+          changed = true;
+        }
+
+        if (Config.gridDefaultAutosize[id]) {
+          if (item.maxH !== minGridHeight || item.h !== minGridHeight) {
+            changed = true;
+          }
+          item.maxH = minGridHeight;
+          item.h = minGridHeight;
+        }
       }
-    }
 
-    if (changed) {
-      const newLayouts = {
-        ...props.layouts,
-        [currentBreakpoint]: newLayout
-      };
+      // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+      // Save newLayout if it differs from current one
+      if (changed) {
+        const newLayouts = {
+          ...props.layouts,
+          [currentBreakpoint]: newLayout
+        };
 
-      props.saveLayouts(newLayouts);
-    }
-  }, [props.minHeights, props.width]);
+        props.saveLayouts(newLayouts);
+      }
+    },
+    // Changes to itemVisibility may require pulling default layout configs;
+    // changes to item minHeights and the main grid width may cause autosizing.
+    [props.itemVisibility, props.minHeights, props.width]
+  );
 
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Helper functions
-
   /**
    * Helper function to handle grid layout changes.
    * @param _ - The layout at the current breakpoint; unused.
@@ -244,7 +246,9 @@ const actionCreators = {
 WrappedGrid = connect(
   createSelector({
     layouts: "grid.layouts",
-    minHeights: "grid.minHeights"
+    minHeights: "grid.minHeights",
+
+    itemVisibility: "core.itemVisibility"
   }),
   actionCreators
 )(WrappedGrid);

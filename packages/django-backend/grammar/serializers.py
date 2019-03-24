@@ -3,9 +3,15 @@ Grammar-related model serializers
 """
 
 from rest_framework import serializers
+from rest_framework_recursive.fields import RecursiveField
 
-from .models import Derivation, DerivationRequest, DerivationStep
 from lexicon.serializers import LexicalItemSerializer
+from .models import (
+    Derivation,
+    DerivationRequest,
+    DerivationStep,
+    SyntacticObject,
+)
 
 
 class DerivationInputSerializer(serializers.Serializer):
@@ -65,6 +71,20 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
     )
 
 
+class SyntacticObjectSerializer(serializers.ModelSerializer):
+    """
+    For serializing a SyntacticObject
+    """
+
+    class Meta:
+        model = SyntacticObject
+        fields = ["id", "value", "children"]
+
+    id = serializers.UUIDField()
+    value = serializers.StringRelatedField()
+    children = RecursiveField(many=True)
+
+
 class DerivationStepSerializer(serializers.ModelSerializer):
     """
     For serializing a derivational chain (essentially a List of
@@ -73,9 +93,10 @@ class DerivationStepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DerivationStep
-        fields = ["id", "status", "lexical_array_tail"]
+        fields = ["id", "status", "root_so", "lexical_array_tail"]
 
     id = serializers.UUIDField()
+    root_so = SyntacticObjectSerializer()
     lexical_array_tail = serializers.ListField(child=LexicalItemSerializer())
 
 
