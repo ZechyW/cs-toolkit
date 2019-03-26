@@ -84,6 +84,7 @@ function DerivationInput(props) {
               handleDrag={(item, oldIndex, newIndex) =>
                 props.changeItemIndex({ item, oldIndex, newIndex })
               }
+              autofocus={false}
               handleInputChange={() => setErrorText("")}
               minQueryLength={1}
               autocomplete={true}
