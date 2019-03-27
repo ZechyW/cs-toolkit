@@ -195,9 +195,10 @@ class DerivationStep(models.Model):
 
     Each DerivationStep has a unique combination of:
     - `root_so` representing the currently built-up SyntacticObject
-    - `rules` representing the rules active for this derivation
     - `lexical_array_tail` representing the remainder of the input lexical
       array
+    - `rules` representing the Rules active for this derivation
+    - `generators` representing the Generators active for this derivation
 
     DerivationSteps go through a number of phases when processed:
     - Before processing (STATUS_PENDING).
@@ -238,10 +239,12 @@ class DerivationStep(models.Model):
     )
 
     # How the derivation proceeds depends on the remaining LexicalItems
-    # within the input, and which rules are currently active.
-    # The rules are set here; the lexical array tail is managed by the
-    # LexicalArrayItem model, which tracks order as well.
+    # within the input, and which rules/generators are currently active.
+    # - The rules and generators are set here
+    # - The lexical array tail is managed externally by the LexicalArrayItem
+    #   model, which tracks order as well.
     rules = models.ManyToManyField("RuleDescription", blank=True)
+    generators = models.ManyToManyField("GeneratorDescription", blank=True)
 
     @property
     def lexical_array_tail(self):
@@ -367,6 +370,34 @@ class RuleDescription(models.Model):
         """
         Turns our user-friendly rule name into the class name for a
         corresponding Rule in `grammar.rules`.
+        :return:
+        """
+        # CamelCase and remove non-alphanumeric
+        return "".join(x for x in self.name.title() if x.isalnum())
+
+    def __str__(self):
+        return self.name
+
+
+# Stub for describing syntactic generators so that the other models can
+# reference them -- Actual implementations are in `.generators`.
+class GeneratorDescription(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+
+    # When attempting to process DerivationSteps, the name given here is
+    # normalised and used as the class name for the
+    # generator in `.generators`.
+    # Normalisation involves CamelCasing and removing non-alphanumeric
+    # characters.
+    name = models.CharField(max_length=255)
+
+    description = models.TextField()
+
+    @property
+    def generator_class(self):
+        """
+        Turns our user-friendly name into the class name for a
+        corresponding Generator in `grammar.generators`.
         :return:
         """
         # CamelCase and remove non-alphanumeric

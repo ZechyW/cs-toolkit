@@ -3,12 +3,14 @@ Dramatiq actors for processing derivations.
 """
 import logging
 import uuid
+from typing import List
 
 import dramatiq
 from django.utils import timezone
 
-from .derive import merge
-from .models import Derivation, DerivationStep, LexicalArrayItem
+import grammar.generators
+from grammar.generators.base import NextStepDef
+from .models import DerivationStep, LexicalArrayItem
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -59,32 +61,49 @@ def process_derivation_step(step_id_hex: str):
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 2: Generation
 
-    # Get the next step(s).  The generation operations may return False if
-    # they have no more steps to generate.
-    next_steps = []
+    # Get the definitions for the next step(s).  The generation operations may
+    # return empty lists if they have no more steps to generate.
+    next_step_defs: List[NextStepDef] = []
 
-    next_step_params = merge(
-        root_so=step.root_so,
-        lexical_array_tail=step.lexical_array_tail,
-        rules=step.rules.all(),
-    )
+    for generator in step.generators.all():
+        # Get next step definitions from each Generator.
+        handler = getattr(grammar.generators, generator.generator_class)
+        generator_defs: List[NextStepDef] = handler.generate(
+            step.root_so, step.lexical_array_tail
+        )
+        next_step_defs = next_step_defs + generator_defs
 
-    if next_step_params:
-        root_so, lexical_array_tail = next_step_params
-        next_step = DerivationStep.objects.create(root_so=root_so)
-        for [idx, lexical_item] in enumerate(lexical_array_tail):
+    # Create actual DerivationSteps for each step definition.
+    next_steps: List[DerivationStep] = []
+    for next_step_def in next_step_defs:
+        next_step = DerivationStep.objects.create(
+            root_so=next_step_def.root_so
+        )
+
+        # Lexical array tail
+        for [idx, lexical_item] in enumerate(next_step_def.lexical_array_tail):
             LexicalArrayItem.objects.create(
                 derivation_step=next_step, lexical_item=lexical_item, order=idx
             )
+
+        # Corresponding derivations
         for derivation in step.derivations.all():
             next_step.derivations.add(derivation)
 
-        # Link the next step(s) to this one
+        # Inherit rules and generators
+        for rule in step.rules.all():
+            next_step.rules.add(rule)
+        for generator in step.generators.all():
+            next_step.generators.add(generator)
+
+        # Link to this step
         next_step.previous_step = step
         next_step.save()
+
         next_steps.append(next_step)
 
-    # Clean up this step
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 3: Cleanup
     step.status = DerivationStep.STATUS_CONVERGED
     step.save()
 

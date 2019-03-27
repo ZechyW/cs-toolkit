@@ -17,3 +17,20 @@ class RuleDescriptionForm(forms.ModelForm):
                 "on the backend server."
             ),
         }
+
+
+class GeneratorDescriptionForm(forms.ModelForm):
+    class Meta:
+        fields = ["name", "description"]
+        help_texts = {
+            "name": _(
+                "A unique identifier for this Generator.<br>"
+                "Will also be used to generate the name of the Python class "
+                "that corresponds to this Generator on the backend server "
+                "(displayed below)."
+            ),
+            "rule_class": _(
+                "The name of the Python class that corresponds to this "
+                "Generator on the backend server."
+            ),
+        }

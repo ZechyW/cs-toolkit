@@ -15,6 +15,8 @@ from .models import (
     DerivationStep,
     LexicalArrayItem,
     SyntacticObject,
+    RuleDescription,
+    GeneratorDescription,
 )
 from .serializers import (
     DerivationInputSerializer,
@@ -116,6 +118,12 @@ def create_derivation(lexical_array):
         LexicalArrayItem.objects.create(
             derivation_step=first_step, lexical_item=lexical_item, order=idx
         )
+
+    # For now, add all rules and generators
+    for rule in RuleDescription.objects.all():
+        first_step.rules.add(rule)
+    for generator in GeneratorDescription.objects.all():
+        first_step.generators.add(generator)
 
     # Create and return a Derivation
     derivation = Derivation.objects.create(first_step=first_step)

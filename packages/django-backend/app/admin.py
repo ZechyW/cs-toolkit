@@ -23,6 +23,7 @@ model_order.update(
         "Features": 3,
         "Feature properties": 4,
         # Grammar models
+        "Generator Descriptions": 0,
         "Rule descriptions": 1,
         "Derivation requests": 2,
         "Derivations": 3,

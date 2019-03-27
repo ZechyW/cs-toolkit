@@ -2,11 +2,12 @@ from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
 from app.admin import AppModelAdmin
-from grammar.forms import RuleDescriptionForm
-from grammar.models import (
+from .forms import GeneratorDescriptionForm, RuleDescriptionForm
+from .models import (
     Derivation,
     DerivationRequest,
     DerivationStep,
+    GeneratorDescription,
     LexicalArrayItem,
     RuleDescription,
     SyntacticObject,
@@ -49,20 +50,25 @@ class DerivationStepAdmin(AppModelAdmin):
 admin.site.register(SyntacticObject, MPTTModelAdmin)
 
 
+@admin.register(SyntacticObjectValue)
 class SyntacticObjectValueAdmin(AppModelAdmin):
     list_display = ["text", "current_language", "feature_string"]
     filter_horizontal = ["features"]
 
 
-admin.site.register(SyntacticObjectValue, SyntacticObjectValueAdmin)
-
-
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Rules
+@admin.register(RuleDescription)
 class RuleDescriptionAdmin(AppModelAdmin):
     list_display = ["name", "description", "rule_class"]
     readonly_fields = ["id", "rule_class"]
     form = RuleDescriptionForm
 
 
-admin.site.register(RuleDescription, RuleDescriptionAdmin)
+# -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
+# Generators
+@admin.register(GeneratorDescription)
+class GeneratorDescriptionAdmin(AppModelAdmin):
+    list_display = ["name", "description", "generator_class"]
+    readonly_fields = ["id", "generator_class"]
+    form = GeneratorDescriptionForm

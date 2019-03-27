@@ -1,4 +1,4 @@
-from grammar.rules.base import Rule
+from .base import Rule
 
 
 class CoreNoUninterpretable(Rule):

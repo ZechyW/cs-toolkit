@@ -86,10 +86,6 @@ function DerivationTimeline(props) {
           </code>
         </pre>
       </div>
-
-      <p className="has-text-grey-light">
-        {JSON.stringify(props.chain, null, 2)}
-      </p>
     </>
   );
 }

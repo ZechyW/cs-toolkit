@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import warnings
 
 import redis
 
@@ -123,6 +124,10 @@ DATABASES = {
         "PASSWORD": os.environ.get("DB_PASS") or "cs_toolkit",
     }
 }
+
+# Psycopg2 displays an obtrusive warning as of version ^2.7
+# cf.: https://github.com/dbcli/pgcli/pull/894
+warnings.filterwarnings("ignore", category=UserWarning, module="psycopg2")
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
