@@ -1,4 +1,4 @@
-from .base import Rule
+from .base import Rule, DerivationFailed
 
 
 class CoreNoUninterpretable(Rule):
@@ -9,4 +9,6 @@ class CoreNoUninterpretable(Rule):
 
     @staticmethod
     def apply(root_so, lexical_array_tail):
-        pass
+        # DEBUG: Always fail
+        root_so = "immutability test"
+        raise DerivationFailed("Debug: Fail.")

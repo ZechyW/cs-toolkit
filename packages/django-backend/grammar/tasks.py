@@ -8,8 +8,10 @@ from typing import List
 import dramatiq
 from django.utils import timezone
 
+import grammar.rules
 import grammar.generators
-from grammar.generators.base import NextStepDef
+from .generators.base import NextStepDef
+from .rules.base import DerivationFailed
 from .models import DerivationStep, LexicalArrayItem
 
 logger = logging.getLogger("cs-toolkit")
@@ -56,7 +58,21 @@ def process_derivation_step(step_id_hex: str):
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 1: Rule checking
 
-    # To be implemented.
+    # Apply every active Rule to the current DerivationStep.  It should not
+    # matter what order the Rules are applied in; they are not allowed to
+    # change the
+    try:
+        for rule in step.rules.all():
+            handler = getattr(grammar.rules, rule.rule_class())
+            handler.apply(step.root_so, step.lexical_array_tail)
+    except DerivationFailed as error:
+        # This is the end of this Derivation chain.
+        step.status = DerivationStep.STATUS_CRASHED
+        step.save()
+        mark_derivation_chain_crashed(step)
+        logger.info("DerivationStep {}: {}".format(step_id, error))
+        logger.info("{}".format(step.root_so))
+        return
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 2: Generation
