@@ -14,7 +14,7 @@ from .generators.base import NextStepDef
 from .rules.base import DerivationFailed
 from .models import DerivationStep, LexicalArrayItem
 
-logger = logging.getLogger("cs-toolkit")
+logger = logging.getLogger("cs-toolkit-workers")
 
 
 @dramatiq.actor
@@ -37,7 +37,7 @@ def process_derivation_step(step_id_hex: str):
     # This function will be called for all matching DerivationSteps whenever
     # a DerivationRequest is made; if we have already processed the
     # DerivationStep, we can short-circuit here.
-    if step.status == DerivationStep.STATUS_CONVERGED:
+    if step.status == DerivationStep.STATUS_DONE:
         # Our workers may have died halfway and processed this step but not
         # the next one(s) -- Keep processing through the chain just in case.
         logger.info("Re-processing DerivationStep: {}".format(step_id))
@@ -68,10 +68,10 @@ def process_derivation_step(step_id_hex: str):
     except DerivationFailed as error:
         # This is the end of this Derivation chain.
         step.status = DerivationStep.STATUS_CRASHED
+        step.crash_reason = str(error)
         step.save()
         mark_derivation_chain_crashed(step)
-        logger.info("DerivationStep {}: {}".format(step_id, error))
-        logger.info("{}".format(step.root_so))
+        logger.info("DerivationStep {} crashed: {}".format(step_id, error))
         return
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -120,7 +120,7 @@ def process_derivation_step(step_id_hex: str):
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 3: Cleanup
-    step.status = DerivationStep.STATUS_CONVERGED
+    step.status = DerivationStep.STATUS_DONE
     step.save()
 
     # Go!

@@ -39,9 +39,9 @@ NUM_THREADS=${NUM_THREADS:-8}
 
 TASK_MODULES=${TASK_MODULES:-django_dramatiq.setup django_dramatiq.tasks grammar.tasks}
 
-# Update-notifier sometimes causes permissions errors on Windows
-NO_UPDATE_NOTIFIER=1
+DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-app.settings}
+DRAMATIQ_PATH=${DRAMATIQ_PATH:-./packages/django-backend}
 
 echo -e "${CYAN}Starting Python task workers (Dramatiq)...${NOCOLOR}"
 
-eval ${yarn} workspace django-backend run dramatiq-script --processes ${NUM_PROCESSES} --threads ${NUM_THREADS} ${TASK_MODULES}
+DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} poetry run dramatiq --path ${DRAMATIQ_PATH} --processes ${NUM_PROCESSES} --threads ${NUM_THREADS} ${TASK_MODULES}

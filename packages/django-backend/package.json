@@ -13,8 +13,6 @@
     "dev": "cross-env DJANGO_DEBUG=1 poetry run python manage.py runserver",
     "django-shell": "poetry run python manage.py shell",
     "dramatiq": "poetry run python manage.py rundramatiq",
-    "predramatiq-script": ": \"\n\n\n=-=-=-=-=-=-=-=-=-=-=\nIf you see an error below, you probably meant to run the 'start-workers' script rather than start this task manually.\n=-=-=-=-=-=-=-=-=-=-=\n\n\n\"",
-    "dramatiq-script": "cross-env DJANGO_SETTINGS_MODULE=app.settings poetry run dramatiq --path .",
     "load-basic": "poetry run python manage.py migrate && poetry run python manage.py loaddata lexicon rules users",
     "serve": "poetry run daphne -b 0.0.0.0 app.asgi:application"
   },

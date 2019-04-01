@@ -93,11 +93,32 @@ class DerivationStepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DerivationStep
-        fields = ["id", "status", "root_so", "lexical_array_tail"]
+        fields = [
+            "id",
+            "status",
+            "root_so",
+            "lexical_array_tail",
+            "crash_reason",
+        ]
 
     id = serializers.UUIDField()
     root_so = SyntacticObjectSerializer()
     lexical_array_tail = serializers.ListField(child=LexicalItemSerializer())
+    crash_reason = serializers.CharField(required=False)
+
+    def to_representation(self, obj):
+        """
+        Only add `crash_reason` if the DerivationStep is actually crashed.
+        :param obj:
+        :return:
+        """
+        data = super().to_representation(obj)
+        # data is your serialized instance
+
+        if obj.status != DerivationStep.STATUS_CRASHED:
+            data.pop("crash_reason")
+
+        return data
 
 
 class DerivationSerializer(serializers.ModelSerializer):

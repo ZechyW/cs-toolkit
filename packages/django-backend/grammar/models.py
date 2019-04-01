@@ -111,7 +111,7 @@ class Derivation(NotifyModel):
         "DerivationStep",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="first_step_derivations",
     )
 
@@ -212,11 +212,11 @@ class DerivationStep(models.Model):
     """
 
     STATUS_PENDING = "Pending"
-    STATUS_CONVERGED = "Converged"
+    STATUS_DONE = "Done"
     STATUS_CRASHED = "Crashed"
     STATUSES = (
         (STATUS_PENDING, "Pending"),
-        (STATUS_CONVERGED, "Converged"),
+        (STATUS_DONE, "Done"),
         (STATUS_CRASHED, "Crashed"),
     )
 
@@ -270,6 +270,9 @@ class DerivationStep(models.Model):
         on_delete=models.SET_NULL,
         related_name="next_steps",
     )
+
+    # If this DerivationStep crashed, we should provide a reason.
+    crash_reason = models.TextField(blank=True)
 
     def __str__(self):
         tail_string = ", ".join(map("<{}>".format, self.lexical_array_tail))

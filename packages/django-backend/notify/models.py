@@ -105,7 +105,7 @@ class NotifyModel(models.Model):
 
         # This model object has changed; let people know
         channel_layer = get_channel_layer()
-        logger.info(
+        logger.debug(
             "-----\n"
             "Model object created/updated: {}\n"
             "{}".format(self.model_name, json.dumps(self.serialized_data))
@@ -128,7 +128,7 @@ class NotifyModel(models.Model):
             return False
 
         channel_layer = get_channel_layer()
-        logger.info(
+        logger.debug(
             "-----\n"
             "Model object deleted: {}\n"
             "{}".format(self.model_name, json.dumps(self.serialized_data))

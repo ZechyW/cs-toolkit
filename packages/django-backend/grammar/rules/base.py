@@ -21,8 +21,9 @@ class DerivationFailed(Exception):
     Raised by Rules to halt the derivation.
     """
 
-    def __init__(self, message):
+    def __init__(self, rule_class, message):
+        self.rule_class = rule_class
         self.message = message
 
     def __str__(self):
-        return "Derivation failed to converge: {}".format(self.message)
+        return "{}: {}".format(self.rule_class, self.message)

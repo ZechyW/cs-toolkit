@@ -9,6 +9,5 @@ class CoreNoUninterpretable(Rule):
 
     @staticmethod
     def apply(root_so, lexical_array_tail):
-        # DEBUG: Always fail
-        root_so = "immutability test"
-        raise DerivationFailed("Debug: Fail.")
+        # Debug: Always pass
+        pass
