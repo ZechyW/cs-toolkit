@@ -5,7 +5,7 @@ import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { selectChain, selectFrame } from "../actions";
 import { derivationDetails } from "../selectors";
-import DerivationTimeline from "./DerivationTimeline";
+import DerivationTimelineTree from "./DerivationTimelineTree";
 import Select from "react-select";
 
 /**
@@ -106,7 +106,7 @@ function DerivationViewer(props) {
           />
         </div>
         <div>
-          <DerivationTimeline
+          <DerivationTimelineTree
             title={
               props.selectedChain === null
                 ? ""

@@ -46,10 +46,10 @@ class ExternalMerge(Generator):
             )
             parent_so = SyntacticObject.objects.create(value=parent_so_value)
 
-            root_so.parent = parent_so
-            root_so.save()
             next_so.parent = parent_so
             next_so.save()
+            root_so.parent = parent_so
+            root_so.save()
 
             root_so = parent_so
 

@@ -317,6 +317,10 @@ class SyntacticObject(MPTTModel):
     # (i.e., with different `lft` and `rght` MPTT values)
     value = models.ForeignKey("SyntacticObjectValue", on_delete=models.CASCADE)
 
+    # For directly referencing this SyntacticObject's text label
+    def name(self):
+        return self.value.text
+
     # MPTT parent
     parent = TreeForeignKey(
         "self",
