@@ -84,17 +84,23 @@ function DerivationViewer(props) {
     // Select box event handlers
 
     /**
-     * The selected option in the chain selection box changed.
+     * The user clicked in the chain selection box.
+     * (The actual selected option may not have changed.)
      * @param option
      * @param action
      */
     function handleChange(option, action) {
+      if (option.value === props.selectedChain) {
+        // False alarm
+        return;
+      }
+
       props.selectChain(option.value);
       props.selectFrame(0);
     }
 
     return (
-      <div>
+      <>
         <div className="has-margin-bottom-5">Derivational chains:</div>
         <div className="has-margin-bottom-5">
           <Select
@@ -117,7 +123,7 @@ function DerivationViewer(props) {
             selectFrame={props.selectFrame}
           />
         </div>
-      </div>
+      </>
     );
   }
 
@@ -128,14 +134,16 @@ function DerivationViewer(props) {
         here.
       </p>
 
-      <p className="has-margin-bottom-10">
-        Currently selected Derivation:{" "}
+      {renderChains()}
+
+      <p
+        className="has-margin-top-10 has-text-grey-light"
+        style={{ fontSize: "0.75rem" }}
+      >
         {props.derivationDetails
-          ? props.derivationDetails.id
+          ? `Current Derivation: ${props.derivationDetails.id}`
           : "No Derivation selected."}
       </p>
-
-      {renderChains()}
     </>
   );
 }

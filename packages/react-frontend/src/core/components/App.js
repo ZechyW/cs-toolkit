@@ -50,7 +50,7 @@ gridItems.push({
 gridItems.push({
   id: "derivationViewer",
   title: "Derivation Viewer",
-  expand: false,
+  expand: true,
   contents: <DerivationViewer />
 });
 

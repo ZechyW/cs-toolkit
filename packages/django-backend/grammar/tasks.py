@@ -37,22 +37,23 @@ def process_derivation_step(step_id_hex: str):
     # This function will be called for all matching DerivationSteps whenever
     # a DerivationRequest is made; if we have already processed the
     # DerivationStep, we can short-circuit here.
-    if step.status == DerivationStep.STATUS_DONE:
+    if step.status == DerivationStep.STATUS_OKAY:
         # Our workers may have died halfway and processed this step but not
         # the next one(s) -- Keep processing through the chain just in case.
         logger.info("Re-processing DerivationStep: {}".format(step_id))
         next_steps = step.next_steps.all()
         for next_step in next_steps:
             process_derivation_step.send(next_step.id.hex)
+        return
 
+    if step.status == DerivationStep.STATUS_CONVERGED:
         # If we are the last in the chain, mark completion
-        if not next_steps:
-            mark_derivation_chain_converged(step)
+        mark_derivation_chain_converged(step, reprocessing=True)
         return
 
     if step.status == DerivationStep.STATUS_CRASHED:
         # Whoo boy
-        mark_derivation_chain_crashed(step)
+        mark_derivation_chain_crashed(step, reprocessing=True)
         return
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -120,7 +121,7 @@ def process_derivation_step(step_id_hex: str):
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 3: Cleanup
-    step.status = DerivationStep.STATUS_DONE
+    step.status = DerivationStep.STATUS_OKAY
     step.save()
 
     # Go!
@@ -129,10 +130,14 @@ def process_derivation_step(step_id_hex: str):
 
     # This might be the end of this derivation chain.
     if not next_steps:
+        step.status = DerivationStep.STATUS_CONVERGED
+        step.save()
         mark_derivation_chain_converged(step)
 
 
-def mark_derivation_chain_converged(step: DerivationStep):
+def mark_derivation_chain_converged(
+    step: DerivationStep, reprocessing: bool = False
+):
     """
     Given a DerivationStep, mark all its related Derivations and
     DerivationRequests as complete.
@@ -141,12 +146,16 @@ def mark_derivation_chain_converged(step: DerivationStep):
     for derivation in step.derivations.all():
         derivation.converged_steps.add(step)
 
-        for derivation_request in derivation.derivation_requests.all():
-            derivation_request.last_completion_time = timezone.now()
-            derivation_request.save()
+        # Also update the last chain completion time if this is a new result.
+        if not reprocessing:
+            for derivation_request in derivation.derivation_requests.all():
+                derivation_request.last_completion_time = timezone.now()
+                derivation_request.save()
 
 
-def mark_derivation_chain_crashed(step: DerivationStep):
+def mark_derivation_chain_crashed(
+    step: DerivationStep, reprocessing: bool = False
+):
     """
     Given a DerivationStep, mark all its related Derivations and
     DerivationRequests as having crashed.
@@ -155,6 +164,8 @@ def mark_derivation_chain_crashed(step: DerivationStep):
     for derivation in step.derivations.all():
         derivation.crashed_steps.add(step)
 
-        for derivation_request in derivation.derivation_requests.all():
-            derivation_request.last_completion_time = timezone.now()
-            derivation_request.save()
+        # Also update the last chain completion time if this is a new result.
+        if not reprocessing:
+            for derivation_request in derivation.derivation_requests.all():
+                derivation_request.last_completion_time = timezone.now()
+                derivation_request.save()

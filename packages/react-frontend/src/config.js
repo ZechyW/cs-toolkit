@@ -125,6 +125,21 @@ class Config {
       width: 190
     }
   ];
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // DerivationTimelineTree
+
+  // Size reserved for each node in the tree view
+  derivationTreeNodeSize = {
+    x: 200,
+    y: 90
+  };
+
+  // Size of the node label component
+  derivationTreeLabelSize = {
+    width: 160,
+    height: 100
+  };
 }
 
 export default new Config();

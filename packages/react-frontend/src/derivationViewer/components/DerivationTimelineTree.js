@@ -1,11 +1,13 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { hierarchy } from "d3-hierarchy";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Tree from "react-d3-tree";
 import "../styles/DerivationTimelineTree.scss";
+import Config from "../../config";
 
 library.add(faAngleLeft, faAngleRight);
 
@@ -21,13 +23,14 @@ const Slider = createSliderWithTooltip(RcSlider);
  */
 function DerivationTimelineTree(props) {
   if (props.chain === null) return null;
+  const thisFrame = props.chain[props.selectedFrame];
 
   /** @type React.RefObject */
   const sliderRef = useRef(null);
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Tree view
-  let { root_so } = props.chain[props.selectedFrame];
+  let { root_so } = thisFrame;
   if (!root_so) {
     // The root SyntacticObject will be null at the very first step of the
     // chain -- Set a placeholder instead.
@@ -37,10 +40,30 @@ function DerivationTimelineTree(props) {
     };
   }
 
+  // Use the `d3-hierarchy` package as a utility library for dealing with
+  // the SyntacticObject data
+  const treeData = hierarchy(root_so);
+
+  // Calculate a reasonable size for the tree view container
+  const treeContainerHeight =
+    Config.derivationTreeNodeSize.y * treeData.height +
+    Config.derivationTreeLabelSize.height * 2;
+
+  // For centering the tree view
+  const [treeWidth, setTreeWidth] = useState(0);
+  /** @type React.RefObject */
+  const treeContainer = useRef(null);
+  useEffect(() => {
+    if (treeContainer.current) {
+      setTreeWidth(treeContainer.current.offsetWidth);
+    }
+  });
+
   /**
    * Sub-component for rendering node labels
    * - Above the node position for non-terminal nodes.
    * - Below the node position for terminal nodes.
+   * - (More-or-less) centred at the node position for trees with only one node.
    * @param props
    * @returns {*}
    * @constructor
@@ -57,9 +80,16 @@ function DerivationTimelineTree(props) {
       width: "100%"
     };
     if (isLeaf) {
-      labelStyle.top = "58px";
+      // Two possibilities: A non-terminal, or the only node in the tree.
+      if (treeData.height) {
+        // Non-terminal
+        labelStyle.top = `${Config.derivationTreeLabelSize.height}px`;
+      } else {
+        // Only node
+        labelStyle.top = `${Config.derivationTreeLabelSize.height / 2}px`;
+      }
     } else {
-      labelStyle.bottom = "58px";
+      labelStyle.bottom = `0`;
     }
 
     let labelContents;
@@ -85,6 +115,27 @@ function DerivationTimelineTree(props) {
       </div>
     );
   }
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Details view
+  const { status, lexical_array_tail } = thisFrame;
+  const detailsView = (
+    <>
+      <div>
+        <span className="has-text-weight-bold">Step status:</span> {status}
+      </div>
+      <div>
+        <span className="has-text-weight-bold">Lexical array tail:</span>{" "}
+        {lexical_array_tail.map((lexicalItem, index) => (
+          <span key={lexicalItem.id}>
+            {index ? ", " : ""}
+            <span className="is-italic">{lexicalItem.text}</span> (
+            {lexicalItem.language}) {lexicalItem.features}
+          </span>
+        ))}
+      </div>
+    </>
+  );
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Event handlers
@@ -114,7 +165,7 @@ function DerivationTimelineTree(props) {
             onChange={handleChange}
           />
 
-          <div className="field has-addons has-margin-left-10">
+          <div className="field has-addons has-margin-left-20">
             <div className="control">
               <button
                 className="button"
@@ -146,33 +197,54 @@ function DerivationTimelineTree(props) {
           </div>
         </div>
 
-        <div
-          id="treeWrapper"
-          style={{ width: "300px", height: "300px", border: "1px solid #aaa" }}
-        >
-          <Tree
-            data={root_so}
-            collapsible={false}
-            orientation="vertical"
-            pathFunc="straight"
-            allowForeignObjects
-            nodeLabelComponent={{
-              render: <NodeLabel className="myLabelComponentInSvg" />,
-              foreignObjectWrapper: {
-                x: -58,
-                y: -58
-              }
+        <div className="flex-row">
+          <div
+            id="treeWrapper"
+            style={{
+              width: "70%",
+              height: `${treeContainerHeight}px`,
+              border: "1px solid #aaa"
             }}
-            nodeSvgShape={{ shape: "none" }}
-            translate={{ x: 150, y: 75 }}
-          />
-        </div>
+            ref={treeContainer}
+          >
+            <Tree
+              data={root_so}
+              nodeSvgShape={{ shape: "none" }}
+              nodeLabelComponent={{
+                render: <NodeLabel className="myLabelComponentInSvg" />,
+                foreignObjectWrapper: {
+                  x: -Config.derivationTreeLabelSize.width / 2,
+                  y: -Config.derivationTreeLabelSize.height,
+                  width: Config.derivationTreeLabelSize.width,
+                  height: Config.derivationTreeLabelSize.height,
+                  style: { overflow: "visible" }
+                }
+              }}
+              orientation="vertical"
+              translate={{
+                x: treeWidth / 2,
+                y: Config.derivationTreeLabelSize.height
+              }}
+              pathFunc="straight"
+              collapsible={false}
+              scaleExtent={{ min: 0.5, max: 1.25 }}
+              nodeSize={Config.derivationTreeNodeSize}
+              allowForeignObjects
+            />
+          </div>
 
-        {/*<pre>*/}
-        {/*  <code>*/}
-        {/*    {JSON.stringify(props.chain[props.selectedFrame], null, 2)}*/}
-        {/*  </code>*/}
-        {/*</pre>*/}
+          <div
+            className="has-margin-left-20"
+            style={{ flexGrow: "1", flexShrink: "1" }}
+          >
+            {detailsView}
+            <pre style={{ fontSize: "0.7rem" }}>
+              <code>
+                {JSON.stringify(props.chain[props.selectedFrame], null, 2)}
+              </code>
+            </pre>
+          </div>
+        </div>
       </div>
     </>
   );

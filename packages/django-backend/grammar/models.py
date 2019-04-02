@@ -212,11 +212,13 @@ class DerivationStep(models.Model):
     """
 
     STATUS_PENDING = "Pending"
-    STATUS_DONE = "Done"
+    STATUS_OKAY = "Okay"
+    STATUS_CONVERGED = "Converged"
     STATUS_CRASHED = "Crashed"
     STATUSES = (
         (STATUS_PENDING, "Pending"),
-        (STATUS_DONE, "Done"),
+        (STATUS_OKAY, "Okay"),
+        (STATUS_CONVERGED, "Converged"),
         (STATUS_CRASHED, "Crashed"),
     )
 
