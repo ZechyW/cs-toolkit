@@ -34,6 +34,7 @@ export default createReducer(initialState, {
     }
 
     // Set
+    state.lexicalItemsById = {};
     for (const lexicalItem of action.payload.data) {
       state.lexicalItemsById[lexicalItem.id] = lexicalItem;
     }

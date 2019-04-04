@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Deque, List, Optional
 
+from grammar.models import SyntacticObject
 from lexicon.models import LexicalItem
-from ..models import SyntacticObject
 
 
 class Generator:

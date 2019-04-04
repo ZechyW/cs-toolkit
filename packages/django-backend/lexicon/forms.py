@@ -16,7 +16,7 @@ class LexicalItemForm(forms.ModelForm):
 
     class Meta:
         model = LexicalItem
-        fields = ["text", "language", "features"]
+        fields = ["text", "language", "description", "features"]
         help_texts = {
             "text": _(
                 "The orthographic representation of this lexical item, "
@@ -31,6 +31,10 @@ class LexicalItemForm(forms.ModelForm):
                 "convention cannot handle appropriately.<br>"
                 "In addition, the special code `func` is used for functional "
                 "items (which don't belong in any particular language)."
+            ),
+            "description": _(
+                "An optional description providing more information about "
+                "this lexical item."
             ),
         }
 

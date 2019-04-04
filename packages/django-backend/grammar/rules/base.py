@@ -1,3 +1,9 @@
+from typing import Deque, Optional
+
+from grammar.models import SyntacticObject
+from lexicon.models import LexicalItem
+
+
 class Rule:
     """
     Base template for a syntactic rule.
@@ -6,7 +12,11 @@ class Rule:
     description = ""
 
     @staticmethod
-    def apply(root_so, lexical_array_tail):
+    def apply(
+        root_so: Optional[SyntacticObject],
+        lexical_array_tail: Deque[LexicalItem],
+        is_last_step: bool,
+    ):
         """
         Given the currently built-up syntactic object and the remainder of
         the lexical array for some DerivationStep, checks whether the
@@ -21,7 +31,7 @@ class DerivationFailed(Exception):
     Raised by Rules to halt the derivation.
     """
 
-    def __init__(self, rule_class, message):
+    def __init__(self, rule_class: str, message: str):
         self.rule_class = rule_class
         self.message = message
 

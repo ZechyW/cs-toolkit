@@ -49,6 +49,9 @@ class LexicalItem(NotifyModel):
 
     features = models.ManyToManyField("Feature", blank=True)
 
+    #: An optional description of this LexicalItem.
+    description = models.TextField(blank=True)
+
     #: Used for change notifications. Subscribers will only be alerted when a
     #: substantive change is made to a model instance.
     tracker = FieldTracker()

@@ -6,6 +6,7 @@
   "author": "ZechyW",
   "version": "0.1.0",
   "scripts": {
+    "backup-generators": "poetry run python manage.py dumpdata grammar.GeneratorDescription --format xml --indent 2 > grammar/fixtures/generators.xml",
     "backup-lexicon": "poetry run python manage.py dumpdata lexicon --format xml --indent 2 > lexicon/fixtures/lexicon.xml",
     "backup-rules": "poetry run python manage.py dumpdata grammar.RuleDescription --format xml --indent 2 > grammar/fixtures/rules.xml",
     "backup-users": "poetry run python manage.py dumpdata app_auth.AppUser --format xml --indent 2 > app_auth/fixtures/users.xml",
@@ -13,7 +14,7 @@
     "dev": "cross-env DJANGO_DEBUG=1 poetry run python manage.py runserver",
     "django-shell": "poetry run python manage.py shell",
     "dramatiq": "poetry run python manage.py rundramatiq",
-    "load-basic": "poetry run python manage.py migrate && poetry run python manage.py loaddata lexicon rules users",
+    "load-basic": "poetry run python manage.py migrate && poetry run python manage.py loaddata users lexicon rules generators",
     "serve": "poetry run daphne -b 0.0.0.0 app.asgi:application"
   },
   "devDependencies": {

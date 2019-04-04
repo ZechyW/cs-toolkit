@@ -30,28 +30,28 @@ gridItems.push({
   id: "derivationInput",
   title: "Generate Derivations",
   expand: true,
-  contents: <DerivationInput />
+  component: DerivationInput
 });
 
 gridItems.push({
   id: "lexicalItemList",
   title: "Lexical Item List",
   expand: false,
-  contents: <LexicalItems />
+  component: LexicalItems
 });
 
 gridItems.push({
   id: "derivationStatusList",
   title: "Derivation Status",
   expand: false,
-  contents: <Derivations />
+  component: Derivations
 });
 
 gridItems.push({
   id: "derivationViewer",
   title: "Derivation Viewer",
   expand: true,
-  contents: <DerivationViewer />
+  component: DerivationViewer
 });
 
 /**
@@ -62,11 +62,9 @@ gridItems.push({
 function App(props) {
   // Prepare to render visible grid items, removing disabled ones.
   const visibleGridItems = gridItems
+    .filter((gridItem) => props.itemVisibility[gridItem.id])
     .map((gridItem) => {
-      // Don't render any currently disabled items
-      if (!props.itemVisibility[gridItem.id]) {
-        return null;
-      }
+      const ItemComponent = gridItem.component;
 
       return (
         <GridItem
@@ -75,16 +73,29 @@ function App(props) {
           title={gridItem.title}
           expandContents={gridItem.expand}
         >
-          {gridItem.contents}
+          <ItemComponent />
         </GridItem>
       );
-    })
-    .filter((el) => el !== null);
+    });
+
+  // Invisible grid items should still be rendered, for their container side
+  // effects, but should be invisible and outside the main Grid component.
+  const invisibleGridItems = gridItems
+    .filter((gridItem) => !props.itemVisibility[gridItem.id])
+    .map((gridItem) => {
+      const ItemComponent = gridItem.component;
+      return (
+        <div key={gridItem.id} style={{ display: "none" }}>
+          <ItemComponent />
+        </div>
+      );
+    });
 
   return (
     <>
       <Navbar />
       <Grid>{visibleGridItems}</Grid>
+      {invisibleGridItems}
       <Options />
     </>
   );

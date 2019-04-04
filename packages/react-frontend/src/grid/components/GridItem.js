@@ -40,6 +40,7 @@ function GridItem(props) {
   // N.B.: Because some children might not be done rendering yet, we need to
   // defer the height computation (via `rafSchd`).
   // (E.g.: https://github.com/react-dnd/react-dnd/issues/1146)
+  /** @type React.RefObject */
   const childRef = useRef(null);
   let currentMinHeight = minHeights[id];
   let checkMinHeight = () => {
