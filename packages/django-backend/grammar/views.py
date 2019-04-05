@@ -13,10 +13,10 @@ from .models import (
     Derivation,
     DerivationRequest,
     DerivationStep,
-    LexicalArrayItem,
-    SyntacticObject,
-    RuleDescription,
     GeneratorDescription,
+    LexicalArrayItem,
+    RuleDescription,
+    SyntacticObject,
 )
 from .serializers import (
     DerivationInputSerializer,
@@ -24,7 +24,7 @@ from .serializers import (
     DerivationSerializer,
     SyntacticObjectSerializer,
 )
-from .tasks import process_derivation_step
+from .tasks import derivation_actor
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -98,7 +98,7 @@ class GenerateDerivation(APIView):
         # Request processing of all the Derivations.
         for derivation in derivations:
             derivation_request.derivations.add(derivation)
-            process_derivation_step.send(derivation.first_step.id.hex)
+            derivation_actor.send(derivation.first_step.id.hex)
 
         # Serialise and return DerivationRequest
         serializer = DerivationRequestSerializer(derivation_request)

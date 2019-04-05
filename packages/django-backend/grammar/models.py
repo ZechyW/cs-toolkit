@@ -202,22 +202,26 @@ class DerivationStep(models.Model):
 
     DerivationSteps go through a number of phases when processed:
     - Before processing (STATUS_PENDING).
-    - Rule applications - Crashes (STATUS_CRASHED) if any rules raise errors.
+    - Rule checks - Crashes (STATUS_CRASHED) if any rules raise errors.
     - Generator applications - Generates the next DerivationSteps in the
       Derivation based on the configured generators.
-    - Finished processing (STATUS_DONE).
-    - If any DerivationSteps were generated, processing continues with them.
-      If no new DerivationSteps were generated, the Derivation is marked as
-      complete.
+    - Continued processing with subsequent steps (STATUS_PROCESSED).
+
+    Also:
+    - The DerivationStep could cause its derivational chain to converge
+      (STATUS_CONVERGED)
+    - If there are no more generated next DerivationSteps and the
+      Rule checks still fail, the derivation is marked as crashed
+      (STATUS_CRASHED)
     """
 
     STATUS_PENDING = "Pending"
-    STATUS_OKAY = "Okay"
+    STATUS_PROCESSED = "Processed"
     STATUS_CONVERGED = "Converged"
     STATUS_CRASHED = "Crashed"
     STATUSES = (
         (STATUS_PENDING, "Pending"),
-        (STATUS_OKAY, "Okay"),
+        (STATUS_PROCESSED, "Processed"),
         (STATUS_CONVERGED, "Converged"),
         (STATUS_CRASHED, "Crashed"),
     )
@@ -247,6 +251,10 @@ class DerivationStep(models.Model):
     #   model, which tracks order as well.
     rules = models.ManyToManyField("RuleDescription", blank=True)
     generators = models.ManyToManyField("GeneratorDescription", blank=True)
+
+    # Any Rule error messages or Generator metadata, as JSON data
+    rule_errors_json = models.TextField()
+    generator_metadata_json = models.TextField()
 
     @property
     def lexical_array_tail(self):

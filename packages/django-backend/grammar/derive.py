@@ -1,0 +1,205 @@
+"""
+The algorithm for processing a single DerivationStep.
+Imported and run by the Dramatiq task workers.
+"""
+import json
+import logging
+from typing import List
+
+from django.utils import timezone
+
+import grammar.generators
+import grammar.rules
+from grammar.generators.base import NextStepDef
+from grammar.models import DerivationStep, LexicalArrayItem
+from grammar.rules.base import DerivationFailed, RuleNonFatalError
+
+logger = logging.getLogger("cs-toolkit-grammar")
+
+
+def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
+    """
+    Idempotent function to process the given DerivationStep.
+
+    Possible results:
+    - This DerivationStep could crash the current derivational chain.
+    - This DerivationStep could generate one or more subsequent
+      DerivationSteps, continuing the current derivational chain and possibly
+      forking new ones.
+    - This DerivationStep could cause the current derivational chain to
+      converge.
+
+    Return values:
+    - A List of the next DerivationSteps to process, if any.
+
+    :param step:
+    :return:
+    """
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 0: Status check
+
+    # If we have seen processed this DerivationStep before, we can
+    # short-circuit here instead of re-processing it fully.
+    # TODO: We should check to see if the Rules/Generators have changed
+    #       since we last processed this DerivationStep -- If so, we should
+    #       always do a full re-run.
+
+    if step.status == DerivationStep.STATUS_PROCESSED:
+        # Our workers may have died halfway and processed this step but not
+        # the next one(s) -- Keep processing through the chain just in case.
+        logger.info("Re-processing DerivationStep: {}".format(step.id))
+        return step.next_steps.all()
+
+    if step.status == DerivationStep.STATUS_CONVERGED:
+        # If we are the last in a converged chain, mark completion
+        mark_derivation_chain_ended(step, converged=True, reprocessing=True)
+        return []
+
+    if step.status == DerivationStep.STATUS_CRASHED:
+        # Whoo boy
+        mark_derivation_chain_ended(step, converged=False, reprocessing=True)
+        return []
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 1: Rule checking
+
+    # Apply every active Rule to the current DerivationStep.  It should not
+    # matter what order the Rules are applied in; they are not allowed to
+    # mutate their input.
+
+    # If a Rule determines that a Derivation can *never* converge, it will
+    # raise a DerivationFailed exception.
+    # E.g., there may be a fundamental incompatibility within a single
+    #   DerivationStep (e.g., between two Merged items) that will *never* be
+    #   resolved even if there are more DerivationSteps in the chain.
+
+    # If the Derivation can continue (i.e., the Rule passed, or failed
+    # non-fatally), the Rule check should return a List of error message
+    # strings.  This List will be empty if the Rule passed.
+
+    rule_errors: List[RuleNonFatalError] = []
+
+    try:
+        for rule in step.rules.all():
+            handler = getattr(grammar.rules, rule.rule_class())
+            this_rule_errors = handler.apply(
+                step.root_so, step.lexical_array_tail
+            )
+            rule_errors = rule_errors + this_rule_errors
+    except DerivationFailed as error:
+        # This Derivation chain has reached a bad end.
+        step.status = DerivationStep.STATUS_CRASHED
+        step.crash_reason = str(error)
+        step.save()
+        mark_derivation_chain_ended(step, converged=False)
+        logger.info("DerivationStep {} crashed: {}".format(step.id, error))
+        return []
+
+    # Save the error messages to the DerivationStep
+    step.rule_errors_json = json.dumps(rule_errors)
+    step.save()
+
+    # Convergence check
+    if not len(step.lexical_array_tail) and not len(rule_errors):
+        step.status = DerivationStep.STATUS_CONVERGED
+        step.save()
+        mark_derivation_chain_ended(step, converged=True)
+        return []
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 2: Generation
+
+    # Get the definitions for the next step(s) in the chain.  The generation
+    # operations may return empty lists if they have no more steps to
+    # generate.
+
+    next_step_defs: List[NextStepDef] = []
+
+    for generator in step.generators.all():
+        # Get next step definitions from each Generator.
+        handler = getattr(grammar.generators, generator.generator_class)
+        generator_defs: List[NextStepDef] = handler.generate(
+            step.root_so, step.lexical_array_tail
+        )
+        next_step_defs = next_step_defs + generator_defs
+
+    # Crash check: If we have no next steps generated but still have Rule
+    # errors, we have crashed.
+    crash_reason = (
+        "No more steps to generate in the derivation, but some rule checks "
+        "are still failing."
+    )
+    if not len(next_step_defs) and len(rule_errors):
+        step.status = DerivationStep.STATUS_CRASHED
+        step.crash_reason = crash_reason
+        step.save()
+        mark_derivation_chain_ended(step, converged=False)
+        logger.info(
+            "DerivationStep {} crashed: {}".format(step.id, crash_reason)
+        )
+        return []
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 3: Cleanup
+
+    # If our Generators provided at least one next step and our Rules didn't
+    # crash the Derivation, the show goes on.
+
+    # Create actual DerivationSteps for each of our next steps.
+    # TODO: Change to get_or_create()-style retrieval
+    next_steps: List[DerivationStep] = []
+    for next_step_def in next_step_defs:
+        next_step = DerivationStep.objects.create(
+            root_so=next_step_def.root_so
+        )
+
+        # Lexical array tail
+        for [idx, lexical_item] in enumerate(next_step_def.lexical_array_tail):
+            LexicalArrayItem.objects.create(
+                derivation_step=next_step, lexical_item=lexical_item, order=idx
+            )
+
+        # Corresponding derivations
+        for derivation in step.derivations.all():
+            next_step.derivations.add(derivation)
+
+        # Inherit rules and generators
+        for rule in step.rules.all():
+            next_step.rules.add(rule)
+        for generator in step.generators.all():
+            next_step.generators.add(generator)
+
+        # Link to this step
+        next_step.previous_step = step
+        next_step.save()
+
+        next_steps.append(next_step)
+
+    # Carry on
+    step.status = DerivationStep.STATUS_PROCESSED
+    step.save()
+    return next_steps
+
+
+def mark_derivation_chain_ended(
+    step: DerivationStep, converged: bool, reprocessing: bool = False
+):
+    """
+    Given a DerivationStep, mark its derivational chain as complete.
+    If `converged` is True, the chain is marked as converged for any
+    corresponding Derivations / DerivationRequests.
+    If `converged` is False, the chain is marked as crashed instead.
+    :return:
+    """
+    for derivation in step.derivations.all():
+        if converged:
+            derivation.converged_steps.add(step)
+        else:
+            derivation.crashed_steps.add(step)
+
+        # Also update the last chain completion time if this is a new result.
+        if not reprocessing:
+            for derivation_request in derivation.derivation_requests.all():
+                derivation_request.last_completion_time = timezone.now()
+                derivation_request.save()
