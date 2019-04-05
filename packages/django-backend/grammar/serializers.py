@@ -1,6 +1,7 @@
 """
 Grammar-related model serializers
 """
+import json
 
 from rest_framework import serializers
 from rest_framework_recursive.fields import RecursiveField
@@ -79,7 +80,12 @@ class SyntacticObjectValueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SyntacticObjectValue
-        fields = ["text", "current_language", "feature_string"]
+        fields = [
+            "text",
+            "current_language",
+            "feature_string",
+            "deleted_feature_string",
+        ]
 
 
 class SyntacticObjectSerializer(serializers.ModelSerializer):
@@ -110,6 +116,7 @@ class DerivationStepSerializer(serializers.ModelSerializer):
             "root_so",
             "lexical_array_tail",
             "crash_reason",
+            "rule_errors",
         ]
 
     id = serializers.UUIDField()
@@ -117,15 +124,27 @@ class DerivationStepSerializer(serializers.ModelSerializer):
     lexical_array_tail = serializers.ListField(child=LexicalItemSerializer())
     crash_reason = serializers.CharField(required=False)
 
+    rule_errors = serializers.SerializerMethodField("add_rule_errors")
+
+    def add_rule_errors(self, obj):
+        """
+        Parse the list of Rule error messages for this DerivationStep and
+        add it to the serialisation.
+        :param obj:
+        :return:
+        """
+        return list(json.loads(obj.rule_errors_json))
+
     def to_representation(self, obj):
         """
-        Only add `crash_reason` if the DerivationStep is actually crashed.
+        Custom serialization handling
         :param obj:
         :return:
         """
         data = super().to_representation(obj)
         # data is your serialized instance
 
+        # Only add `crash_reason` if the DerivationStep is actually crashed.
         if obj.status != DerivationStep.STATUS_CRASHED:
             data.pop("crash_reason")
 

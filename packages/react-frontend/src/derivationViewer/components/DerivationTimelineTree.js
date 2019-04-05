@@ -4,7 +4,7 @@ import { hierarchy } from "d3-hierarchy";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useLayoutEffect } from "react";
 import Tree from "react-d3-tree";
 import "../styles/DerivationTimelineTree.scss";
 import Config from "../../config";
@@ -49,14 +49,38 @@ function DerivationTimelineTree(props) {
     Config.derivationTreeNodeSize.y * treeData.height +
     Config.derivationTreeLabelSize.height * 2;
 
-  // For centering the tree view
-  const [treeWidth, setTreeWidth] = useState(0);
+  // For centring the tree view
+  const [translateX, setTranslateX] = useState(0);
   /** @type React.RefObject */
   const treeContainer = useRef(null);
-  useEffect(() => {
-    if (treeContainer.current) {
-      setTreeWidth(treeContainer.current.offsetWidth);
-    }
+  useLayoutEffect(() => {
+    // N.B.: Dynamically reading the tree SVG's width may be inaccurate
+    // because of the animations. Just snap the tree to the left edge for now.
+    let offset =
+      (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
+      2;
+    setTranslateX(offset);
+
+    // // We have a reference to the <div> containing the tree.
+    // const containerWidth = treeContainer.current.offsetWidth;
+    //
+    // // Get the actual bounding box of the tree SVG and figure out where
+    // // the centre should be.
+    // const treeSvgBbox = treeContainer.current.querySelector("svg").getBBox();
+    //
+    // let offset = (containerWidth - treeSvgBbox.width) / 2;
+    //
+    // // If the offset is negative, the tree is wider than its container.
+    // // Have at least the left edge of the tree visible.
+    // offset = Math.max(offset, 0);
+    //
+    // // The centre of the root node starts at (0,0), so the tree will initially
+    // // expand into the negative x direction.  Account for this and set the
+    // // final offset.
+    // offset +=
+    //   (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
+    //   2;
+    // setTranslateX(offset);
   });
 
   /**
@@ -98,13 +122,22 @@ function DerivationTimelineTree(props) {
       labelContents = nodeData.name;
     } else {
       // Pull raw data from node
-      const { text, current_language, feature_string } = nodeData.value;
+      const {
+        text,
+        current_language,
+        feature_string,
+        deleted_feature_string
+      } = nodeData.value;
       labelContents = (
         <>
           <span className="has-text-weight-bold	">{text} </span>(
           <span className="is-italic">{current_language}</span>)
           <br />
           <span>{feature_string}</span>
+          <br />
+          <span style={{ textDecoration: "line-through" }}>
+            {deleted_feature_string}
+          </span>
         </>
       );
     }
@@ -118,22 +151,54 @@ function DerivationTimelineTree(props) {
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Details view
-  const { status, lexical_array_tail } = thisFrame;
+  const { status, lexical_array_tail, crash_reason, rule_errors } = thisFrame;
+
+  // Lexical array tail
+  let lexical_array_repr;
+  if (lexical_array_tail.length > 0) {
+    lexical_array_repr = lexical_array_tail.map((lexicalItem, index) => (
+      <span key={lexicalItem.id}>
+        {index ? ", " : ""}
+        <span className="is-italic">{lexicalItem.text}</span> (
+        {lexicalItem.language}) {lexicalItem.features}
+      </span>
+    ));
+  } else {
+    lexical_array_repr = <span className="is-italic">None</span>;
+  }
+
   const detailsView = (
     <>
       <div>
         <span className="has-text-weight-bold">Step status:</span> {status}
       </div>
+
       <div>
         <span className="has-text-weight-bold">Lexical array tail:</span>{" "}
-        {lexical_array_tail.map((lexicalItem, index) => (
-          <span key={lexicalItem.id}>
-            {index ? ", " : ""}
-            <span className="is-italic">{lexicalItem.text}</span> (
-            {lexicalItem.language}) {lexicalItem.features}
-          </span>
-        ))}
+        {lexical_array_repr}
       </div>
+
+      {crash_reason ? (
+        <div>
+          <span className="has-text-weight-bold">Crash reason:</span>{" "}
+          {crash_reason}
+        </div>
+      ) : (
+        ""
+      )}
+
+      {rule_errors.length > 0 ? (
+        <div>
+          <span className="has-text-weight-bold">Rule errors:</span>{" "}
+          <ul style={{ listStyle: "disc outside", marginLeft: "2em" }}>
+            {rule_errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
 
@@ -201,9 +266,9 @@ function DerivationTimelineTree(props) {
           <div
             id="treeWrapper"
             style={{
-              width: "70%",
               height: `${treeContainerHeight}px`,
-              border: "1px solid #aaa"
+              border: "1px solid #aaa",
+              flexGrow: "1"
             }}
             ref={treeContainer}
           >
@@ -222,7 +287,7 @@ function DerivationTimelineTree(props) {
               }}
               orientation="vertical"
               translate={{
-                x: treeWidth / 2,
+                x: translateX,
                 y: Config.derivationTreeLabelSize.height
               }}
               pathFunc="straight"
@@ -235,10 +300,10 @@ function DerivationTimelineTree(props) {
 
           <div
             className="has-margin-left-20"
-            style={{ flexGrow: "1", flexShrink: "1" }}
+            style={{ width: "30%", flexShrink: "1" }}
           >
             {detailsView}
-            <pre style={{ fontSize: "0.7rem" }}>
+            <pre style={{ fontSize: "0.7rem", display: "none" }}>
               <code>
                 {JSON.stringify(props.chain[props.selectedFrame], null, 2)}
               </code>

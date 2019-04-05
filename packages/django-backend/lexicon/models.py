@@ -87,6 +87,17 @@ class Feature(models.Model):
     #: A QuerySet representing the FeatureProperties of this Feature.
     properties = models.ManyToManyField("FeatureProperty")
 
+    @property
+    def uninterpretable(self):
+        """
+        Convenience function to hit the database and check whether or not this
+        feature is explicitly uninterpretable
+        :return:
+        """
+        interp = self.properties.filter(name="interpretable")
+        if len(interp) > 0:
+            return not interp[0].value
+
     def __str__(self):
         # Prefix/suffix will be attached to the Feature's name directly.
         # Members of additional will be displayed as a comma-separated list

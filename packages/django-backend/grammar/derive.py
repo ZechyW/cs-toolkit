@@ -45,21 +45,29 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     #       since we last processed this DerivationStep -- If so, we should
     #       always do a full re-run.
 
-    if step.status == DerivationStep.STATUS_PROCESSED:
-        # Our workers may have died halfway and processed this step but not
-        # the next one(s) -- Keep processing through the chain just in case.
-        logger.info("Re-processing DerivationStep: {}".format(step.id))
-        return step.next_steps.all()
+    # Disable short-circuits for now.
+    quick_reprocess = False
+    if quick_reprocess:
+        if step.status == DerivationStep.STATUS_PROCESSED:
+            # Our workers may have died halfway and processed this step but
+            # not the next one(s) -- Keep processing through the chain just
+            # in case.
+            logger.info("Re-processing DerivationStep: {}".format(step.id))
+            return step.next_steps.all()
 
-    if step.status == DerivationStep.STATUS_CONVERGED:
-        # If we are the last in a converged chain, mark completion
-        mark_derivation_chain_ended(step, converged=True, reprocessing=True)
-        return []
+        if step.status == DerivationStep.STATUS_CONVERGED:
+            # If we are the last in a converged chain, mark completion
+            mark_derivation_chain_ended(
+                step, converged=True, reprocessing=True
+            )
+            return []
 
-    if step.status == DerivationStep.STATUS_CRASHED:
-        # Whoo boy
-        mark_derivation_chain_ended(step, converged=False, reprocessing=True)
-        return []
+        if step.status == DerivationStep.STATUS_CRASHED:
+            # Whoo boy
+            mark_derivation_chain_ended(
+                step, converged=False, reprocessing=True
+            )
+            return []
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 1: Rule checking
@@ -127,8 +135,8 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     # Crash check: If we have no next steps generated but still have Rule
     # errors, we have crashed.
     crash_reason = (
-        "No more steps to generate in the derivation, but some rule checks "
-        "are still failing."
+        "No more potential steps in the derivation, but some rule checks are "
+        "still failing."
     )
     if not len(next_step_defs) and len(rule_errors):
         step.status = DerivationStep.STATUS_CRASHED

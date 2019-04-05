@@ -40,6 +40,7 @@ class LexicalArrayInline(admin.TabularInline):
 
 @admin.register(DerivationStep)
 class DerivationStepAdmin(AppModelAdmin):
+    list_display = ["lexical_array_friendly"]
     inlines = [LexicalArrayInline]
     readonly_fields = ["id"]
     filter_horizontal = ["rules"]
@@ -52,7 +53,12 @@ admin.site.register(SyntacticObject, MPTTModelAdmin)
 
 @admin.register(SyntacticObjectValue)
 class SyntacticObjectValueAdmin(AppModelAdmin):
-    list_display = ["text", "current_language", "feature_string"]
+    list_display = [
+        "text",
+        "current_language",
+        "feature_string",
+        "deleted_feature_string",
+    ]
     filter_horizontal = ["features"]
 
 

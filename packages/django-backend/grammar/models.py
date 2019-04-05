@@ -253,8 +253,8 @@ class DerivationStep(models.Model):
     generators = models.ManyToManyField("GeneratorDescription", blank=True)
 
     # Any Rule error messages or Generator metadata, as JSON data
-    rule_errors_json = models.TextField()
-    generator_metadata_json = models.TextField()
+    rule_errors_json = models.TextField(blank=True)
+    generator_metadata_json = models.TextField(blank=True)
 
     @property
     def lexical_array_tail(self):
@@ -284,11 +284,21 @@ class DerivationStep(models.Model):
     # If this DerivationStep crashed, we should provide a reason.
     crash_reason = models.TextField(blank=True)
 
-    def __str__(self):
-        tail_string = ", ".join(map("<{}>".format, self.lexical_array_tail))
+    def lexical_array_friendly(self):
+        """
+        A user-friendly representation of the lexical array tail for this
+        DerivationStep (primarily for the admin UI)
+        :return:
+        """
+        tail_string = "; ".join(map("{}".format, self.lexical_array_tail))
         if not tail_string.strip():
-            tail_string = "<<Finished Derivation>>"
+            tail_string = "<Finished Derivation>"
         return tail_string
+
+    lexical_array_friendly.short_description = "Lexical array tail"
+
+    def __str__(self):
+        return self.lexical_array_friendly()
 
 
 class LexicalArrayItem(models.Model):
@@ -352,15 +362,33 @@ class SyntacticObjectValue(models.Model):
 
     text = models.CharField(max_length=100)
     current_language = models.CharField(max_length=50)
-    features = models.ManyToManyField("lexicon.Feature", blank=True)
 
-    # For display in the admin interface
+    # Features that are no longer active in the derivation (e.g.,
+    # uninterpretable features that have been valued and deleted) are moved
+    # to `deleted_features` instead.
+    features = models.ManyToManyField(
+        "lexicon.Feature", blank=True, related_name="sovalue_set"
+    )
+    deleted_features = models.ManyToManyField(
+        "lexicon.Feature", blank=True, related_name="sovalue_deleted_set"
+    )
+
+    # For serialisation and the admin interface
     def feature_string(self):
         return ", ".join(
             [str(feature) for feature in sorted(self.features.all(), key=str)]
         )
 
+    def deleted_feature_string(self):
+        return ", ".join(
+            [
+                str(feature)
+                for feature in sorted(self.deleted_features.all(), key=str)
+            ]
+        )
+
     feature_string.short_description = "Features"
+    deleted_feature_string.short_description = "Deleted Features"
 
     def __str__(self):
         return "{} ({}) {}".format(
