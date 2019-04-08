@@ -98,7 +98,10 @@ function DerivationInput(props) {
           </div>
         </div>
 
-        <p className="has-text-grey-light has-margin-bottom-10">
+        <p
+          className="has-text-grey-light has-margin-bottom-10"
+          style={{ display: "none" }}
+        >
           {JSON.stringify(props.currentInput)}
         </p>
 

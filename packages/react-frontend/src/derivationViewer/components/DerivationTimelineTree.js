@@ -127,7 +127,7 @@ function DerivationTimelineTree(props) {
         current_language,
         feature_string,
         deleted_feature_string
-      } = nodeData.value;
+      } = nodeData;
       labelContents = (
         <>
           <span className="has-text-weight-bold	">{text} </span>(
@@ -189,7 +189,7 @@ function DerivationTimelineTree(props) {
 
       {rule_errors.length > 0 ? (
         <div>
-          <span className="has-text-weight-bold">Rule errors:</span>{" "}
+          <span className="has-text-weight-bold">Rule messages:</span>{" "}
           <ul style={{ listStyle: "disc outside", marginLeft: "2em" }}>
             {rule_errors.map((error, index) => (
               <li key={index}>{error}</li>

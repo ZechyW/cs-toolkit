@@ -1,8 +1,8 @@
 import { createReducer } from "redux-starter-kit";
 
 import Config from "../config";
-import { saveItemMinHeight, saveLayouts } from "./actions";
 import { actions as coreActions } from "../core";
+import { saveItemMinHeight, saveLayouts } from "./actions";
 
 const initialState = {
   layouts: Config.gridDefaultLayout,

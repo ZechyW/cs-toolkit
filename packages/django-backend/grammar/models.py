@@ -327,38 +327,11 @@ class LexicalArrayItem(models.Model):
 class SyntacticObject(MPTTModel):
     """
     A `django-mptt` model for representing SyntacticObjects hierarchically.
+    Also includes a structured representation of the SO's value, in terms of
+    its text, current lexicon, and features.
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-
-    # The same SyntacticObjectValue may be used in multiple
-    # SyntacticObjects; most trivially, when the SyntacticObject appears in
-    # a separate DerivationStep in a different hierarchical position
-    # (i.e., with different `lft` and `rght` MPTT values)
-    value = models.ForeignKey("SyntacticObjectValue", on_delete=models.CASCADE)
-
-    # For directly referencing this SyntacticObject's text label
-    def name(self):
-        return self.value.text
-
-    # MPTT parent
-    parent = TreeForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="children",
-    )
-
-    def __str__(self):
-        return "{}".format(str(self.value))
-
-
-class SyntacticObjectValue(models.Model):
-    """
-    A structured representation of the value of any node in a SyntacticObject.
-    Based on the representation of a single LexicalItem.
-    """
 
     text = models.CharField(max_length=100)
     current_language = models.CharField(max_length=50)
@@ -367,10 +340,10 @@ class SyntacticObjectValue(models.Model):
     # uninterpretable features that have been valued and deleted) are moved
     # to `deleted_features` instead.
     features = models.ManyToManyField(
-        "lexicon.Feature", blank=True, related_name="sovalue_set"
+        "lexicon.Feature", blank=True, related_name="so_set"
     )
     deleted_features = models.ManyToManyField(
-        "lexicon.Feature", blank=True, related_name="sovalue_deleted_set"
+        "lexicon.Feature", blank=True, related_name="so_deleted_set"
     )
 
     # For serialisation and the admin interface
@@ -390,10 +363,65 @@ class SyntacticObjectValue(models.Model):
     feature_string.short_description = "Features"
     deleted_feature_string.short_description = "Deleted Features"
 
+    # For directly referencing this SyntacticObject's text label
+    def name(self):
+        return self.text
+
     def __str__(self):
         return "{} ({}) {}".format(
             self.text, self.current_language, self.feature_string()
         )
+
+    # MPTT parent
+    parent = TreeForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+    )
+
+
+# class SyntacticObjectValue(models.Model):
+#     """
+#     A structured representation of the value of any node in a SyntacticObject.
+#     Based on the representation of a single LexicalItem.
+#     """
+#
+#     text = models.CharField(max_length=100)
+#     current_language = models.CharField(max_length=50)
+#
+#     # Features that are no longer active in the derivation (e.g.,
+#     # uninterpretable features that have been valued and deleted) are moved
+#     # to `deleted_features` instead.
+#     features = models.ManyToManyField(
+#         "lexicon.Feature", blank=True, related_name="sovalue_set"
+#     )
+#     deleted_features = models.ManyToManyField(
+#         "lexicon.Feature", blank=True, related_name="sovalue_deleted_set"
+#     )
+#
+#     # For serialisation and the admin interface
+#     def feature_string(self):
+#         return ", ".join(
+#             [str(feature) for feature in sorted(self.features.all(), key=str)]
+#         )
+#
+#     def deleted_feature_string(self):
+#         return ", ".join(
+#             [
+#                 str(feature)
+#                 for feature in sorted(self.deleted_features.all(), key=str)
+#             ]
+#         )
+#
+#     feature_string.short_description = "Features"
+#     deleted_feature_string.short_description = "Deleted Features"
+#
+#     def __str__(self):
+#         return "{} ({}) {}".format(
+#             self.text, self.current_language, self.feature_string()
+#         )
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,

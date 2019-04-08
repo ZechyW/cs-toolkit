@@ -30,6 +30,12 @@
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="10"></object><object pk="11"></object></field>
   </object>
+  <object model="lexicon.lexicalitem" pk="10">
+    <field name="text" type="CharField">loves</field>
+    <field name="language" type="CharField">en</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
   <object model="lexicon.feature" pk="4">
     <field name="name" type="CharField">Phi</field>
     <field name="description" type="TextField">Phi-feature bundle: 3rd person, singular.</field>

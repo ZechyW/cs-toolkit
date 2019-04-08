@@ -20,7 +20,7 @@ class CoreNoUninterpretable(Rule):
         uninterpretable_features = []
         so: SyntacticObject
         for so in root_so.get_descendants(include_self=True):
-            for feature in so.value.features.all():
+            for feature in so.features.all():
                 interp = feature.properties.filter(name__exact="interpretable")
                 if len(interp) > 0:
                     if not interp[0].value:

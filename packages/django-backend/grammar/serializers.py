@@ -12,7 +12,6 @@ from .models import (
     DerivationRequest,
     DerivationStep,
     SyntacticObject,
-    SyntacticObjectValue,
 )
 
 
@@ -73,21 +72,6 @@ class DerivationRequestSerializer(serializers.ModelSerializer):
     )
 
 
-class SyntacticObjectValueSerializer(serializers.ModelSerializer):
-    """
-    For serializing a SyntacticObjectValue
-    """
-
-    class Meta:
-        model = SyntacticObjectValue
-        fields = [
-            "text",
-            "current_language",
-            "feature_string",
-            "deleted_feature_string",
-        ]
-
-
 class SyntacticObjectSerializer(serializers.ModelSerializer):
     """
     For serializing a SyntacticObject
@@ -95,10 +79,17 @@ class SyntacticObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SyntacticObject
-        fields = ["id", "name", "value", "children"]
+        fields = [
+            "id",
+            "text",
+            "current_language",
+            "feature_string",
+            "deleted_feature_string",
+            "name",
+            "children",
+        ]
 
     id = serializers.UUIDField()
-    value = SyntacticObjectValueSerializer()
     children = RecursiveField(many=True)
 
 

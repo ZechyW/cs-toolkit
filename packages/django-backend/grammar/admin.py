@@ -11,7 +11,6 @@ from .models import (
     LexicalArrayItem,
     RuleDescription,
     SyntacticObject,
-    SyntacticObjectValue,
 )
 
 
@@ -48,18 +47,15 @@ class DerivationStepAdmin(AppModelAdmin):
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
 # Syntactic objects
-admin.site.register(SyntacticObject, MPTTModelAdmin)
-
-
-@admin.register(SyntacticObjectValue)
-class SyntacticObjectValueAdmin(AppModelAdmin):
+@admin.register(SyntacticObject)
+class SyntacticObjectAdmin(MPTTModelAdmin):
     list_display = [
         "text",
         "current_language",
         "feature_string",
         "deleted_feature_string",
     ]
-    filter_horizontal = ["features"]
+    filter_horizontal = ["features", "deleted_features"]
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,

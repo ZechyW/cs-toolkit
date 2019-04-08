@@ -1,6 +1,6 @@
 from typing import Deque, List
 
-from grammar.generators.unification.unify import get_or_create_so_value, unify
+from grammar.generators.unification.unify import unify, create_so
 from lexicon.models import LexicalItem
 from .base import Generator, NextStepDef
 from ..models import SyntacticObject
@@ -22,13 +22,11 @@ class ExternalMerge(Generator):
 
         # Pop an item and create a SyntacticObject out of it.
         next_item = lexical_array_tail.popleft()
-        next_so_value = get_or_create_so_value(
+        next_so: SyntacticObject = create_so(
             text=next_item.text,
             current_language=next_item.language,
-            feature_list=next_item.features.all(),
-        )
-        next_so: SyntacticObject = SyntacticObject.objects.create(
-            value=next_so_value
+            features=next_item.features.all(),
+            deleted_features=[],
         )
 
         # Merge next SyntacticObject with the current root SO.

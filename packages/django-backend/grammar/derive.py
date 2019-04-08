@@ -46,7 +46,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     #       always do a full re-run.
 
     # Disable short-circuits for now.
-    quick_reprocess = False
+    quick_reprocess = True
     if quick_reprocess:
         if step.status == DerivationStep.STATUS_PROCESSED:
             # Our workers may have died halfway and processed this step but

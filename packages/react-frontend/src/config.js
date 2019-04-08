@@ -31,39 +31,39 @@ class Config {
 
   // Default layout for the grid
   gridDefaultLayout = {
-    // lg: 12 columns
+    // lg: 12 columns (width > 1200)
     lg: [
-      { w: 6, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
-      { w: 6, h: 11, x: 6, y: 0, i: "lexicalItemList", minW: 2 },
-      { w: 12, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 },
-      { w: 12, h: 9, x: 0, y: 20, i: "derivationViewer", minW: 2 }
+      { w: 6, h: 10, x: 0, y: 0, i: "derivationInput", minW: 2 },
+      { w: 6, h: 10, x: 6, y: 0, i: "lexicalItemList", minW: 2 },
+      { w: 12, h: 9, x: 0, y: 10, i: "derivationStatusList", minW: 2 },
+      { w: 12, h: 9, x: 0, y: 19, i: "derivationViewer", minW: 2 }
     ],
 
-    // md: 10 columns
+    // md: 10 columns (width > 996)
     md: [
       { w: 5, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 5, h: 11, x: 5, y: 0, i: "lexicalItemList", minW: 2 },
       { w: 10, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 },
-      { w: 10, h: 9, x: 0, y: 20, i: "derivationViewer", minW: 2 }
+      { w: 10, h: 9, x: 0, y: 21, i: "derivationViewer", minW: 2 }
     ],
 
-    // sm: 6 columns
+    // sm: 6 columns (width > 768)
     sm: [
-      { w: 3, h: 12, x: 0, y: 0, i: "derivationInput", minW: 2 },
-      { w: 3, h: 12, x: 3, y: 0, i: "lexicalItemList", minW: 2 },
-      { w: 6, h: 9, x: 0, y: 12, i: "derivationStatusList", minW: 2 },
-      { w: 6, h: 9, x: 0, y: 21, i: "derivationViewer", minW: 2 }
+      { w: 3, h: 13, x: 0, y: 0, i: "derivationInput", minW: 2 },
+      { w: 3, h: 13, x: 3, y: 0, i: "lexicalItemList", minW: 2 },
+      { w: 6, h: 9, x: 0, y: 13, i: "derivationStatusList", minW: 2 },
+      { w: 6, h: 9, x: 0, y: 22, i: "derivationViewer", minW: 2 }
     ],
 
-    // xs: 4 columns
+    // xs: 4 columns (width > 480)
     xs: [
-      { w: 4, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
-      { w: 4, h: 9, x: 0, y: 11, i: "lexicalItemList", minW: 2 },
-      { w: 8, h: 9, x: 0, y: 20, i: "derivationStatusList", minW: 2 },
-      { w: 8, h: 9, x: 0, y: 29, i: "derivationViewer", minW: 2 }
+      { w: 4, h: 12, x: 0, y: 0, i: "derivationInput", minW: 2 },
+      { w: 4, h: 10, x: 0, y: 12, i: "lexicalItemList", minW: 2 },
+      { w: 8, h: 9, x: 0, y: 22, i: "derivationStatusList", minW: 2 },
+      { w: 8, h: 9, x: 0, y: 31, i: "derivationViewer", minW: 2 }
     ],
 
-    // xxs: 2 columns
+    // xxs: 2 columns (width > 0)
     xxs: [
       { w: 2, h: 13, x: 0, y: 0, i: "derivationInput", minW: 2 },
       { w: 2, h: 9, x: 0, y: 13, i: "lexicalItemList", minW: 2 },
