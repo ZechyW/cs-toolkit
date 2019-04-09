@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+  <object model="grammar.generatordescription" pk="be7e6823-2a26-42ec-b130-adb29debca97">
+    <field name="name" type="CharField">internal-merge</field>
+    <field name="description" type="TextField">Pulls already-merged Syntactic Objects out from the current root Syntactic Object and (re-)merges them on top.
+Does not perform multiple Internal Merges consecutively.
+Does not target direct children of the root SO.</field>
+  </object>
   <object model="grammar.generatordescription" pk="eacbd314-c367-4d63-acd8-1a29f1746bc6">
     <field name="name" type="CharField">external-merge</field>
     <field name="description" type="TextField">Pulls the next item from the lexical array tail and merges it to the top of the current root syntactic object.

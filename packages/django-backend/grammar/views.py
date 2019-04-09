@@ -120,10 +120,13 @@ def create_derivation(lexical_array):
         )
 
     # For now, add all rules and generators
-    for rule in RuleDescription.objects.all():
-        first_step.rules.add(rule)
-    for generator in GeneratorDescription.objects.all():
-        first_step.generators.add(generator)
+    first_step.rules.set(RuleDescription.objects.all())
+    first_step.generators.set(GeneratorDescription.objects.all())
+
+    # External merge only variant
+    # first_step.generators.add(
+    #     GeneratorDescription.objects.get(name="external-merge")
+    # )
 
     # Create and return a Derivation
     derivation = Derivation.objects.create(first_step=first_step)

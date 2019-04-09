@@ -2,6 +2,7 @@
 The algorithm for processing a single DerivationStep.
 Imported and run by the Dramatiq task workers.
 """
+import dataclasses
 import json
 import logging
 from typing import List
@@ -10,9 +11,9 @@ from django.utils import timezone
 
 import grammar.generators
 import grammar.rules
-from grammar.generators.base import NextStepDef
+from grammar.generators.base import NextStepDef, Generator, GeneratorMetadata
 from grammar.models import DerivationStep, LexicalArrayItem
-from grammar.rules.base import DerivationFailed, RuleNonFatalError
+from grammar.rules.base import DerivationFailed, RuleNonFatalError, Rule
 
 logger = logging.getLogger("cs-toolkit-grammar")
 
@@ -90,7 +91,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
 
     try:
         for rule in step.rules.all():
-            handler = getattr(grammar.rules, rule.rule_class())
+            handler: Rule = getattr(grammar.rules, rule.rule_class)
             this_rule_errors = handler.apply(
                 step.root_so, step.lexical_array_tail
             )
@@ -124,11 +125,19 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
 
     next_step_defs: List[NextStepDef] = []
 
+    step_metadata = None
+    if step.generator_metadata_json:
+        # Convert metadata: json -> dict -> GeneratorMetadata
+        step_metadata = json.loads(step.generator_metadata_json)
+        step_metadata = GeneratorMetadata(**step_metadata)
+
     for generator in step.generators.all():
         # Get next step definitions from each Generator.
-        handler = getattr(grammar.generators, generator.generator_class)
+        handler: Generator = getattr(
+            grammar.generators, generator.generator_class
+        )
         generator_defs: List[NextStepDef] = handler.generate(
-            step.root_so, step.lexical_array_tail
+            step.root_so, step.lexical_array_tail, step_metadata
         )
         next_step_defs = next_step_defs + generator_defs
 
@@ -177,6 +186,12 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
             next_step.rules.add(rule)
         for generator in step.generators.all():
             next_step.generators.add(generator)
+
+        # Add metadata from generators
+        if next_step_def.metadata is not None:
+            next_step.generator_metadata_json = json.dumps(
+                dataclasses.asdict(next_step_def.metadata)
+            )
 
         # Link to this step
         next_step.previous_step = step

@@ -1,40 +1,65 @@
-from typing import Deque, List
+import logging
+from typing import Deque, List, Optional
 
-from grammar.generators.unification.unify import unify, create_so
+from grammar.generators.base import Generator, GeneratorMetadata, NextStepDef
+from grammar.generators.unification.unify import unify
+from grammar.models import SyntacticObject
 from lexicon.models import LexicalItem
-from .base import Generator, NextStepDef
-from ..models import SyntacticObject
+
+logger = logging.getLogger("cs-toolkit-grammar")
 
 
 class ExternalMerge(Generator):
     description = (
-        "Pulls the next item from the lexical array tail and merges it to "
-        "the top of the current root syntactic object."
+        "Pulls the next item from the Lexical Array tail and merges it to "
+        "the top of the current root Syntactic Object."
     )
 
     @staticmethod
     def generate(
-        root_so, lexical_array_tail: Deque[LexicalItem]
+        root_so: Optional[SyntacticObject],
+        lexical_array_tail: Deque[LexicalItem],
+        metadata: Optional[GeneratorMetadata] = None,
     ) -> List[NextStepDef]:
         # We may have been called with no more items in our tail.
         if not lexical_array_tail:
             return []
 
-        # Pop an item and create a SyntacticObject out of it.
+        # Pop an item from the lexical array.  We will create an SO that
+        # inherits the LI's features.  (But not `deleted_features`,
+        # since the LI doesn't have any)
         next_item = lexical_array_tail.popleft()
-        next_so: SyntacticObject = create_so(
-            text=next_item.text,
-            current_language=next_item.language,
-            features=next_item.features.all(),
-            deleted_features=[],
-        )
 
-        # Merge next SyntacticObject with the current root SO.
+        # Prepare the next root SO.
         if root_so is None:
-            root_so = next_so
+            # There is no current root SO: The SO formed from the next LI
+            # will be the root.  No unification needed.
+            root_so = SyntacticObject.objects.create(
+                text=next_item.text, current_language=next_item.language
+            )
+            root_so.features.set(next_item.features.all())
         else:
-            root_so = unify(root_so, next_so)
+            # There is a current root SO: We need to create a new SO to
+            # serve as the new root, then add the new LI's SO and a clone of
+            # the current root as its children.
+            new_parent = SyntacticObject.objects.create()
+            next_so: SyntacticObject = SyntacticObject.objects.create(
+                text=next_item.text,
+                current_language=next_item.language,
+                parent=new_parent,
+            )
+            next_so.features.set(next_item.features.all())
+            root_so.create_clone(new_parent=new_parent)
+
+            # The children of `root_so` are now freely mutable; unify to get
+            # the features on `root_so`.
+            root_so = new_parent
+            unify(root_so)
 
         return [
-            NextStepDef(root_so=root_so, lexical_array_tail=lexical_array_tail)
+            NextStepDef(
+                root_so=root_so,
+                lexical_array_tail=lexical_array_tail,
+                metadata=GeneratorMetadata(last_generator="ExternalMerge"),
+            )
         ]

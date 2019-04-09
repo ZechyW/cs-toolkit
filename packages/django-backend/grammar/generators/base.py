@@ -13,7 +13,11 @@ class Generator:
     description = ""
 
     @staticmethod
-    def generate(root_so, lexical_array_tail) -> List["NextStepDef"]:
+    def generate(
+        root_so: Optional[SyntacticObject],
+        lexical_array_tail: Deque[LexicalItem],
+        metadata: Optional["GeneratorMetadata"] = None,
+    ) -> List["NextStepDef"]:
         """
         Given the currently built-up syntactic object and the remainder of
         the lexical array for some DerivationStep, generate the parameters
@@ -35,3 +39,15 @@ class NextStepDef:
 
     lexical_array_tail: Deque[LexicalItem]
     root_so: Optional[SyntacticObject] = None
+    metadata: Optional["GeneratorMetadata"] = None
+
+
+@dataclass
+class GeneratorMetadata:
+    """
+    Pre-defined set of metadata attributes that generators can place on the
+    steps they generate.
+    """
+
+    # The class name for the Generator that produced this step.
+    last_generator: str

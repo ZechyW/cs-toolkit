@@ -25,15 +25,19 @@ Also contains the Django model used to represent syntactic objects.
 - DerivationSteps store a reference to the root node of the corresponding
   SyntacticObject tree.
 """
-
+import logging
+import time
 import uuid
 from collections import deque
 
 from django.db import models
+from django.db.models import QuerySet
 from model_utils import FieldTracker
 from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
 
 from notify.models import NotifyModel
+
+logger = logging.getLogger("cs-toolkit-grammar")
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
@@ -381,47 +385,59 @@ class SyntacticObject(MPTTModel):
         related_name="children",
     )
 
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Model instance helpers and utilities
+    def create_clone(
+        self, new_parent: "SyntacticObject" = None
+    ) -> "SyntacticObject":
+        """
+        Utility function to create a clone of this SO, optionally changing
+        its parent.  Recursively clones the SO's children as well, setting
+        their new parents accordingly.
+        (cf. https://stackoverflow.com/questions/3879500/making-a-copy-of-a
+        -feincms-page-tree-using-django-mptt-changes-child-order)
 
-# class SyntacticObjectValue(models.Model):
-#     """
-#     A structured representation of the value of any node in a SyntacticObject.
-#     Based on the representation of a single LexicalItem.
-#     """
-#
-#     text = models.CharField(max_length=100)
-#     current_language = models.CharField(max_length=50)
-#
-#     # Features that are no longer active in the derivation (e.g.,
-#     # uninterpretable features that have been valued and deleted) are moved
-#     # to `deleted_features` instead.
-#     features = models.ManyToManyField(
-#         "lexicon.Feature", blank=True, related_name="sovalue_set"
-#     )
-#     deleted_features = models.ManyToManyField(
-#         "lexicon.Feature", blank=True, related_name="sovalue_deleted_set"
-#     )
-#
-#     # For serialisation and the admin interface
-#     def feature_string(self):
-#         return ", ".join(
-#             [str(feature) for feature in sorted(self.features.all(), key=str)]
-#         )
-#
-#     def deleted_feature_string(self):
-#         return ", ".join(
-#             [
-#                 str(feature)
-#                 for feature in sorted(self.deleted_features.all(), key=str)
-#             ]
-#         )
-#
-#     feature_string.short_description = "Features"
-#     deleted_feature_string.short_description = "Deleted Features"
-#
-#     def __str__(self):
-#         return "{} ({}) {}".format(
-#             self.text, self.current_language, self.feature_string()
-#         )
+        Should be called between DerivationSteps if the SO is going to be
+        mutated, so that changes aren't inadvertently propagated to
+        previous DerivationSteps as well.
+
+        :param new_parent:
+        :return:
+        """
+        start_time = time.perf_counter()
+
+        # Clone the current SO
+        new_so: SyntacticObject = SyntacticObject.objects.create(
+            text=self.text,
+            current_language=self.current_language,
+            parent=new_parent,
+        )
+        new_so.features.set(self.features.all())
+        new_so.deleted_features.set(self.deleted_features.all())
+
+        # Clone children
+        children = list(self.get_children())
+        child: SyntacticObject
+        for child in children:
+            child.create_clone(new_so)
+
+        logger.debug(
+            "Cloned SO with {} children in {:3f}s".format(
+                len(children), time.perf_counter() - start_time
+            )
+        )
+
+        return new_so
+
+    def get_uninterpretable_features(self) -> QuerySet:
+        """
+        Returns a QuerySet representing all the active uninterpretable
+        features on this SO for future filtering/processing.
+        :return:
+        """
+        return self.features.filter(properties__name="interpretable").exclude(
+            properties__raw_value="True"
+        )
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
@@ -439,6 +455,7 @@ class RuleDescription(models.Model):
 
     description = models.TextField()
 
+    @property
     def rule_class(self):
         """
         Turns our user-friendly rule name into the class name for a

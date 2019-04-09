@@ -2,6 +2,7 @@
 Dramatiq actors for processing derivations.
 """
 import logging
+import time
 import uuid
 
 import dramatiq
@@ -9,7 +10,7 @@ import dramatiq
 from grammar.derive import process_derivation_step
 from grammar.models import DerivationStep
 
-logger = logging.getLogger("cs-toolkit")
+logger = logging.getLogger("cs-toolkit-grammar")
 
 
 @dramatiq.actor
@@ -23,6 +24,9 @@ def derivation_actor(step_id_hex: str):
     :param step_id_hex:
     :return:
     """
+    logger.info("--------------------------------------------------")
+    start_time = time.perf_counter()
+
     # Retrieve the DerivationStep.
     step_id = uuid.UUID(step_id_hex)
 
@@ -34,5 +38,10 @@ def derivation_actor(step_id_hex: str):
 
     # Process the DerivationStep and continue the chain.
     next_steps = process_derivation_step(step)
+
+    # Performance logging
+    logger.info("Processed in {:3f}s".format(time.perf_counter() - start_time))
+
+    # Continue chain
     for next_step in next_steps:
         derivation_actor.send(next_step.id.hex)

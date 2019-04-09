@@ -4,7 +4,7 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Build Status](https://travis-ci.org/ZechyW/cs-toolkit.svg?branch=master)](https://travis-ci.org/ZechyW/cs-toolkit)
 
-A (Roughly) Minimalist framework for exploring code switching data.
+A Minimalist framework for exploring syntactic derivations, with built-in support for code switching data.
 
 ## Project Structure
 The project is structured as a multi-package repository via Lerna (https://lernajs.io/) and Yarn (https://yarnpkg.com/) workspaces.

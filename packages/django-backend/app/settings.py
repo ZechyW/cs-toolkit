@@ -118,10 +118,11 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "HOST": os.environ.get("DB_HOST") or "127.0.0.1",
-        "PORT": os.environ.get("DB_PORT") or "5432",
+        "PORT": os.environ.get("DB_PORT") or "6432",
         "NAME": os.environ.get("DB_NAME") or "cs_toolkit",
         "USER": os.environ.get("DB_USER") or "cs_toolkit",
         "PASSWORD": os.environ.get("DB_PASS") or "cs_toolkit",
+        "CONN_MAX_AGE": None,
     }
 }
 
@@ -178,7 +179,7 @@ LOGGING = {
         # developing, so this can be set to a higher level than `INFO`
         "django.channels.server": {"level": "INFO"},
         "cs-toolkit": {"handlers": ["console"], "level": "INFO"},
-        "cs-toolkit-grammar": {"level": "INFO"},
+        "cs-toolkit-grammar": {"level": "DEBUG"},
     },
 }
 

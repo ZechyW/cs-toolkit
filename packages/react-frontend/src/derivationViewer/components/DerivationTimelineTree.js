@@ -1,13 +1,14 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { hierarchy } from "d3-hierarchy";
+import { isEmpty } from "lodash-es";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
-import "../styles/DerivationTimelineTree.scss";
 import Config from "../../config";
+import "../styles/DerivationTimelineTree.scss";
 
 library.add(faAngleLeft, faAngleRight);
 
@@ -23,6 +24,9 @@ const Slider = createSliderWithTooltip(RcSlider);
  */
 function DerivationTimelineTree(props) {
   if (props.chain === null) return null;
+  if (props.selectedFrame >= props.chain.length) {
+    props.selectFrame(props.chain.length - 1);
+  }
   const thisFrame = props.chain[props.selectedFrame];
 
   /** @type React.RefObject */
@@ -151,7 +155,13 @@ function DerivationTimelineTree(props) {
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Details view
-  const { status, lexical_array_tail, crash_reason, rule_errors } = thisFrame;
+  const {
+    status,
+    lexical_array_tail,
+    crash_reason,
+    rule_errors,
+    generator_metadata
+  } = thisFrame;
 
   // Lexical array tail
   let lexical_array_repr;
@@ -193,6 +203,21 @@ function DerivationTimelineTree(props) {
           <ul style={{ listStyle: "disc outside", marginLeft: "2em" }}>
             {rule_errors.map((error, index) => (
               <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        ""
+      )}
+
+      {!isEmpty(generator_metadata) ? (
+        <div>
+          <span className="has-text-weight-bold">Generator Metadata:</span>{" "}
+          <ul style={{ listStyle: "disc outside", marginLeft: "2em" }}>
+            {Object.entries(generator_metadata).map(([key, value]) => (
+              <li key={key}>
+                {key}: {value}
+              </li>
             ))}
           </ul>
         </div>
@@ -294,6 +319,7 @@ function DerivationTimelineTree(props) {
               collapsible={false}
               scaleExtent={{ min: 0.5, max: 1.25 }}
               nodeSize={Config.derivationTreeNodeSize}
+              transitionDuration={0}
               allowForeignObjects
             />
           </div>

@@ -108,6 +108,7 @@ class DerivationStepSerializer(serializers.ModelSerializer):
             "lexical_array_tail",
             "crash_reason",
             "rule_errors",
+            "generator_metadata",
         ]
 
     id = serializers.UUIDField()
@@ -116,8 +117,12 @@ class DerivationStepSerializer(serializers.ModelSerializer):
     crash_reason = serializers.CharField(required=False)
 
     rule_errors = serializers.SerializerMethodField("add_rule_errors")
+    generator_metadata = serializers.SerializerMethodField(
+        "add_generator_metadata"
+    )
 
-    def add_rule_errors(self, obj):
+    @staticmethod
+    def add_rule_errors(obj):
         """
         Parse the list of Rule error messages for this DerivationStep and
         add it to the serialisation.
@@ -125,6 +130,19 @@ class DerivationStepSerializer(serializers.ModelSerializer):
         :return:
         """
         return list(json.loads(obj.rule_errors_json))
+
+    @staticmethod
+    def add_generator_metadata(obj):
+        """
+        Parse the Generator metadata object for this DerivationStep and add
+        it to the serialisation.
+        :param obj:
+        :return:
+        """
+        if obj.generator_metadata_json:
+            return dict(json.loads(obj.generator_metadata_json))
+        else:
+            return {}
 
     def to_representation(self, obj):
         """

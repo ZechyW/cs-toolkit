@@ -91,12 +91,14 @@ class Feature(models.Model):
     def uninterpretable(self):
         """
         Convenience function to hit the database and check whether or not this
-        feature is explicitly uninterpretable
+        feature is explicitly uninterpretable.
         :return:
         """
-        interp = self.properties.filter(name="interpretable")
-        if len(interp) > 0:
-            return not interp[0].value
+        return (
+            self.properties.filter(name="interpretable")
+            .exclude(raw_value="True")
+            .exists()
+        )
 
     def __str__(self):
         # Prefix/suffix will be attached to the Feature's name directly.
@@ -107,7 +109,7 @@ class Feature(models.Model):
         additional = []
 
         # Prefix: Interpretable/uninterpretable
-        interp = self.properties.filter(name__exact="interpretable")
+        interp = self.properties.filter(name="interpretable")
         if len(interp) > 0:
             if interp[0].value:
                 prefix = "i"
@@ -115,7 +117,7 @@ class Feature(models.Model):
                 prefix = "u"
 
         # Additional
-        others = self.properties.exclude(name__exact="interpretable")
+        others = self.properties.exclude(name="interpretable")
         for prop in others:
             if prop.type == "Boolean":
                 if prop.value:

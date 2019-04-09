@@ -96,7 +96,7 @@ function DerivationViewer(props) {
       }
 
       props.selectChain(option.value);
-      props.selectFrame(0);
+      props.selectFrame(allChains[option.value].length - 1);
     }
 
     return (
