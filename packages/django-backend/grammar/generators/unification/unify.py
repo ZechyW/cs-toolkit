@@ -1,5 +1,5 @@
 import logging
-from typing import List, Any
+import time
 
 from grammar.models import SyntacticObject
 
@@ -27,6 +27,8 @@ def unify(parent_so: SyntacticObject) -> None:
     Assumes that the SO's children are freely mutable.
     :return:
     """
+    start_time = time.perf_counter()
+
     children = list(parent_so.get_children())
     if not len(children) == 2:
         logger.info(children)
@@ -76,7 +78,14 @@ def unify(parent_so: SyntacticObject) -> None:
     parent_so.current_language = so_1.current_language
     parent_so.save()
 
-    logger.info("{}: {}/{}".format(parent_so.text, so_1.text, so_2.text))
+    logger.debug(
+        "Unified {}: {}/{} ({:.3f}s)".format(
+            parent_so.text,
+            so_1.text,
+            so_2.text,
+            time.perf_counter() - start_time,
+        )
+    )
 
 
 # def create_so(

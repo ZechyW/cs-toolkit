@@ -3,7 +3,6 @@ Dramatiq actors for processing derivations.
 """
 import logging
 import time
-import uuid
 
 import dramatiq
 
@@ -14,21 +13,17 @@ logger = logging.getLogger("cs-toolkit-grammar")
 
 
 @dramatiq.actor
-def derivation_actor(step_id_hex: str):
+def derivation_actor(step_id: str):
     """
     Main task for processing DerivationSteps.
     Wraps the main processing algorithm in `.derive`.
-    Arguments must be serializable, so we need to send the hex
+    Arguments must be serializable, so we need to send the string
     representation of the DerivationStep's UUID rather than the raw
     DerivationStep itself.
-    :param step_id_hex:
+    :param step_id:
     :return:
     """
-    logger.info("--------------------------------------------------")
     start_time = time.perf_counter()
-
-    # Retrieve the DerivationStep.
-    step_id = uuid.UUID(step_id_hex)
 
     try:
         step: DerivationStep = DerivationStep.objects.get(id=step_id)
@@ -40,8 +35,12 @@ def derivation_actor(step_id_hex: str):
     next_steps = process_derivation_step(step)
 
     # Performance logging
-    logger.info("Processed in {:3f}s".format(time.perf_counter() - start_time))
+    logger.debug(
+        "Processed a DerivationStep in {:.3f}s: {} next steps".format(
+            time.perf_counter() - start_time, len(next_steps)
+        )
+    )
 
     # Continue chain
     for next_step in next_steps:
-        derivation_actor.send(next_step.id.hex)
+        derivation_actor.send(str(next_step.id))

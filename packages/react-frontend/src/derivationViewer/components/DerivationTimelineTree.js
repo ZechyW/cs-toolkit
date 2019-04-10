@@ -5,7 +5,7 @@ import { isEmpty } from "lodash-es";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import Config from "../../config";
 import "../styles/DerivationTimelineTree.scss";
@@ -23,14 +23,23 @@ const Slider = createSliderWithTooltip(RcSlider);
  * @constructor
  */
 function DerivationTimelineTree(props) {
+  // Sanity checks on render
   if (props.chain === null) return null;
-  if (props.selectedFrame >= props.chain.length) {
-    props.selectFrame(props.chain.length - 1);
-  }
-  const thisFrame = props.chain[props.selectedFrame];
+  if (props.selectedFrame >= props.chain.length) return null;
+
+  // If we are trying to render from an invalid state, fix it for the next
+  // render.
+  useEffect(() => {
+    // Selected frame is OOB for the selected chain.
+    if (props.selectedFrame >= props.chain.length) {
+      props.selectFrame(props.chain.length - 1);
+    }
+  });
 
   /** @type React.RefObject */
   const sliderRef = useRef(null);
+
+  const thisFrame = props.chain[props.selectedFrame];
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Tree view

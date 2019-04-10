@@ -8,7 +8,7 @@ from asgiref.sync import async_to_sync
 from rest_framework import serializers
 
 import frontend.subscribe_models
-from . import base
+from frontend.handlers import base
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -43,33 +43,29 @@ class SubscribeRequestHandler(base.Handler):
             return self.send_error({"error": serializer.errors})
 
         # Check the model name provided.
-        model_name = serializer.validated_data["model"]
+        model = serializer.validated_data["model"]
         try:
-            model = getattr(frontend.subscribe_models, model_name)
+            Model = getattr(frontend.subscribe_models, model)
         except AttributeError:
             logger.warning(
-                "SubscribeRequest made with invalid model name: {}".format(
-                    model_name
-                )
+                "SubscribeRequest made for invalid model: {}".format(model)
             )
-            return self.send_error(
-                {"model": model_name, "error": "Invalid model."}
-            )
+            return self.send_error({"model": model, "error": "Invalid model."})
 
         # Check if a valid instance id was specified
         item_id = serializer.validated_data.get("id")
 
         if item_id is None:
-            item = model_name
+            item = model
         else:
-            item = "{}:{}".format(model_name, item_id)
-            if not model.objects.filter(id=item_id).count():
+            item = "{}:{}".format(model, item_id)
+            if not Model.objects.filter(id=item_id).exists():
                 return self.send_error(
                     {
-                        "model": model_name,
+                        "model": model,
                         "id": item_id,
                         "error": "Model {} does not have any objects with ID "
-                        "{}.".format(model_name, item_id),
+                        "{}.".format(model, item_id),
                     }
                 )
 
@@ -84,15 +80,12 @@ class SubscribeRequestHandler(base.Handler):
 
         # Send back the full dataset as an initial response
         if item_id is None:
-            payload = {
-                "model": model_name,
-                "data": model.get_all_serialized_data(),
-            }
+            payload = {"model": model, "data": Model.get_all_serialized_data()}
         else:
             payload = {
-                "model": model_name,
+                "model": model,
                 "id": item_id,
-                "data": model.objects.get(id=item_id).serialized_data,
+                "data": Model.objects.get(id=item_id).serialized_data,
             }
 
         self.consumer.send_to_client(
@@ -120,8 +113,18 @@ class SubscribeRequestHandler(base.Handler):
         :return:
         """
         model = event.get("model")
-        data = event.get("data")
-        item_id = data.get("id")
+        item_id = event.get("id")
+
+        try:
+            Model = getattr(frontend.subscribe_models, model)
+        except AttributeError:
+            logger.warning(
+                "Subscribe:notify_change called with invalid model: {}"
+                "".format(model)
+            )
+            return
+
+        data = Model.objects.get(id=item_id).serialized_data
 
         # Model-level subscriptions
         if model in self.watched_items:
@@ -150,8 +153,18 @@ class SubscribeRequestHandler(base.Handler):
         :return:
         """
         model = event.get("model")
-        data = event.get("data")
-        item_id = data.get("id")
+        item_id = event.get("id")
+
+        try:
+            Model = getattr(frontend.subscribe_models, model)
+        except AttributeError:
+            logger.warning(
+                "Subscribe:notify_delete called with invalid model: "
+                "{}".format(model)
+            )
+            return
+
+        data = Model.objects.get(id=item_id).serialized_data
 
         # Model-level subscriptions
         if model in self.watched_items:

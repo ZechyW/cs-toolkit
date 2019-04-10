@@ -15,6 +15,7 @@ directly, you should ensure that the data you are touching remains clean.
 - Each Feature has one or more FeatureProperties.
   (e.g., {name: T}, {interpretable: False}, {EPP: True})
 """
+import uuid
 
 from django.db import models
 from model_utils import FieldTracker
@@ -26,6 +27,8 @@ class LexicalItem(NotifyModel):
     """
     A Django model representing a single lexical item.
     """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     #: The orthographic representation of this lexical item, to be used when
     #: building up/displaying lexical arrays, etc.

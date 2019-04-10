@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import Select from "react-select";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { selectChain, selectFrame } from "../actions";
 import { derivationDetails } from "../selectors";
 import DerivationTimelineTree from "./DerivationTimelineTree";
-import Select from "react-select";
 
 /**
  * Component for viewing individual Derivation chain trees.
@@ -17,6 +17,14 @@ import Select from "react-select";
  * @constructor
  */
 function DerivationViewer(props) {
+  useEffect(() => {
+    if (!props.derivationDetails) {
+      // We don't have a Derivation currently selected.
+      // Show the last frame the next time one is picked.
+      props.selectFrame(Infinity);
+    }
+  });
+
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Helper functions
 
@@ -25,7 +33,9 @@ function DerivationViewer(props) {
    * for the currently selected Derivation, if any.
    */
   function renderChains() {
-    if (!props.derivationDetails) return "";
+    if (!props.derivationDetails) {
+      return "";
+    }
 
     // Prepare options list of chains available for viewing (converged ones
     // first, then crashed ones).

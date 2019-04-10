@@ -1,8 +1,9 @@
 """
 Models related to automatic model change tracking/notifications.
 """
-import json
 import logging
+import time
+import uuid
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -17,6 +18,10 @@ class NotifyModel(models.Model):
     An abstract base model that emits notifications on the `notify` channel
     layer group when changed.
     """
+
+    # We assume that all models inheriting from this one use UUIDs as
+    # primary keys.
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     # Added here for reference, but this will need to be replaced by an actual
     # model_utils.FieldTracker on derived classes for change notifications
@@ -53,10 +58,19 @@ class NotifyModel(models.Model):
 
     @property
     def model_name(self):
-        # We no longer track the fully-specified module path in the Channels
-        # handler; individual class names should be unique enough.
-        # return self.__class__.__module__ + "." + self.__class__.__name__
+        """
+        Returns the name of the base class for the tracked model.
+        :return:
+        """
         return self.__class__.__name__
+
+    @property
+    def module_name(self):
+        """
+        Returns the name of the module that the tracked model is defined in.
+        :return:
+        """
+        return self.__class__.__module__
 
     def subclass_valid(self):
         """
@@ -105,17 +119,18 @@ class NotifyModel(models.Model):
 
         # This model object has changed; let people know
         channel_layer = get_channel_layer()
-        logger.debug(
+
+        logger.info(
             "-----\n"
-            "Model object created/updated: {}\n"
-            "{}".format(self.model_name, json.dumps(self.serialized_data))
+            "Model object created/updated: {}".format(self.model_name)
         )
+
         async_to_sync(channel_layer.group_send)(
             "notify",
             {
                 "type": "notify.change",
                 "model": self.model_name,
-                "data": self.serialized_data,
+                "id": str(self.id),
             },
         )
 
@@ -128,17 +143,15 @@ class NotifyModel(models.Model):
             return False
 
         channel_layer = get_channel_layer()
-        logger.debug(
-            "-----\n"
-            "Model object deleted: {}\n"
-            "{}".format(self.model_name, json.dumps(self.serialized_data))
+        logger.info(
+            "-----\n" "Model object deleted: {}".format(self.model_name)
         )
         async_to_sync(channel_layer.group_send)(
             "notify",
             {
                 "type": "notify.delete",
                 "model": self.model_name,
-                "data": self.serialized_data,
+                "id": str(self.id),
             },
         )
 

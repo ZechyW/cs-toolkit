@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
-  <object model="lexicon.lexicalitem" pk="2">
-    <field name="text" type="CharField">C</field>
-    <field name="language" type="CharField">func</field>
-    <field name="description" type="TextField"></field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
-  </object>
-  <object model="lexicon.lexicalitem" pk="3">
-    <field name="text" type="CharField">John</field>
-    <field name="language" type="CharField">en</field>
-    <field name="description" type="TextField"></field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
-  </object>
-  <object model="lexicon.lexicalitem" pk="5">
-    <field name="text" type="CharField">Mary</field>
-    <field name="language" type="CharField">en</field>
-    <field name="description" type="TextField"></field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
-  </object>
-  <object model="lexicon.lexicalitem" pk="8">
+  <object model="lexicon.lexicalitem" pk="2b0df806-a22f-4978-8f29-30290a999f9f">
     <field name="text" type="CharField">v*</field>
     <field name="language" type="CharField">func</field>
     <field name="description" type="TextField">"v* is the functional head associated with full argument structure, transitive and experiencer constructions..." (Chomsky, 2005)</field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="8"></object><object pk="9"></object></field>
   </object>
-  <object model="lexicon.lexicalitem" pk="9">
+  <object model="lexicon.lexicalitem" pk="2d529149-9f68-44f9-84fc-66fdd691fccd">
     <field name="text" type="CharField">T</field>
     <field name="language" type="CharField">func</field>
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="10"></object><object pk="11"></object></field>
   </object>
-  <object model="lexicon.lexicalitem" pk="10">
+  <object model="lexicon.lexicalitem" pk="4bd5be35-af61-4523-8aa5-24a345d6e809">
+    <field name="text" type="CharField">John</field>
+    <field name="language" type="CharField">en</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="53e6cd7e-343b-499b-a219-fcbf08d923b3">
+    <field name="text" type="CharField">C</field>
+    <field name="language" type="CharField">func</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="a6b8eb29-cae9-46b5-b420-cc3aba9fcbb5">
     <field name="text" type="CharField">loves</field>
     <field name="language" type="CharField">en</field>
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="cb624ab4-9843-44e9-b8f8-9ae4b2c554e6">
+    <field name="text" type="CharField">Mary</field>
+    <field name="language" type="CharField">en</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
   </object>
   <object model="lexicon.feature" pk="4">
     <field name="name" type="CharField">Phi</field>

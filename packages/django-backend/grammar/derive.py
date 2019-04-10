@@ -5,6 +5,7 @@ Imported and run by the Dramatiq task workers.
 import dataclasses
 import json
 import logging
+import time
 from typing import List
 
 from django.utils import timezone
@@ -47,7 +48,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     #       always do a full re-run.
 
     # Disable short-circuits for now.
-    quick_reprocess = True
+    quick_reprocess = False
     if quick_reprocess:
         if step.status == DerivationStep.STATUS_PROCESSED:
             # Our workers may have died halfway and processed this step but
@@ -87,6 +88,8 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     # non-fatally), the Rule check should return a List of error message
     # strings.  This List will be empty if the Rule passed.
 
+    start_time = time.perf_counter()
+
     rule_errors: List[RuleNonFatalError] = []
 
     try:
@@ -109,11 +112,16 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     step.rule_errors_json = json.dumps(rule_errors)
     step.save()
 
+    logger.debug(
+        "Rule checking took {:.3f}s.".format(time.perf_counter() - start_time)
+    )
+
     # Convergence check
     if not len(step.lexical_array_tail) and not len(rule_errors):
         step.status = DerivationStep.STATUS_CONVERGED
         step.save()
         mark_derivation_chain_ended(step, converged=True)
+        logger.info("DerivationStep {} converged.".format(step.id))
         return []
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -122,6 +130,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     # Get the definitions for the next step(s) in the chain.  The generation
     # operations may return empty lists if they have no more steps to
     # generate.
+    start_time = time.perf_counter()
 
     next_step_defs: List[NextStepDef] = []
 
@@ -140,6 +149,10 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
             step.root_so, step.lexical_array_tail, step_metadata
         )
         next_step_defs = next_step_defs + generator_defs
+
+    logger.debug(
+        "Generation took {:.3f}s.".format(time.perf_counter() - start_time)
+    )
 
     # Crash check: If we have no next steps generated but still have Rule
     # errors, we have crashed.
@@ -165,6 +178,8 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
 
     # Create actual DerivationSteps for each of our next steps.
     # TODO: Change to get_or_create()-style retrieval
+    start_time = time.perf_counter()
+
     next_steps: List[DerivationStep] = []
     for next_step_def in next_step_defs:
         next_step = DerivationStep.objects.create(
@@ -199,7 +214,14 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
 
         next_steps.append(next_step)
 
-    # Carry on
+    logger.debug(
+        "Cleanup took {:.3f}s.".format(time.perf_counter() - start_time)
+    )
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Phase 4: Dispatch
+
+    # Return the next DerivationSteps for processing.
     step.status = DerivationStep.STATUS_PROCESSED
     step.save()
     return next_steps
@@ -215,14 +237,37 @@ def mark_derivation_chain_ended(
     If `converged` is False, the chain is marked as crashed instead.
     :return:
     """
-    for derivation in step.derivations.all():
+    start_time = time.perf_counter()
+
+    for derivation in step.derivations.all().prefetch_related(
+        "converged_steps", "crashed_steps"
+    ):
+        start_time_2 = time.perf_counter()
+
         if converged:
-            derivation.converged_steps.add(step)
+            derivation.converged_steps.add(step.id)
+            logger.info(
+                "Convergence mark: {:.3f}s".format(
+                    time.perf_counter() - start_time_2
+                )
+            )
         else:
-            derivation.crashed_steps.add(step)
+            derivation.crashed_steps.add(step.id)
+            logger.info(
+                "Crash mark: {:.3f}s".format(
+                    time.perf_counter() - start_time_2
+                )
+            )
 
         # Also update the last chain completion time if this is a new result.
         if not reprocessing:
             for derivation_request in derivation.derivation_requests.all():
                 derivation_request.last_completion_time = timezone.now()
                 derivation_request.save()
+
+    logger.debug(
+        "Derivation marking took {:.3f}s. (Converged: {}) ("
+        "DerivationStep: {})".format(
+            time.perf_counter() - start_time, converged, step.id
+        )
+    )

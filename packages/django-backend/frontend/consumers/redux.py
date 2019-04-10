@@ -111,7 +111,7 @@ class ReduxConsumer(JsonWebsocketConsumer):
         # Communication with a client requires an action type to be specified
         assert "type" in message
 
-        logger.debug("WebSocket SEND JSON {}".format(message))
+        logger.info("WebSocket SEND JSON: type: {}".format(message["type"]))
 
         self.send_json(message)
 

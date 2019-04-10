@@ -98,7 +98,7 @@ class GenerateDerivation(APIView):
         # Request processing of all the Derivations.
         for derivation in derivations:
             derivation_request.derivations.add(derivation)
-            derivation_actor.send(derivation.first_step.id.hex)
+            derivation_actor.send(str(derivation.first_step.id))
 
         # Serialise and return DerivationRequest
         serializer = DerivationRequestSerializer(derivation_request)

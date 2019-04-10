@@ -179,7 +179,7 @@ LOGGING = {
         # developing, so this can be set to a higher level than `INFO`
         "django.channels.server": {"level": "INFO"},
         "cs-toolkit": {"handlers": ["console"], "level": "INFO"},
-        "cs-toolkit-grammar": {"level": "DEBUG"},
+        "cs-toolkit-grammar": {"level": "INFO"},
     },
 }
 
