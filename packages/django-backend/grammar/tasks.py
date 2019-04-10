@@ -35,7 +35,7 @@ def derivation_actor(step_id: str):
     next_steps = process_derivation_step(step)
 
     # Performance logging
-    logger.debug(
+    logger.info(
         "Processed a DerivationStep in {:.3f}s: {} next steps".format(
             time.perf_counter() - start_time, len(next_steps)
         )

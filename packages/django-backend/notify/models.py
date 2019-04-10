@@ -2,7 +2,6 @@
 Models related to automatic model change tracking/notifications.
 """
 import logging
-import time
 import uuid
 
 from asgiref.sync import async_to_sync
@@ -120,10 +119,7 @@ class NotifyModel(models.Model):
         # This model object has changed; let people know
         channel_layer = get_channel_layer()
 
-        logger.info(
-            "-----\n"
-            "Model object created/updated: {}".format(self.model_name)
-        )
+        logger.info("Model object created/updated: {}".format(self.model_name))
 
         async_to_sync(channel_layer.group_send)(
             "notify",
@@ -143,9 +139,7 @@ class NotifyModel(models.Model):
             return False
 
         channel_layer = get_channel_layer()
-        logger.info(
-            "-----\n" "Model object deleted: {}".format(self.model_name)
-        )
+        logger.info("Model object deleted: {}".format(self.model_name))
         async_to_sync(channel_layer.group_send)(
             "notify",
             {

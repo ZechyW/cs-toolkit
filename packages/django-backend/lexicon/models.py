@@ -88,7 +88,7 @@ class Feature(models.Model):
     description = models.TextField()
 
     #: A QuerySet representing the FeatureProperties of this Feature.
-    properties = models.ManyToManyField("FeatureProperty")
+    properties = models.ManyToManyField("FeatureProperty", blank=True)
 
     @property
     def uninterpretable(self):

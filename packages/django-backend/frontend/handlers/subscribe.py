@@ -25,6 +25,9 @@ class SubscribeRequestHandler(base.Handler):
         self.in_group = False
         self.watched_items = []
 
+        # Maps: watched item -> sent data
+        self.last_sent_data = {}
+
         setattr(self.consumer, "notify_change", self.notify_change)
         setattr(self.consumer, "notify_delete", self.notify_delete)
 
@@ -124,26 +127,45 @@ class SubscribeRequestHandler(base.Handler):
             )
             return
 
-        data = Model.objects.get(id=item_id).serialized_data
+        try:
+            data = Model.objects.get(id=item_id).serialized_data
+        except Model.DoesNotExist:
+            logger.warning(
+                "Subscribe:notify_change could not retrieve model instance -- "
+                "Maybe we're halfway through loading fixtures? ({})".format(
+                    model
+                )
+            )
+            return
 
         # Model-level subscriptions
         if model in self.watched_items:
-            self.consumer.send_to_client(
-                {
-                    "type": "subscribe/change",
-                    "payload": {"model": model, "data": data},
-                }
-            )
+            last_data = self.last_sent_data.get(model)
+            if not data == last_data:
+                self.consumer.send_to_client(
+                    {
+                        "type": "subscribe/change",
+                        "payload": {"model": model, "data": data},
+                    }
+                )
+                self.last_sent_data[model] = data
 
         # Instance-level subscriptions
         item = "{}:{}".format(model, item_id)
         if item in self.watched_items:
-            self.consumer.send_to_client(
-                {
-                    "type": "subscribe/change",
-                    "payload": {"model": model, "id": item_id, "data": data},
-                }
-            )
+            last_data = self.last_sent_data.get(item)
+            if not data == last_data:
+                self.consumer.send_to_client(
+                    {
+                        "type": "subscribe/change",
+                        "payload": {
+                            "model": model,
+                            "id": item_id,
+                            "data": data,
+                        },
+                    }
+                )
+                self.last_sent_data[item] = data
 
     def notify_delete(self, event):
         """

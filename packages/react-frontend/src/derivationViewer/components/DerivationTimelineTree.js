@@ -148,7 +148,10 @@ function DerivationTimelineTree(props) {
           <br />
           <span>{feature_string}</span>
           <br />
-          <span style={{ textDecoration: "line-through" }}>
+          <span
+            style={{ textDecoration: "line-through" }}
+            className="has-text-grey-light"
+          >
             {deleted_feature_string}
           </span>
         </>

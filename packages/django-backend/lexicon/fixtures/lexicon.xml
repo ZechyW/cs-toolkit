@@ -66,6 +66,11 @@
     <field name="description" type="TextField">An uninterpretable Phi feature with the EPP property.</field>
     <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="2"></object><object pk="3"></object></field>
   </object>
+  <object model="lexicon.feature" pk="12">
+    <field name="name" type="CharField">PhaseHead</field>
+    <field name="description" type="TextField">"For a strong phase HP with head, H, the domain of H is not accessible to operations outside HP; [but] H and its edge are accessible to such operations." (from Chomsky 2001, p. 13)</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"></field>
+  </object>
   <object model="lexicon.featureproperty" pk="1">
     <field name="name" type="CharField">interpretable</field>
     <field name="type" type="CharField">Boolean</field>

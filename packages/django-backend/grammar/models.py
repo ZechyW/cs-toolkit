@@ -122,10 +122,10 @@ class Derivation(NotifyModel):
     # Record the final step in any related DerivationStep chain -- As a
     # final step, it either converged or crashed.
     converged_steps = models.ManyToManyField(
-        "DerivationStep", related_name="converged_derivations+"
+        "DerivationStep", related_name="converged_derivations"
     )
     crashed_steps = models.ManyToManyField(
-        "DerivationStep", related_name="crashed_derivations+"
+        "DerivationStep", related_name="crashed_derivations"
     )
 
     @property

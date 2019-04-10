@@ -48,7 +48,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     #       always do a full re-run.
 
     # Disable short-circuits for now.
-    quick_reprocess = False
+    quick_reprocess = True
     if quick_reprocess:
         if step.status == DerivationStep.STATUS_PROCESSED:
             # Our workers may have died halfway and processed this step but
@@ -237,37 +237,14 @@ def mark_derivation_chain_ended(
     If `converged` is False, the chain is marked as crashed instead.
     :return:
     """
-    start_time = time.perf_counter()
-
-    for derivation in step.derivations.all().prefetch_related(
-        "converged_steps", "crashed_steps"
-    ):
-        start_time_2 = time.perf_counter()
-
+    for derivation in step.derivations.all():
         if converged:
             derivation.converged_steps.add(step.id)
-            logger.info(
-                "Convergence mark: {:.3f}s".format(
-                    time.perf_counter() - start_time_2
-                )
-            )
         else:
             derivation.crashed_steps.add(step.id)
-            logger.info(
-                "Crash mark: {:.3f}s".format(
-                    time.perf_counter() - start_time_2
-                )
-            )
 
         # Also update the last chain completion time if this is a new result.
         if not reprocessing:
             for derivation_request in derivation.derivation_requests.all():
                 derivation_request.last_completion_time = timezone.now()
                 derivation_request.save()
-
-    logger.debug(
-        "Derivation marking took {:.3f}s. (Converged: {}) ("
-        "DerivationStep: {})".format(
-            time.perf_counter() - start_time, converged, step.id
-        )
-    )
