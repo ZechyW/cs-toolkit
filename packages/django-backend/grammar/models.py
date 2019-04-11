@@ -26,9 +26,9 @@ Also contains the Django model used to represent syntactic objects.
   SyntacticObject tree.
 """
 import logging
-import time
 import uuid
 from collections import deque
+from typing import List
 
 from django.db import models
 from django.db.models import QuerySet
@@ -238,6 +238,7 @@ class DerivationStep(models.Model):
 
     # Multiple Derivations may include this particular DerivationStep (via
     # fingerprinting and memoisation)
+    # TODO: Fingerprinting and memoisation
     derivations = models.ManyToManyField("Derivation")
 
     # Each DerivationStep has one unique root SyntacticObject,
@@ -350,6 +351,10 @@ class SyntacticObject(MPTTModel):
         "lexicon.Feature", blank=True, related_name="so_deleted_set"
     )
 
+    # When this SO has been copied to a different position (e.g.,
+    # via Internal Merge), the original SO can be marked as a copy.
+    is_copy = models.BooleanField(default=False)
+
     # For serialisation and the admin interface
     def feature_string(self):
         return ", ".join(
@@ -385,10 +390,13 @@ class SyntacticObject(MPTTModel):
         related_name="children",
     )
 
+    # MPTT level (with 0 being root nodes)
+    level = models.PositiveIntegerField(db_index=True, editable=False)
+
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Model instance helpers and utilities
     def create_clone(
-        self, new_parent: "SyntacticObject" = None
+        self, new_parent: "SyntacticObject" = None, mark_copy: str = None
     ) -> "SyntacticObject":
         """
         Utility function to create a clone of this SO, optionally changing
@@ -401,33 +409,38 @@ class SyntacticObject(MPTTModel):
         mutated, so that changes aren't inadvertently propagated to
         previous DerivationSteps as well.
 
+        Optionally, if the id of one of the SO's children is passed as
+        `mark_copy`, the clone of that child SO will be marked as a copy
+        (i.e., `is_copy` will be set to True)
+
         :param new_parent:
+        :param mark_copy:
         :return:
         """
-        start_time = time.perf_counter()
-
         # Clone the current SO
         new_so: SyntacticObject = SyntacticObject.objects.create(
             text=self.text,
             current_language=self.current_language,
             parent=new_parent,
+            is_copy=self.is_copy or str(self.id) == mark_copy,
         )
         new_so.features.set(self.features.all())
         new_so.deleted_features.set(self.deleted_features.all())
 
         # Clone children
-        children = list(self.get_children())
-        child: SyntacticObject
+        children: List[SyntacticObject] = list(self.get_children())
         for child in children:
-            child.create_clone(new_so)
-
-        logger.debug(
-            "Cloned SO with {} children in {:.3f}s".format(
-                len(children), time.perf_counter() - start_time
-            )
-        )
+            child.create_clone(new_so, mark_copy)
 
         return new_so
+
+    def has_feature(self, name):
+        """
+        Checks if this SO has an active feature with the given name.
+        :param name:
+        :return:
+        """
+        return self.features.filter(name=name).exists()
 
     def get_uninterpretable_features(self) -> QuerySet:
         """

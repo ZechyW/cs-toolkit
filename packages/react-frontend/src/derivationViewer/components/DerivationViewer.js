@@ -33,10 +33,6 @@ function DerivationViewer(props) {
    * for the currently selected Derivation, if any.
    */
   function renderChains() {
-    if (!props.derivationDetails) {
-      return "";
-    }
-
     // Prepare options list of chains available for viewing (converged ones
     // first, then crashed ones).
     // `allChains` holds the actual chain data; `allOptions` holds
@@ -46,48 +42,62 @@ function DerivationViewer(props) {
     const allOptions = [];
     let selectedOption = false;
 
-    // Converged chains
-    const convergedOptions = [];
-    for (const chain of props.derivationDetails["converged_chains"]) {
-      allChains[currentIndex] = chain;
-      const option = {
-        value: currentIndex,
-        label: `Chain ${currentIndex + 1} (converged)`
-      };
+    if (props.derivationDetails) {
+      // Converged chains
+      const convergedOptions = [];
+      for (const chain of props.derivationDetails["converged_chains"]) {
+        allChains[currentIndex] = chain;
+        const option = {
+          value: currentIndex,
+          label: `Chain ${currentIndex + 1} (converged)`
+        };
 
-      // Was this the last selected option?
-      convergedOptions.push(option);
-      if (props.selectedChain === currentIndex) {
-        selectedOption = option;
+        // Was this the last selected option?
+        convergedOptions.push(option);
+        if (props.selectedChain === currentIndex) {
+          selectedOption = option;
+        }
+
+        currentIndex += 1;
       }
+      allOptions.push({
+        label: "Converged chains",
+        options: convergedOptions
+      });
 
-      currentIndex += 1;
-    }
-    allOptions.push({
-      label: "Converged chains",
-      options: convergedOptions
-    });
+      // Crashed chains
+      const crashedOptions = [];
+      for (const chain of props.derivationDetails["crashed_chains"]) {
+        allChains[currentIndex] = chain;
+        const option = {
+          value: currentIndex,
+          label: `Chain ${currentIndex + 1} (crashed)`
+        };
 
-    // Crashed chains
-    const crashedOptions = [];
-    for (const chain of props.derivationDetails["crashed_chains"]) {
-      allChains[currentIndex] = chain;
-      const option = {
-        value: currentIndex,
-        label: `Chain ${currentIndex + 1} (crashed)`
-      };
+        // Was this the last selected option?
+        convergedOptions.push(option);
+        if (props.selectedChain === currentIndex) {
+          selectedOption = option;
+        }
 
-      // Was this the last selected option?
-      convergedOptions.push(option);
-      if (props.selectedChain === currentIndex) {
-        selectedOption = option;
+        currentIndex += 1;
       }
-
-      currentIndex += 1;
+      allOptions.push({
+        label: "Crashed chains",
+        options: crashedOptions
+      });
     }
-    allOptions.push({
-      label: "Crashed chains",
-      options: crashedOptions
+
+    // If we are trying to render from an invalid state, fix it for the next
+    // render.
+    useEffect(() => {
+      // Selected frame is OOB for the selected chain.
+      if (
+        allChains[props.selectedChain] &&
+        props.selectedFrame >= allChains[props.selectedChain].length
+      ) {
+        props.selectFrame(allChains[props.selectedChain].length - 1);
+      }
     });
 
     // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_

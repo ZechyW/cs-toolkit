@@ -83,6 +83,7 @@ class SyntacticObjectSerializer(serializers.ModelSerializer):
             "id",
             "text",
             "current_language",
+            "is_copy",
             "feature_string",
             "deleted_feature_string",
             "name",

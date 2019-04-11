@@ -1,9 +1,9 @@
 # Main setup
 dist: xenial
 language: python
-python: "3.6"
+python: "3.7"
 node_js:
-  - 10
+  - "10"
 
 # Dependencies
 services:
@@ -12,6 +12,13 @@ services:
 
 addons:
   chrome: stable
+  apt:
+    packages:
+      - pgbouncer
+
+env:
+  global:
+    - PGPORT=6432
 
 cache:
   yarn: true

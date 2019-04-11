@@ -90,6 +90,30 @@ class Feature(models.Model):
     #: A QuerySet representing the FeatureProperties of this Feature.
     properties = models.ManyToManyField("FeatureProperty", blank=True)
 
+    def has_boolean_prop(self, name: str, value: bool) -> bool:
+        """
+        Checks whether this feature has a boolean property that has been
+        *explicitly* set to the given value.
+        (E.g., an unset property will be interpreted differently from a set
+        property with value "False".
+
+        Canonically:
+        - The feature has a value of "True" if its `raw_value` is "True"
+        - The feature has a value of "False" if its `raw_value` is anything
+          else.
+
+        :param name:
+        :param value:
+        :return:
+        """
+        boolean_props = self.properties.filter(name=name, type="Boolean")
+        if value:
+            return boolean_props.filter(raw_value="True").exists()
+        else:
+            return boolean_props.exclude(raw_value="True").exists()
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Bespoke helpers (theory-internal, optional)
     @property
     def uninterpretable(self):
         """
@@ -97,11 +121,7 @@ class Feature(models.Model):
         feature is explicitly uninterpretable.
         :return:
         """
-        return (
-            self.properties.filter(name="interpretable")
-            .exclude(raw_value="True")
-            .exists()
-        )
+        return self.has_boolean_prop("interpretable", False)
 
     def __str__(self):
         # Prefix/suffix will be attached to the Feature's name directly.

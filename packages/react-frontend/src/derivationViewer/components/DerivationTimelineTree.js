@@ -5,7 +5,7 @@ import { isEmpty } from "lodash-es";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import Config from "../../config";
 import "../styles/DerivationTimelineTree.scss";
@@ -24,17 +24,8 @@ const Slider = createSliderWithTooltip(RcSlider);
  */
 function DerivationTimelineTree(props) {
   // Sanity checks on render
-  if (props.chain === null) return null;
+  if (props.chain === null || props.selectedFrame === null) return null;
   if (props.selectedFrame >= props.chain.length) return null;
-
-  // If we are trying to render from an invalid state, fix it for the next
-  // render.
-  useEffect(() => {
-    // Selected frame is OOB for the selected chain.
-    if (props.selectedFrame >= props.chain.length) {
-      props.selectFrame(props.chain.length - 1);
-    }
-  });
 
   /** @type React.RefObject */
   const sliderRef = useRef(null);
@@ -68,10 +59,8 @@ function DerivationTimelineTree(props) {
   const treeContainer = useRef(null);
   useLayoutEffect(() => {
     // N.B.: Dynamically reading the tree SVG's width may be inaccurate
-    // because of the animations. Just snap the tree to the left edge for now.
-    let offset =
-      (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
-      2;
+    // because of the animations. Just snap the tree to the centre for now.
+    let offset = treeContainer.current.offsetWidth / 2;
     setTranslateX(offset);
 
     // // We have a reference to the <div> containing the tree.
@@ -138,11 +127,16 @@ function DerivationTimelineTree(props) {
       const {
         text,
         current_language,
+        is_copy,
         feature_string,
         deleted_feature_string
       } = nodeData;
       labelContents = (
-        <>
+        <div
+          style={{
+            opacity: is_copy ? "0.5" : "1"
+          }}
+        >
           <span className="has-text-weight-bold	">{text} </span>(
           <span className="is-italic">{current_language}</span>)
           <br />
@@ -154,7 +148,7 @@ function DerivationTimelineTree(props) {
           >
             {deleted_feature_string}
           </span>
-        </>
+        </div>
       );
     }
 
