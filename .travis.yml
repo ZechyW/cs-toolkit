@@ -12,9 +12,9 @@ services:
 
 addons:
   chrome: stable
-  apt:
-    packages:
-      - pgbouncer
+#  apt:
+#    packages:
+#      - pgbouncer
 
 env:
   global:
@@ -38,8 +38,8 @@ install:
   - yarn --prod
 
 before_script:
-  - psql -c "CREATE USER cs_toolkit WITH PASSWORD 'cs_toolkit';" -U postgres
-  - psql -c "CREATE DATABASE cs_toolkit WITH OWNER cs_toolkit;" -U postgres
+  - psql -p 6432 -c "CREATE USER cs_toolkit WITH PASSWORD 'cs_toolkit';" -U postgres
+  - psql -p 6432 -c "CREATE DATABASE cs_toolkit WITH OWNER cs_toolkit;" -U postgres
 
 script:
   - yarn workspace django-backend run load-basic
