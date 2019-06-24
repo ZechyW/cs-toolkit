@@ -58,7 +58,7 @@ If the Docker container is stopped for any reason (e.g., if the system is restar
 docker container start redis
 ```
 
-### Start Postgres server
+### Start Postgres
 
 In addition, the backend uses a Postgres server for data storage (on `127.0.0.1:5432` by default).  If you have Docker installed, you can spin up a local Postgres instance with:
 
@@ -67,6 +67,12 @@ docker run -p 5432:5432 --name postgres -d postgres
 ```
 
 You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be `cs_toolkit`.  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
+
+### PgBouncer
+
+```bash
+docker run -d --name=pgbouncer -e DB_HOST=postgres -e DB_USER=cs_toolkit -e DB_PASSWORD=cs_toolkit -p 6432:6432 --link postgres:postgres brainsam/pgbouncer:latest
+```
 
 #### Optional: Load basic data fixtures
 
