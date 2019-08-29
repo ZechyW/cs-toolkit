@@ -10,16 +10,7 @@ services:
   - redis-server
 
 addons:
-  postgresql: "10"
   chrome: stable
-  apt:
-    packages:
-      - postgresql-10
-      - postgresql-client-10
-
-env:
-  global:
-    - PGPORT=6432
 
 cache:
   yarn: true
@@ -29,7 +20,14 @@ cache:
     - "~/virtualenv/"
 
 before_install:
-  - sudo apt-get install libgconf-2-4
+  - sudo apt-get update
+  - sudo apt-get --yes remove postgresql\*
+  - sudo apt-get install --yes libgconf-2-4 postgresql-11 postgresql-client-11
+  - sed -e 's/^port.*/port = 6432/' /etc/postgresql/11/main/postgresql.conf > postgresql.conf
+  - sudo chown postgres postgresql.conf
+  - sudo mv postgresql.conf /etc/postgresql/11/main
+  - sudo cp /etc/postgresql/{10,11}/main/pg_hba.conf
+  - sudo service postgresql restart 11
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
   - source ~/.poetry/env
 
