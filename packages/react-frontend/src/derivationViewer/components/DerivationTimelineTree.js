@@ -23,12 +23,51 @@ const Slider = createSliderWithTooltip(RcSlider);
  * @constructor
  */
 function DerivationTimelineTree(props) {
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // React Hooks
+
+  // Ref for the slider UI element
+  /** @type React.RefObject */
+  const sliderRef = useRef(null);
+
+  // For centring the tree view
+  const [translateX, setTranslateX] = useState(0);
+  /** @type React.RefObject */
+  const treeContainer = useRef(null);
+  useLayoutEffect(() => {
+    // N.B.: Dynamically reading the tree SVG's width may be inaccurate
+    // because of the animations. Just snap the tree to the middle (-ish,
+    // one-third of the width from the left) for now.
+    if (treeContainer.current) {
+      let offset = treeContainer.current.offsetWidth / 3;
+      setTranslateX(offset);
+    }
+    // // We have a reference to the <div> containing the tree.
+    // const containerWidth = treeContainer.current.offsetWidth;
+    //
+    // // Get the actual bounding box of the tree SVG and figure out where
+    // // the centre should be.
+    // const treeSvgBbox = treeContainer.current.querySelector("svg").getBBox();
+    //
+    // let offset = (containerWidth - treeSvgBbox.width) / 2;
+    //
+    // // If the offset is negative, the tree is wider than its container.
+    // // Have at least the left edge of the tree visible.
+    // offset = Math.max(offset, 0);
+    //
+    // // The centre of the root node starts at (0,0), so the tree will initially
+    // // expand into the negative x direction.  Account for this and set the
+    // // final offset.
+    // offset +=
+    //   (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
+    //   2;
+    // setTranslateX(offset);
+  }, [props.chain, props.selectedFrame]);
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Sanity checks on render
   if (props.chain === null || props.selectedFrame === null) return null;
   if (props.selectedFrame >= props.chain.length) return null;
-
-  /** @type React.RefObject */
-  const sliderRef = useRef(null);
 
   const thisFrame = props.chain[props.selectedFrame];
 
@@ -52,38 +91,6 @@ function DerivationTimelineTree(props) {
   const treeContainerHeight =
     Config.derivationTreeNodeSize.y * treeData.height +
     Config.derivationTreeLabelSize.height * 2;
-
-  // For centring the tree view
-  const [translateX, setTranslateX] = useState(0);
-  /** @type React.RefObject */
-  const treeContainer = useRef(null);
-  useLayoutEffect(() => {
-    // N.B.: Dynamically reading the tree SVG's width may be inaccurate
-    // because of the animations. Just snap the tree to the centre for now.
-    let offset = treeContainer.current.offsetWidth / 2;
-    setTranslateX(offset);
-
-    // // We have a reference to the <div> containing the tree.
-    // const containerWidth = treeContainer.current.offsetWidth;
-    //
-    // // Get the actual bounding box of the tree SVG and figure out where
-    // // the centre should be.
-    // const treeSvgBbox = treeContainer.current.querySelector("svg").getBBox();
-    //
-    // let offset = (containerWidth - treeSvgBbox.width) / 2;
-    //
-    // // If the offset is negative, the tree is wider than its container.
-    // // Have at least the left edge of the tree visible.
-    // offset = Math.max(offset, 0);
-    //
-    // // The centre of the root node starts at (0,0), so the tree will initially
-    // // expand into the negative x direction.  Account for this and set the
-    // // final offset.
-    // offset +=
-    //   (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
-    //   2;
-    // setTranslateX(offset);
-  });
 
   /**
    * Sub-component for rendering node labels

@@ -30,7 +30,7 @@ function LexicalItems(props) {
         model: "LexicalItem"
       });
     }
-  }, [wsConnected, wsSubscribed]);
+  }, [wsConnected, wsSubscribed, subscribeRequest]);
 
   return <LexicalItemTable {...otherProps} />;
 }

@@ -42,7 +42,7 @@ class Config {
     // md: 10 columns (width > 996)
     md: [
       { w: 5, h: 11, x: 0, y: 0, i: "derivationInput", minW: 2 },
-      { w: 5, h: 11, x: 5, y: 0, i: "lexicalItemList", minW: 2 },
+      { w: 5, h: 10, x: 5, y: 0, i: "lexicalItemList", minW: 2 },
       { w: 10, h: 9, x: 0, y: 11, i: "derivationStatusList", minW: 2 },
       { w: 10, h: 9, x: 0, y: 21, i: "derivationViewer", minW: 2 }
     ],

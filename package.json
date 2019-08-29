@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "cs-toolkit",
-  "description": "(Roughly) Minimalist framework for exploring code switching data",
+  "description": "A Minimalist framework for exploring code switching data",
   "license": "MIT",
   "author": "ZechyW",
   "homepage": "https://github.com/ZechyW/cs-toolkit#readme",

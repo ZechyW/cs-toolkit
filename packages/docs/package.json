@@ -10,6 +10,7 @@
     "docs-dev": "chokidar \"**/*.rst\" \"../README.md\" -c \"npm run build\" --initial"
   },
   "devDependencies": {
-    "chokidar-cli": "^1.2.1"
+    "chokidar-cli": "^1.2.1",
+    "puppeteer": "^1.19.0"
   }
 }

@@ -46,7 +46,7 @@ describe("The main app navbar", () => {
       cy.get(".navbar-burger").click();
       cy.get(".navbar-menu").should("be.visible");
 
-      cy.get("body").click(0, 500);
+      cy.get("body").click(1, 499);
       cy.get(".navbar-menu").should("not.be.visible");
     });
   });

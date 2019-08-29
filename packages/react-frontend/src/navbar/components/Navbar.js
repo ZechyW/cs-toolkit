@@ -175,8 +175,7 @@ function Navbar(props) {
               }}
             >
               {props.navbarExpanded
-                ? "A (roughly) Minimalist framework for exploring code" +
-                  " switching data"
+                ? "A Minimalist framework for exploring code switching data"
                 : ""}
             </animated.p>
           </div>

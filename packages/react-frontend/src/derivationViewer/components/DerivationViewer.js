@@ -12,7 +12,7 @@ import DerivationTimelineTree from "./DerivationTimelineTree";
  * Component for viewing individual Derivation chain trees.
  * The heavy lifting is done by the main Derivation tracker -- We just pull
  * the relevant information from its store and display visualisations for
- * the derivational chains.
+ * the derivational chains (the selector and timeline view).
  * @param props
  * @constructor
  */
@@ -26,126 +26,96 @@ function DerivationViewer(props) {
   });
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
-  // Helper functions
+  // Data pre-processing
 
-  /**
-   * Render the selector and timeline view for converged/crashed chains
-   * for the currently selected Derivation, if any.
-   */
-  function renderChains() {
-    // Prepare options list of chains available for viewing (converged ones
-    // first, then crashed ones).
-    // `allChains` holds the actual chain data; `allOptions` holds
-    // suggestions for the select box.
-    const allChains = [];
-    let currentIndex = 0;
-    const allOptions = [];
-    let selectedOption = false;
+  // Prepare options list of chains available for viewing (converged ones
+  // first, then crashed ones).
+  // `allChains` holds the actual chain data; `allOptions` holds
+  // suggestions for the select box.
+  const allChains = [];
+  let currentIndex = 0;
+  const allOptions = [];
+  let selectedOption = false;
 
-    if (props.derivationDetails) {
-      // Converged chains
-      const convergedOptions = [];
-      for (const chain of props.derivationDetails["converged_chains"]) {
-        allChains[currentIndex] = chain;
-        const option = {
-          value: currentIndex,
-          label: `Chain ${currentIndex + 1} (converged)`
-        };
+  if (props.derivationDetails) {
+    // Converged chains
+    const convergedOptions = [];
+    for (const chain of props.derivationDetails["converged_chains"]) {
+      allChains[currentIndex] = chain;
+      const option = {
+        value: currentIndex,
+        label: `Chain ${currentIndex + 1} (converged)`
+      };
 
-        // Was this the last selected option?
-        convergedOptions.push(option);
-        if (props.selectedChain === currentIndex) {
-          selectedOption = option;
-        }
-
-        currentIndex += 1;
+      // Was this the last selected option?
+      convergedOptions.push(option);
+      if (props.selectedChain === currentIndex) {
+        selectedOption = option;
       }
-      allOptions.push({
-        label: "Converged chains",
-        options: convergedOptions
-      });
 
-      // Crashed chains
-      const crashedOptions = [];
-      for (const chain of props.derivationDetails["crashed_chains"]) {
-        allChains[currentIndex] = chain;
-        const option = {
-          value: currentIndex,
-          label: `Chain ${currentIndex + 1} (crashed)`
-        };
-
-        // Was this the last selected option?
-        convergedOptions.push(option);
-        if (props.selectedChain === currentIndex) {
-          selectedOption = option;
-        }
-
-        currentIndex += 1;
-      }
-      allOptions.push({
-        label: "Crashed chains",
-        options: crashedOptions
-      });
+      currentIndex += 1;
     }
-
-    // If we are trying to render from an invalid state, fix it for the next
-    // render.
-    useEffect(() => {
-      // Selected frame is OOB for the selected chain.
-      if (
-        allChains[props.selectedChain] &&
-        props.selectedFrame >= allChains[props.selectedChain].length
-      ) {
-        props.selectFrame(allChains[props.selectedChain].length - 1);
-      }
+    allOptions.push({
+      label: "Converged chains",
+      options: convergedOptions
     });
 
-    // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
-    // Select box event handlers
+    // Crashed chains
+    const crashedOptions = [];
+    for (const chain of props.derivationDetails["crashed_chains"]) {
+      allChains[currentIndex] = chain;
+      const option = {
+        value: currentIndex,
+        label: `Chain ${currentIndex + 1} (crashed)`
+      };
 
-    /**
-     * The user clicked in the chain selection box.
-     * (The actual selected option may not have changed.)
-     * @param option
-     * @param action
-     */
-    function handleChange(option, action) {
-      if (option.value === props.selectedChain) {
-        // False alarm
-        return;
+      // Was this the last selected option?
+      convergedOptions.push(option);
+      if (props.selectedChain === currentIndex) {
+        selectedOption = option;
       }
 
-      props.selectChain(option.value);
-      props.selectFrame(allChains[option.value].length - 1);
+      currentIndex += 1;
+    }
+    allOptions.push({
+      label: "Crashed chains",
+      options: crashedOptions
+    });
+  }
+
+  // If we are trying to render from an invalid state, fix it for the next
+  // render.
+  useEffect(() => {
+    // Selected frame is OOB for the selected chain.
+    if (
+      allChains[props.selectedChain] &&
+      props.selectedFrame >= allChains[props.selectedChain].length
+    ) {
+      props.selectFrame(allChains[props.selectedChain].length - 1);
+    }
+  });
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Select box event handlers
+
+  /**
+   * The user clicked in the chain selection box.
+   * (The actual selected option may not have changed.)
+   * @param option
+   * @param action
+   */
+  function handleChange(option, action) {
+    if (option.value === props.selectedChain) {
+      // False alarm
+      return;
     }
 
-    return (
-      <>
-        <div className="has-margin-bottom-5">Derivational chains:</div>
-        <div className="has-margin-bottom-5">
-          <Select
-            menuPortalTarget={document.body}
-            onChange={handleChange}
-            options={allOptions}
-            placeholder="Select a chain to view..."
-            value={selectedOption}
-          />
-        </div>
-        <div>
-          <DerivationTimelineTree
-            title={
-              props.selectedChain === null
-                ? ""
-                : `Chain ${props.selectedChain + 1}`
-            }
-            chain={allChains[props.selectedChain]}
-            selectedFrame={props.selectedFrame}
-            selectFrame={props.selectFrame}
-          />
-        </div>
-      </>
-    );
+    props.selectChain(option.value);
+    props.selectFrame(allChains[option.value].length - 1);
   }
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Render
 
   return (
     <>
@@ -154,7 +124,28 @@ function DerivationViewer(props) {
         here.
       </p>
 
-      {renderChains()}
+      <div className="has-margin-bottom-5">Derivational chains:</div>
+      <div className="has-margin-bottom-5">
+        <Select
+          menuPortalTarget={document.body}
+          onChange={handleChange}
+          options={allOptions}
+          placeholder="Select a chain to view..."
+          value={selectedOption}
+        />
+      </div>
+      <div>
+        <DerivationTimelineTree
+          title={
+            props.selectedChain === null
+              ? ""
+              : `Chain ${props.selectedChain + 1}`
+          }
+          chain={allChains[props.selectedChain]}
+          selectedFrame={props.selectedFrame}
+          selectFrame={props.selectFrame}
+        />
+      </div>
 
       <p
         className="has-margin-top-10 has-text-grey-light"

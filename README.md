@@ -134,6 +134,8 @@ Set the `DJANGO_PORT` environment variable to use a non-default port for the mai
 DJANGO_PORT=8080 REACT_HOST=127.0.0.1 REACT_PORT=3000 ./start-dev
 ```
 
+Note that the interface will then be accessible via the port in `DJANGO_PORT`, **not** `REACT_PORT`.
+
 ### Profiling
 
 From the project root, use the following command to rebuild and profile the contents/size of the main frontend bundle:
