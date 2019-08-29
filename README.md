@@ -70,6 +70,10 @@ You will also need to create a login role and database for the system.  By defau
 
 ### PgBouncer
 
+By default, the backend also expects PgBouncer to be running on port `6432` as a connection pooler for the Postgres database.
+
+Using Docker, a PgBouncer instance with the required settings can be started with:
+
 ```bash
 docker run -d --name=pgbouncer -e DB_HOST=postgres -e DB_USER=cs_toolkit -e DB_PASSWORD=cs_toolkit -p 6432:6432 --link postgres:postgres brainsam/pgbouncer:latest
 ```

@@ -121,7 +121,8 @@ function Grid(props) {
       props.minHeights,
       props.width,
       currentBreakpoint,
-      props.layouts
+      props.layouts,
+      props
     ]
   );
 
