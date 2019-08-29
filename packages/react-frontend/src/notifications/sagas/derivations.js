@@ -60,6 +60,7 @@ function* derivationRequestErrorNotification(action) {
   const errorList = [];
   // `errors` is an Object of Arrays of error strings.
   forOwn(errors, (error) => {
+    // eslint-disable-next-line no-unused-vars
     for (const errorString of error) {
       errorList.push(`- ${errorString}`);
     }

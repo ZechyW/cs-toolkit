@@ -52,7 +52,13 @@ function Derivations(props) {
         }
       });
     }
-  }, [wsConnected, requestsById, derivationsById]);
+  }, [
+    wsConnected,
+    requestsById,
+    derivationsById,
+    subscribeRequest,
+    wsSubscriptions
+  ]);
 
   return <DerivationsTable {...otherProps} />;
 }

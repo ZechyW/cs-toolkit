@@ -18,6 +18,7 @@ export const getDerivationsAsList = createSelector(
     const derivationList = [];
 
     forOwn(requestsById, (request) => {
+      // eslint-disable-next-line no-unused-vars
       for (const derivationId of request.derivations) {
         const derivation = derivationsById[derivationId];
 

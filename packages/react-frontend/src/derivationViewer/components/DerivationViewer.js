@@ -40,6 +40,7 @@ function DerivationViewer(props) {
   if (props.derivationDetails) {
     // Converged chains
     const convergedOptions = [];
+    // eslint-disable-next-line no-unused-vars
     for (const chain of props.derivationDetails["converged_chains"]) {
       allChains[currentIndex] = chain;
       const option = {
@@ -62,6 +63,7 @@ function DerivationViewer(props) {
 
     // Crashed chains
     const crashedOptions = [];
+    // eslint-disable-next-line no-unused-vars
     for (const chain of props.derivationDetails["crashed_chains"]) {
       allChains[currentIndex] = chain;
       const option = {

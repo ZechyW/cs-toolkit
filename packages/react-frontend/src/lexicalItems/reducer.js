@@ -35,6 +35,7 @@ export default createReducer(initialState, {
 
     // Set
     state.lexicalItemsById = {};
+    // eslint-disable-next-line no-unused-vars
     for (const lexicalItem of action.payload.data) {
       state.lexicalItemsById[lexicalItem.id] = lexicalItem;
     }

@@ -57,6 +57,7 @@ const EXPORT_LEXICAL_ITEMS = "lexicalItems/exportLexicalItems";
 export function exportLexicalItems(payload) {
   return (dispatch) => {
     // Payload should be an array of lexical items
+    // eslint-disable-next-line no-unused-vars
     for (const lexicalItem of payload) {
       const item = lexicalItemToSuggestion(lexicalItem);
       dispatch(derivationActions.addItem({ item }));

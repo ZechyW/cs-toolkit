@@ -49,6 +49,7 @@ function Grid(props) {
       // As we save them to `newLayout`, we clone them as we go (since they
       // are Objects themselves and we don't want to accidentally mutate them).
       const gridChildren = { ...props.itemVisibility };
+      // eslint-disable-next-line no-unused-vars
       for (const currentItem of props.layouts[currentBreakpoint]) {
         delete gridChildren[currentItem.i];
         newLayout.push({ ...currentItem });
@@ -59,6 +60,7 @@ function Grid(props) {
         if (!isVisible) return;
 
         // Unfortunately, the default Configs are also held in an array.
+        // eslint-disable-next-line no-unused-vars
         for (const defaultItem of Config.gridDefaultLayout[currentBreakpoint]) {
           if (id === defaultItem.i) {
             newLayout.push({ ...defaultItem });
@@ -70,6 +72,7 @@ function Grid(props) {
 
       // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
       // Auto-sizing
+      // eslint-disable-next-line no-unused-vars
       for (const item of newLayout) {
         // Determine minimum item height
         const id = item.i;
@@ -113,7 +116,13 @@ function Grid(props) {
     },
     // Changes to itemVisibility may require pulling default layout configs;
     // changes to item minHeights and the main grid width may cause autosizing.
-    [props.itemVisibility, props.minHeights, props.width]
+    [
+      props.itemVisibility,
+      props.minHeights,
+      props.width,
+      currentBreakpoint,
+      props.layouts
+    ]
   );
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_

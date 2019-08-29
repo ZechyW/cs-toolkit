@@ -71,7 +71,7 @@ function Options(props) {
                 <div className="pretty p-switch p-fill" key={element.id}>
                   <input
                     type="checkbox"
-                    defaultChecked={props.itemVisibility[element.id]}
+                    checked={props.itemVisibility[element.id]}
                     onClick={() => {
                       if (props.itemVisibility[element.id]) {
                         props.hideItem(element.id);
@@ -79,6 +79,7 @@ function Options(props) {
                         props.showItem(element.id);
                       }
                     }}
+                    readOnly
                   />
                   <div className="state p-primary">
                     <label>{element.name}</label>

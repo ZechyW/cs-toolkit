@@ -33,6 +33,7 @@ export const postDerivationRequestError = createAction(
  */
 export function postDerivationRequest(currentInput) {
   const postArray = [];
+  // eslint-disable-next-line no-unused-vars
   for (const item of currentInput) {
     postArray.push({
       text: item.text,

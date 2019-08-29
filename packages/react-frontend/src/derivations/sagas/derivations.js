@@ -20,6 +20,7 @@ export function* trackDerivationsFromRequest() {
  */
 export function* subscribeDerivationsInRequest(action) {
   const derivations = action.payload.derivations;
+  // eslint-disable-next-line no-unused-vars
   for (const derivation of derivations) {
     yield put(
       wsActions.subscribeRequest({
