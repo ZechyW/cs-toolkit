@@ -8,13 +8,14 @@ node_js:
 # Dependencies
 services:
   - redis-server
-  - postgresql
 
 addons:
+  postgresql: "10"
   chrome: stable
-#  apt:
-#    packages:
-#      - pgbouncer
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
 
 env:
   global:
