@@ -132,6 +132,14 @@ python-versions = "*"
 version = "0.1.0"
 
 [[package]]
+category = "main"
+description = "Function decoration for backoff and retry"
+name = "backoff"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.8.0"
+
+[[package]]
 category = "dev"
 description = "The uncompromising code formatter."
 name = "black"
@@ -953,7 +961,7 @@ setuptools = "*"
 windows = ["pywin32"]
 
 [metadata]
-content-hash = "f7bed2be9a326b8780b0c768d858c0dabd6ea24924e5cedef801665569de35d8"
+content-hash = "0b721701197c1950677b71b79bb3dc847e97ecb99a0dd6878dcf20bd638bbf23"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -970,6 +978,7 @@ autobahn = ["15e058a65b310a813ec7f3fbefca54b7182dfd64bbd46a0310b6b72ca8773c22", 
 automat = ["cbd78b83fa2d81fe2a4d23d258e1661dd7493c9a50ee2f1a5b2cac61c1793b0e", "fdccab66b68498af9ecfa1fa43693abe546014dd25cf28543cbe9d1334916a58"]
 babel = ["6778d85147d5d85345c14a26aada5e478ab04e39b078b0745ee6870c2b5cf669", "8cba50f48c529ca3fa18cf81fa9403be176d374ac4d60738b839122dfaaa3d23"]
 backcall = ["38ecd85be2c1e78f77fd91700c76e14667dc21e2713b63876c0eb901196e01e4", "bbbf4b1e5cd2bdb08f915895b51081c041bac22394fdfcfdfbe9f14b77c08bf2"]
+backoff = ["c7187f15339e775aec926dc6e5e42f8a3ad7d3c2b9a6ecae7b535000f70cd838", "d340bb6f36d025c04214b8925112d8456970e5f28dda46e4f1133bf5c622cb0a"]
 black = ["817243426042db1d36617910df579a54f1afd659adb96fc5032fcf4b36209739", "e030a9a28f542debc08acceb273f228ac422798e5215ba2a791a6ddeaaca22a5"]
 bootstrap-admin = ["21747448e7bd71ac45b0534596b45f3226cacd7db85c948b944a36b2cd107a17", "68e8e3f9465e5462a7285039ba8c5982eb8182e67ffa40f4d8851ba534ec20fa"]
 certifi = ["47f9c83ef4c0c621eaef743f133f09fa8a74a9b75f037e8624f83bd1b6626cb7", "993f830721089fef441cdfeb4b2c8c9df86f0c63239f06bd025a76a7daddb033"]

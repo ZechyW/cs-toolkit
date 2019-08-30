@@ -2,8 +2,10 @@
 Handles `notify` topic PubSub connections.
 Lets clients know when some Django model has changed.
 """
+import backoff
 import logging
 
+import django.core.exceptions
 from asgiref.sync import async_to_sync
 from rest_framework import serializers
 
@@ -128,13 +130,11 @@ class SubscribeRequestHandler(base.Handler):
             return
 
         try:
-            data = Model.objects.get(id=item_id).serialized_data
+            data = get_serialised_model_instance(Model, item_id)
         except Model.DoesNotExist:
             logger.warning(
-                "Subscribe:notify_change could not retrieve model instance -- "
-                "Maybe we're halfway through loading fixtures? ({})".format(
-                    model
-                )
+                "Subscribe:notify_change could not retrieve model instance: "
+                "{}".format(model)
             )
             return
 
@@ -221,3 +221,22 @@ class SubscribeRequestSerializer(serializers.Serializer):
 
     model = serializers.CharField(max_length=200)
     id = serializers.CharField(max_length=200, required=False)
+
+
+logging.getLogger("backoff").addHandler(logging.StreamHandler())
+
+
+@backoff.on_exception(
+    backoff.expo, django.core.exceptions.ObjectDoesNotExist, max_tries=5
+)
+def get_serialised_model_instance(Model, item_id):
+    """
+    Attempts to get the data for a given model instance.
+    The data should always be available, since we wait for a transaction
+    commit in `.notify_changes()`, but we really want people to get the
+    data, so we put in a bit of backoff/retry as a failsafe.
+    :param Model:
+    :param item_id:
+    :return:
+    """
+    return Model.objects.get(id=item_id).serialized_data

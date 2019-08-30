@@ -48,7 +48,7 @@ NO_UPDATE_NOTIFIER=1
 echo -e "${CYAN}Starting Django/React development servers (UI on port ${DJANGO_PORT})...${NOCOLOR}"
 
 # Django
-echo -e "${YELLOW}Django is running debug mode.\nStatic bundles will not be compressed and only local connections will be accepted, among other caveats.${NOCOLOR}"
+echo -e "${YELLOW}Django is running in debug mode.\nStatic bundles will not be compressed and only local connections will be accepted, among other caveats.${NOCOLOR}"
 
 DB_HOST=${DB_HOST} DB_PORT=${DB_PORT} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} eval ${yarn} workspace django-backend run dev ${DJANGO_PORT} &
 

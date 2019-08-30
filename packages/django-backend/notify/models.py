@@ -6,10 +6,24 @@ import uuid
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.db import models
+from django.db import models, transaction
 from django.utils.module_loading import import_string
 
 logger = logging.getLogger("cs-toolkit")
+
+
+def on_transaction_commit(func):
+    """
+    Decorator to run given function after the current database transaction
+    (if any) has been committed.
+    :param func:
+    :return:
+    """
+
+    def inner(*args, **kwargs):
+        transaction.on_commit(lambda: func(*args, **kwargs))
+
+    return inner
 
 
 class NotifyModel(models.Model):
@@ -108,9 +122,12 @@ class NotifyModel(models.Model):
         has_changed = self.tracker.changed()
         return len(has_changed.keys()) > 0
 
+    @on_transaction_commit
     def notify_changes(self):
         """
         Sends the change notification on the `notify` channel layer group.
+        Should run after the current DB transaction is committed, or the
+        model instance might not be available to the notify handler.
         :return:
         """
         if not self.subclass_valid():

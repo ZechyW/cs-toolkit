@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from .models import NotifyModel
 
-logger = logging.getLogger("cs-toolkit-grammar")
+logger = logging.getLogger("cs-toolkit")
 
 
 @receiver(m2m_changed, dispatch_uid="notify_m2m")
