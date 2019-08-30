@@ -19,6 +19,14 @@ class Config {
    */
   wsUrl = `ws://${window.location.host}/redux/`;
 
+  /**
+   * Reserved language keyword for special system items in the DerivationInput.
+   * This will be the language for e.g. the sub-workspace brackets.
+   * (Should match the corresponding setting on the backend)
+   * @type {string}
+   */
+  sysLanguage = "<SYS>";
+
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // React-grid-layout
   // When we want to size a grid item, we take the height of the content

@@ -67,7 +67,8 @@ function DerivationTimelineTree(props) {
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Sanity checks on render
   if (props.chain === null || props.selectedFrame === null) return null;
-  if (props.selectedFrame >= props.chain.length) return null;
+  if (props.selectedFrame >= props.chain.length || props.selectedFrame === -1)
+    return null;
 
   const thisFrame = props.chain[props.selectedFrame];
 

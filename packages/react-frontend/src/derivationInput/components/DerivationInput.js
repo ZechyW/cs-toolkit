@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { WithContext as ReactTags } from "react-tag-input";
 import createSelector from "selectorator";
+
 import { GridItemWrapper } from "../../grid";
 import {
   addItem,
@@ -12,6 +13,7 @@ import {
 } from "../actions";
 import { getSuggestions } from "../selectors";
 import "../styles/DerivationInput.scss";
+import Config from "../../config";
 
 /**
  * Component for the derivation input builder.
@@ -21,6 +23,24 @@ import "../styles/DerivationInput.scss";
 function DerivationInput(props) {
   // Display any error text
   const [errorText, setErrorText] = useState("");
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Helpers
+
+  /**
+   * Count how many unclosed brackets there are in the current input
+   */
+  function countUnclosed() {
+    return props.currentInput.reduce((total, next) => {
+      if (next.text === "[" && next.language === Config.sysLanguage) {
+        return total + 1;
+      }
+      if (next.text === "]" && next.language === Config.sysLanguage) {
+        return total - 1;
+      }
+      return total;
+    }, 0);
+  }
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Event handlers
@@ -46,6 +66,11 @@ function DerivationInput(props) {
    */
   function submitDerivationInput(event) {
     event.preventDefault();
+
+    // Only post if there are no unclosed brackets
+    if (countUnclosed() !== 0) {
+      return;
+    }
     props.postDerivationRequest(props.currentInput);
   }
 
@@ -95,6 +120,14 @@ function DerivationInput(props) {
               }}
             />
             {errorText ? <p className="help is-danger">{errorText}</p> : ""}
+            {Math.abs(countUnclosed()) > 0 ? (
+              <p className="help is-danger">
+                The Lexical Array contains {Math.abs(countUnclosed())} unclosed
+                brackets.
+              </p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 

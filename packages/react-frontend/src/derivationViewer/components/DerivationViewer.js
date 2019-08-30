@@ -18,10 +18,10 @@ import DerivationTimelineTree from "./DerivationTimelineTree";
  */
 function DerivationViewer(props) {
   useEffect(() => {
-    if (!props.derivationDetails) {
+    if (!props.derivationDetails && props.selectedFrame !== -1) {
       // We don't have a Derivation currently selected.
       // Show the last frame the next time one is picked.
-      props.selectFrame(Infinity);
+      props.selectFrame(-1);
     }
   });
 
@@ -91,7 +91,8 @@ function DerivationViewer(props) {
     // Selected frame is OOB for the selected chain.
     if (
       allChains[props.selectedChain] &&
-      props.selectedFrame >= allChains[props.selectedChain].length
+      (props.selectedFrame >= allChains[props.selectedChain].length ||
+        props.selectedFrame === -1)
     ) {
       props.selectFrame(allChains[props.selectedChain].length - 1);
     }

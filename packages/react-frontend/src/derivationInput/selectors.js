@@ -3,8 +3,13 @@
  */
 import { uniqBy } from "lodash-es";
 import createSelector from "selectorator";
+
+import Config from "../config";
 import { lexicalItemToSuggestion } from "./util";
 
+/**
+ * Select an array of item suggestions for the DerivationInput component.
+ */
 export const getSuggestions = createSelector(
   ["lexicalItems.lexicalItemsById"],
   (lexicalItems) => {
@@ -25,6 +30,24 @@ export const getSuggestions = createSelector(
       // also track the `text` and `language` fields of lexical items directly.
       newSuggestions.push(lexicalItemToSuggestion(lexicalItem));
     }
+
+    // Add sub-derivation markers
+    newSuggestions.push({
+      text: "[",
+      language: Config.sysLanguage,
+
+      id: "[",
+      label: "[",
+      isValid: true
+    });
+    newSuggestions.push({
+      text: "]",
+      language: Config.sysLanguage,
+
+      id: "]",
+      label: "]",
+      isValid: true
+    });
 
     return newSuggestions;
   }

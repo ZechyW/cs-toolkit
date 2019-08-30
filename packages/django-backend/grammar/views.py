@@ -48,18 +48,6 @@ class GenerateDerivation(APIView):
 
         derivation_input = serializer.validated_data["derivation_input"]
 
-        # Create new DerivationRequest.
-        if request.user.is_authenticated:
-            username = request.user.username
-        else:
-            username = None
-
-        derivation_request = DerivationRequest.objects.create(
-            raw_lexical_array=json.dumps(derivation_input),
-            creation_time=timezone.now(),
-            created_by=username,
-        )
-
         # Find fully specified LexicalItems for the given input array.
         lexical_item_sets = []
         for lexical_skeleton in derivation_input:
@@ -67,6 +55,19 @@ class GenerateDerivation(APIView):
                 text=lexical_skeleton["text"],
                 language=lexical_skeleton["language"],
             )
+
+            # Reject request if there are invalid items
+            if len(lexical_item_set) == 0:
+                return Response(
+                    {
+                        "derivation_input": [
+                            "Lexical array contained invalid items."
+                        ]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # If not add it to the list and keep going
             lexical_item_sets.append(lexical_item_set)
 
         # Spread the potential LexicalItems for each input item into
@@ -94,6 +95,18 @@ class GenerateDerivation(APIView):
                 derivations.append(existing.get())
             else:
                 derivations.append(create_derivation(lexical_array))
+
+        # Create new DerivationRequest.
+        if request.user.is_authenticated:
+            username = request.user.username
+        else:
+            username = None
+
+        derivation_request = DerivationRequest.objects.create(
+            raw_lexical_array=json.dumps(derivation_input),
+            creation_time=timezone.now(),
+            created_by=username,
+        )
 
         # Request processing of all the Derivations.
         for derivation in derivations:
