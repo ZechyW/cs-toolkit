@@ -3945,10 +3945,10 @@ bulma-helpers@^0.3.6:
   resolved "https://registry.yarnpkg.com/bulma-helpers/-/bulma-helpers-0.3.6.tgz#d6eddc59e9a3e20dd03d061bbb69ce333c5c1f28"
   integrity sha512-i5ihHGk9iOPRAMVpijfAfjWPLXHiLBDODXMCPIuA0g885bScZekeDpvsfvHF2uH09KNhFLipTNz6Msj1Dx2GKg==
 
-bulma@^0.7.4:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.4.tgz#7e74512e9118d9799021339e67e365ee0ac4f3f9"
-  integrity sha512-krG2rP6eAX1WE0sf6O0SC/FUVSOBX4m1PBC2+GKLpb2pX0qanaDqcv9U2nu75egFrsHkI0zdWYuk/oGwoszVWg==
+bulma@^0.7.5:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.5.tgz#35066c37f82c088b68f94450be758fc00a967208"
+  integrity sha512-cX98TIn0I6sKba/DhW0FBjtaDpxTelU166pf7ICXpCCuplHWyu6C9LYZmL5PEsnePIeJaiorsTEzzNk3Tsm1hw==
 
 byline@^5.0.0:
   version "5.0.0"

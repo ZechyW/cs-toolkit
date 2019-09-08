@@ -23,7 +23,7 @@ def unify(parent_so: SyntacticObject) -> None:
     Takes a pre-formed SO with an indeterminate feature set.
     Assumes it has two children.
     Determines how the two child SOs are unified to produce its features.
-    Deals with feature matching/valuation/deletion/etc.
+    Deals with feature matching/valuation/deletion/etc. (Unify and Agree)
     Assumes that the SO's children are freely mutable.
     :return:
     """

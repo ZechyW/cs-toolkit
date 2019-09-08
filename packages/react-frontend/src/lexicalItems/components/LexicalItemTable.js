@@ -1,5 +1,9 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsAltH, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsAltH,
+  faPlusSquare,
+  faSearch
+} from "@fortawesome/free-solid-svg-icons";
 import { AgGridReact } from "ag-grid-react";
 import classNames from "classnames";
 import { isEqual } from "lodash-es";
@@ -8,7 +12,7 @@ import rafSchd from "raf-schd";
 import React, { useRef, useState } from "react";
 import Config from "../../config";
 
-library.add(faArrowsAltH, faPlusSquare);
+library.add(faArrowsAltH, faPlusSquare, faSearch);
 
 /**
  * Presentational component for the lexical item list.
@@ -112,6 +116,17 @@ function LexicalItemTable(props) {
     setSelectedRows(gridApi.current.getSelectedRows());
   }
 
+  /**
+   * When the user types in the search field.
+   * - Change the table filter
+   */
+  function handleSearchInput(event) {
+    gridApi.current.setQuickFilter(event.target.value);
+  }
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Render
+
   return (
     <>
       <p className="has-margin-bottom-10">
@@ -145,6 +160,20 @@ function LexicalItemTable(props) {
         </button>
       </div>
 
+      <div className="field">
+        <div className="control has-icons-left ">
+          <input
+            className="input is-small"
+            type="text"
+            placeholder="Search"
+            onInput={handleSearchInput}
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-search" />
+          </span>
+        </div>
+      </div>
+
       <div
         className={classNames(
           // `ag-grid` theme
@@ -172,6 +201,8 @@ function LexicalItemTable(props) {
           onGridReady={handleGridReady}
           // - Pagination
           pagination={true}
+          // - Filter
+          cacheQuickFilter={true}
         />
       </div>
     </>

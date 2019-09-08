@@ -2,7 +2,7 @@ import logging
 from typing import Deque, List, Optional
 
 from grammar.generators.base import Generator, GeneratorMetadata, NextStepDef
-from grammar.generators.unification.unify import unify
+from grammar.generators.unify.unify import unify
 from grammar.models import SyntacticObject
 from lexicon.models import LexicalItem
 

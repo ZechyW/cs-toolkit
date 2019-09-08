@@ -19,7 +19,7 @@
     "ag-grid-community": "^20.1.0",
     "ag-grid-react": "^20.1.0",
     "axios": "^0.18.0",
-    "bulma": "^0.7.4",
+    "bulma": "^0.7.5",
     "bulma-helpers": "^0.3.6",
     "classnames": "^2.2.6",
     "cross-env": "^5.2.0",

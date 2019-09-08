@@ -18,16 +18,16 @@ class CoreNoUninterpretable(Rule):
 
         # Check all features of all nodes in `root_so`.
         uninterpretable_features = []
-        so: SyntacticObject
-        for so in root_so.get_descendants(include_self=True):
-            for feature in so.features.all():
+        this_so: SyntacticObject
+        for this_so in root_so.get_descendants(include_self=True):
+            for feature in this_so.features.all():
                 interp = feature.properties.filter(name__exact="interpretable")
                 if len(interp) > 0:
                     if not interp[0].value:
                         # This feature is uninterpretable.
                         uninterpretable_features.append(
                             "Uninterpretable feature {} on {}.".format(
-                                feature, so
+                                feature, this_so
                             )
                         )
 
