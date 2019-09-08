@@ -1,7 +1,7 @@
 import { getSuggestions } from "./selectors";
 
 describe("The suggestion list selector", () => {
-  it("deduplicates suggestions", () => {
+  it("deduplicates suggestions and adds sub-array square brackets", () => {
     expect(
       getSuggestions({
         lexicalItems: {
@@ -26,6 +26,20 @@ describe("The suggestion list selector", () => {
         label: "word (en_SG)",
         language: "en_SG",
         isValid: true
+      },
+      {
+        id: "[",
+        isValid: true,
+        label: "[",
+        language: "<SYS>",
+        text: "["
+      },
+      {
+        id: "]",
+        isValid: true,
+        label: "]",
+        language: "<SYS>",
+        text: "]"
       }
     ]);
   });

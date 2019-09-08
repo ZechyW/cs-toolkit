@@ -3,15 +3,15 @@ import { actions as coreActions } from "../../../react-frontend/src/core";
 describe("The main app navbar", () => {
   // Viewports
   function viewportBurger() {
-    cy.viewport(1087, 500);
+    cy.viewport(1023, 500);
   }
 
   function viewportNoBurger() {
-    cy.viewport(1088, 500);
+    cy.viewport(1024, 500);
   }
 
   function viewportScroll() {
-    cy.viewport(1088, 161);
+    cy.viewport(1024, 161);
   }
 
   beforeEach(() => {

@@ -29,7 +29,7 @@ function Navbar(props) {
   // We mimic Bulma's `.container.is-fluid` for sizing the brand item, so we
   // need to mirror its media query here as well.
   const brandMarginXExpanded = useMedia(
-    ["screen and (min-width: 1088px)"],
+    ["screen and (min-width: 1024px)"],
     ["4rem"],
     "0"
   );
@@ -61,6 +61,7 @@ function Navbar(props) {
     onRest: () => {
       // The animation should be done.
       navbarRef.current.classList.remove("is-animating");
+      // console.log(brandMarginXExpanded, spring.brandMarginX);
     }
   });
   // Faster spring for the subtitle
