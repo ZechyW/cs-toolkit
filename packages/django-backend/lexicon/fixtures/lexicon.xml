@@ -24,10 +24,22 @@
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="12"></object></field>
   </object>
+  <object model="lexicon.lexicalitem" pk="5f60d7be-82b8-4922-a621-da2c5bda78a6">
+    <field name="text" type="CharField">约翰</field>
+    <field name="language" type="CharField">zh</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="7"></object><object pk="4"></object></field>
+  </object>
   <object model="lexicon.lexicalitem" pk="a6b8eb29-cae9-46b5-b420-cc3aba9fcbb5">
     <field name="text" type="CharField">loves</field>
     <field name="language" type="CharField">en</field>
     <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="bd0a4f65-a4a3-4273-b60d-06c3cb3356cb">
+    <field name="text" type="CharField">d</field>
+    <field name="language" type="CharField">func</field>
+    <field name="description" type="TextField">Empty determiner head.</field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
   </object>
   <object model="lexicon.lexicalitem" pk="cb624ab4-9843-44e9-b8f8-9ae4b2c554e6">

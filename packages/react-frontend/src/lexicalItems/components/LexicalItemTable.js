@@ -113,6 +113,8 @@ function LexicalItemTable(props) {
    * - Prepare for potential export to derivation input component.
    */
   function handleSelectionChanged() {
+    // `.getSelectedRows()` returns the row data directly, instead of the
+    // ag-grid row nodes.
     setSelectedRows(gridApi.current.getSelectedRows());
   }
 
@@ -122,6 +124,19 @@ function LexicalItemTable(props) {
    */
   function handleSearchInput(event) {
     gridApi.current.setQuickFilter(event.target.value);
+  }
+
+  /**
+   * Double-clicking on a row adds the item to the lexical input array and
+   * deselects it in the table
+   */
+  function handleRowDoubleClick(event) {
+    // Export
+    // `.exportLexicalItems` expects an array of actual LexicalItem-shaped data
+    props.exportLexicalItems([event.data]);
+
+    // Deselect
+    event.node.setSelected(false);
   }
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
@@ -190,10 +205,10 @@ function LexicalItemTable(props) {
           columnDefs={Config.lexicalItemsColumnDefs}
           defaultColDef={Config.lexicalItemsDefaultColDef}
           // - Selection
-          rowSelection="multiple"
-          rowMultiSelectWithClick={true}
+          rowSelection="single"
           suppressCellSelection={true}
           onSelectionChanged={handleSelectionChanged}
+          onRowDoubleClicked={handleRowDoubleClick}
           // - Data and API
           rowData={props.lexicalItems}
           deltaRowDataMode={true}

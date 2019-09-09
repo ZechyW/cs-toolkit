@@ -105,8 +105,8 @@ function DerivationTimelineTree(props) {
     if (props.flippedChildren[node.id]) {
       node.children = node.children.reverse();
     }
-    let child;
-    for (child of node.children) {
+    // eslint-disable-next-line no-unused-vars
+    for (const child of node.children) {
       findAndFlip(child);
     }
   }
@@ -289,7 +289,7 @@ function DerivationTimelineTree(props) {
    * @param nodeData
    * @param event
    */
-  function nodeClick(nodeData, event) {
+  function handleNodeClick(nodeData, event) {
     props.flipChildren(nodeData);
   }
 
@@ -377,7 +377,7 @@ function DerivationTimelineTree(props) {
               nodeSize={Config.derivationTreeNodeSize}
               transitionDuration={0}
               allowForeignObjects
-              onClick={nodeClick}
+              onClick={handleNodeClick}
             />
           </div>
 
