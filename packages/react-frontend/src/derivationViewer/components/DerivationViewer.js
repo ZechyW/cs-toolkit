@@ -3,8 +3,9 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import createSelector from "selectorator";
+
 import { GridItemWrapper } from "../../grid";
-import { selectChain, selectFrame } from "../actions";
+import { flipChildren, selectChain, selectFrame } from "../actions";
 import { derivationDetails } from "../selectors";
 import DerivationTimelineTree from "./DerivationTimelineTree";
 
@@ -147,6 +148,8 @@ function DerivationViewer(props) {
           chain={allChains[props.selectedChain]}
           selectedFrame={props.selectedFrame}
           selectFrame={props.selectFrame}
+          flippedChildren={props.flippedChildren}
+          flipChildren={props.flipChildren}
         />
       </div>
 
@@ -180,7 +183,8 @@ Wrapped = GridItemWrapper(Wrapped);
 
 const actionCreators = {
   selectChain,
-  selectFrame
+  selectFrame,
+  flipChildren
 };
 
 Wrapped = connect(
@@ -188,7 +192,8 @@ Wrapped = connect(
     // Currently selected derivation
     derivationDetails,
     selectedChain: "derivationViewer.selectedChain",
-    selectedFrame: "derivationViewer.selectedFrame"
+    selectedFrame: "derivationViewer.selectedFrame",
+    flippedChildren: "derivationViewer.flippedChildren"
   }),
   actionCreators
 )(Wrapped);

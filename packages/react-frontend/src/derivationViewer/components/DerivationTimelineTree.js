@@ -1,7 +1,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { hierarchy } from "d3-hierarchy";
-import { isEmpty } from "lodash-es";
+import { cloneDeep, isEmpty } from "lodash-es";
 import PropTypes from "prop-types";
 import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
@@ -73,20 +73,46 @@ function DerivationTimelineTree(props) {
   const thisFrame = props.chain[props.selectedFrame];
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
-  // Tree view
-  let { root_so } = thisFrame;
-  if (!root_so) {
+  // Tree view pre-processing
+  let root_so;
+  if (!thisFrame["root_so"]) {
     // The root SyntacticObject will be null at the very first step of the
     // chain -- Set a placeholder instead.
     root_so = {
       placeholder: true,
       name: "No syntactic object built yet."
     };
+  } else {
+    // If it is available, clone the `root_so` so we can mutate it in
+    // the display component.
+    root_so = cloneDeep(thisFrame["root_so"]);
   }
 
   // Use the `d3-hierarchy` package as a utility library for dealing with
   // the SyntacticObject data
   const treeData = hierarchy(root_so);
+
+  // Save the original SyntacticObject ID for each node; `react-d3-tree`
+  // replaces it with a UUID.
+  // Use a breadth-first search to determine which nodes should have their
+  // children displayed in reverse order by referring to their
+  // SyntacticObject IDs.
+  function findAndFlip(node) {
+    // Save original id
+    node.cstk_id = node.id;
+
+    // Check for flipping
+    if (props.flippedChildren[node.id]) {
+      node.children = node.children.reverse();
+    }
+    let child;
+    for (child of node.children) {
+      findAndFlip(child);
+    }
+  }
+  if (!root_so.placeholder) {
+    findAndFlip(root_so);
+  }
 
   // Calculate a reasonable size for the tree view container
   const treeContainerHeight =
@@ -107,12 +133,8 @@ function DerivationTimelineTree(props) {
     const isLeaf = !nodeData.children;
     const isPlaceholder = nodeData.placeholder;
 
-    const labelStyle = {
-      fontSize: "0.8rem",
-      backgroundColor: "white",
-      position: "absolute",
-      width: "100%"
-    };
+    const labelStyle = {};
+    // Figure out where to position the label
     if (isLeaf) {
       // Two possibilities: A non-terminal, or the only node in the tree.
       if (treeData.height) {
@@ -147,21 +169,32 @@ function DerivationTimelineTree(props) {
         >
           <span className="has-text-weight-bold	">{text} </span>(
           <span className="is-italic">{current_language}</span>)
-          <br />
-          <span>{feature_string}</span>
-          <br />
-          <span
-            style={{ textDecoration: "line-through" }}
-            className="has-text-grey-light"
-          >
-            {deleted_feature_string}
-          </span>
+          {feature_string ? (
+            <>
+              <br /> <span>{feature_string}</span>
+            </>
+          ) : (
+            ""
+          )}
+          {deleted_feature_string ? (
+            <>
+              <br />
+              <span
+                style={{ textDecoration: "line-through" }}
+                className="has-text-grey-light"
+              >
+                {deleted_feature_string}
+              </span>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       );
     }
 
     return (
-      <div className="has-text-centered" style={labelStyle}>
+      <div className="has-text-centered node-label" style={labelStyle}>
         {labelContents}
       </div>
     );
@@ -251,6 +284,15 @@ function DerivationTimelineTree(props) {
     props.selectFrame(value);
   }
 
+  /**
+   * When a node in the tree is clicked
+   * @param nodeData
+   * @param event
+   */
+  function nodeClick(nodeData, event) {
+    props.flipChildren(nodeData);
+  }
+
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Main Render
   return (
@@ -335,6 +377,7 @@ function DerivationTimelineTree(props) {
               nodeSize={Config.derivationTreeNodeSize}
               transitionDuration={0}
               allowForeignObjects
+              onClick={nodeClick}
             />
           </div>
 
@@ -359,7 +402,10 @@ DerivationTimelineTree.propTypes = {
   title: PropTypes.string.isRequired,
   chain: PropTypes.array,
   selectedFrame: PropTypes.number.isRequired,
-  selectFrame: PropTypes.func.isRequired
+  flippedChildren: PropTypes.object.isRequired,
+
+  selectFrame: PropTypes.func.isRequired,
+  flipChildren: PropTypes.func.isRequired
 };
 
 DerivationTimelineTree.defaultProps = {

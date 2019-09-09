@@ -10,3 +10,6 @@ export const selectChain = createAction("derivationViewer/selectChain");
 
 // Index of the timeline frame to show within the currently selected chain
 export const selectFrame = createAction("derivationViewer/selectFrame");
+
+// Ordering of the children of a given node
+export const flipChildren = createAction("derivationViewer/flipChildren");

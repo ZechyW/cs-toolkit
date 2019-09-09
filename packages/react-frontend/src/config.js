@@ -139,13 +139,13 @@ class Config {
 
   // Size reserved for each node in the tree view
   derivationTreeNodeSize = {
-    x: 200,
-    y: 90
+    x: 210,
+    y: 100
   };
 
   // Size of the node label component
   derivationTreeLabelSize = {
-    width: 160,
+    width: 100,
     height: 100
   };
 }

@@ -1,9 +1,10 @@
 import { createReducer } from "redux-starter-kit";
-import { reset, selectChain, selectFrame } from "./actions";
+import { flipChildren, reset, selectChain, selectFrame } from "./actions";
 
 const initialState = {
   selectedChain: null,
-  selectedFrame: 0
+  selectedFrame: 0,
+  flippedChildren: {}
 };
 
 export default createReducer(initialState, {
@@ -27,5 +28,23 @@ export default createReducer(initialState, {
    */
   [selectFrame]: (state, action) => {
     state.selectedFrame = action.payload;
+  },
+
+  /**
+   * User clicked on a particular node in the tree;
+   * Record its ID, and reverse its `children` array when displaying
+   * @param state
+   * @param action
+   */
+  [flipChildren]: (state, action) => {
+    // Use the original node ID (saved when pre-processing the tree for display)
+    // The `react-d3-tree` display component overrides it with its own UUID
+    // otherwise.
+    const nodeId = action.payload.cstk_id;
+    if (state.flippedChildren[nodeId]) {
+      delete state.flippedChildren[nodeId];
+    } else {
+      state.flippedChildren[nodeId] = true;
+    }
   }
 });

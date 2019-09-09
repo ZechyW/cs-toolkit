@@ -15,3 +15,11 @@ body {
 .node {
   stroke: #fff;
 }
+
+.node-label {
+  font-size: 0.8rem;
+  background-color: white;
+  position: absolute;
+  width: 100%;
+  padding: 2px;
+}
