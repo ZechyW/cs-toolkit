@@ -69,12 +69,14 @@ def unify(parent_so: SyntacticObject) -> None:
             if not feature.uninterpretable and feature.name == u_feature.name:
                 u_so.features.remove(u_feature)
                 u_so.deleted_features.add(u_feature)
+                u_so.save()
 
     for (u_so, u_feature) in uninterpretable_2:
         for feature in so_1.features.all():
             if not feature.uninterpretable and feature.name == u_feature.name:
                 u_so.features.remove(u_feature)
                 u_so.deleted_features.add(u_feature)
+                u_so.save()
 
     # Update the parent SO
     # TODO: Should defer to an explicit Labelling Algorithm, but for now,
@@ -91,90 +93,3 @@ def unify(parent_so: SyntacticObject) -> None:
             time.perf_counter() - start_time,
         )
     )
-
-
-# def create_so(
-#     text,
-#     current_language,
-#     features: Sequence[Feature] = (),
-#     deleted_features: Sequence[Feature] = (),
-#     parent: SyntacticObject = None,
-# ):
-#     """
-#     Creates a new SyntacticObject with the given parameters.
-#     In particular, handles the addition of each Feature as a ManyToMany
-#     relation.
-#     :param text:
-#     :param current_language:
-#     :param features:
-#     :param deleted_features:
-#     :param parent:
-#     :return:
-#     """
-#
-#     # DEPRECATED: We don't separate the SO value from the SO anymore,
-#     # but this snippet is retained as an example of retrieving an annotated
-#     # QuerySet.
-#     #
-#     # # We need to annotate the query with a count of the associated features
-#     # # so that we don't pick up SyntacticObjectValues with the given
-#     features
-#     # # *and more*.
-#     # existing = SyntacticObjectValue.objects.filter(
-#     #     text=text, current_language=current_language
-#     # )
-#     # existing = existing.annotate(count=Count("features")).filter(
-#     #     count=len(feature_list)
-#     # )
-#     # for feature in feature_list:
-#     #     existing = existing.filter(features=feature)
-#     #
-#     # if len(existing) > 0:
-#     #     return existing.get()
-#
-#     # Still here? Create a new SyntacticObjectValue
-#     so = SyntacticObject.objects.create(
-#         text=text, current_language=current_language, parent=parent
-#     )
-#     so.features.set(features)
-#     so.deleted_features.set(deleted_features)
-#
-#     return so
-#
-#
-# def clone_so_tree(
-#     so: SyntacticObject, parent: SyntacticObject = None
-# ) -> SyntacticObject:
-#     """
-#     Creates a clone of the given SyntacticObject, optionally changing its
-#     parent.
-#     Recursively clones the SO's children as well, setting their new parents
-#     accordingly.
-#     (cf. https://stackoverflow.com/questions/3879500/making-a-copy-of-a
-#     -feincms-page-tree-using-django-mptt-changes-child-order)
-#     :param so:
-#     :param parent:
-#     :return:
-#     """
-#
-#     # re-read so django-mptt fields get updated
-#     so = SyntacticObject.objects.get(id=so.id)
-#     if parent:
-#         parent = SyntacticObject.objects.get(id=parent.id)
-#
-#     # Clone the current SO
-#     new_so = create_so(
-#         text=so.text,
-#         current_language=so.current_language,
-#         features=so.features.all(),
-#         deleted_features=so.deleted_features.all(),
-#         parent=parent,
-#     )
-#
-#     # logger.info("{}:{}".format(new_so.id, so.id))
-#
-#     for child in so.get_children():
-#         clone_so_tree(child, new_so)
-#
-#     new_so = SyntacticObject.objects.get(id=new_so.id)
-#     return new_so

@@ -444,6 +444,7 @@ class SyntacticObject(MPTTModel):
         )
         new_so.features.set(self.features.all())
         new_so.deleted_features.set(self.deleted_features.all())
+        new_so.save()
 
         # Clone children
         children: List[SyntacticObject] = list(self.get_children())

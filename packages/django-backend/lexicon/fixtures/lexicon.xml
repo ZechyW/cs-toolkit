@@ -6,6 +6,12 @@
     <field name="description" type="TextField">"v* is the functional head associated with full argument structure, transitive and experiencer constructions..." (Chomsky, 2005)</field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="8"></object><object pk="9"></object><object pk="12"></object></field>
   </object>
+  <object model="lexicon.lexicalitem" pk="2b8d0510-9036-4d11-908c-23016d7526c2">
+    <field name="text" type="CharField">有 这种 mentality</field>
+    <field name="language" type="CharField">zh-en</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="8"></object><object pk="10"></object></field>
+  </object>
   <object model="lexicon.lexicalitem" pk="2d529149-9f68-44f9-84fc-66fdd691fccd">
     <field name="text" type="CharField">T</field>
     <field name="language" type="CharField">func</field>
@@ -17,6 +23,12 @@
     <field name="language" type="CharField">zh</field>
     <field name="description" type="TextField">Relative D</field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="13"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="39c00e06-3bb9-49b8-9c4e-28d3c44c8181">
+    <field name="text" type="CharField">c</field>
+    <field name="language" type="CharField">func</field>
+    <field name="description" type="TextField">Relative c head</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="11"></object></field>
   </object>
   <object model="lexicon.lexicalitem" pk="4bd5be35-af61-4523-8aa5-24a345d6e809">
     <field name="text" type="CharField">John</field>
@@ -34,7 +46,7 @@
     <field name="text" type="CharField">人</field>
     <field name="language" type="CharField">zh</field>
     <field name="description" type="TextField"></field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="7"></object><object pk="14"></object></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="14"></object><object pk="7"></object></field>
   </object>
   <object model="lexicon.lexicalitem" pk="5f60d7be-82b8-4922-a621-da2c5bda78a6">
     <field name="text" type="CharField">约翰</field>

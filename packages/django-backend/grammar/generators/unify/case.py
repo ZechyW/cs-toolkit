@@ -97,3 +97,6 @@ def assign_case(
     # Second pass failsafe
     if not second_pass:
         assign_case(so_2, so_1, True)
+
+    so_1.save()
+    so_2.save()
