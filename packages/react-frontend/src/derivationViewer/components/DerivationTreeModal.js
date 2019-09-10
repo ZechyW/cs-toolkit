@@ -53,7 +53,7 @@ function DerivationTreeModal(props) {
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Sanity checks on render
-  if (chain === null || props.selectedFrame === null) return null;
+  if (!chain || props.selectedFrame === null) return null;
   if (props.selectedFrame >= chain.length || props.selectedFrame === -1)
     return null;
 

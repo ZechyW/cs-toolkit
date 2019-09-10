@@ -57,11 +57,11 @@ function Navbar(props) {
         document.body.style.paddingTop = navbarHeight;
       }
 
-      navbarRef.current.classList.add("is-animating");
+      navbarRef.current && navbarRef.current.classList.add("is-animating");
     },
     onRest: () => {
       // The animation should be done.
-      navbarRef.current.classList.remove("is-animating");
+      navbarRef.current && navbarRef.current.classList.remove("is-animating");
     }
   });
   // Faster spring for the subtitle
