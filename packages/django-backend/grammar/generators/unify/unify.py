@@ -1,6 +1,7 @@
 import logging
 import time
 
+from .case import assign_case
 from grammar.models import SyntacticObject
 
 logger = logging.getLogger("cs-toolkit-grammar")
@@ -36,26 +37,30 @@ def unify(parent_so: SyntacticObject) -> None:
 
     [so_1, so_2] = children
 
-    # Find uninterpretable features in the two SOs.
+    ######
+    # Specific unify handlers
+    assign_case(so_1, so_2)
+
+    ######
+    # Generic unify handler
+    # Find uninterpretable features in the two SOs, except the ones named in
+    # `exclude_generic`
     uninterpretable_1 = []
     uninterpretable_2 = []
+    exclude_generic = ["Case"]
 
     so: SyntacticObject
     for so in so_1.get_descendants(include_self=True):
         for feature in so.features.all():
-            interp = feature.properties.filter(name__exact="interpretable")
-            if len(interp) > 0:
-                if not interp[0].value:
-                    # This feature is uninterpretable.
-                    uninterpretable_1.append((so, feature))
+            if feature.uninterpretable and feature.name not in exclude_generic:
+                # This feature is uninterpretable.
+                uninterpretable_1.append((so, feature))
 
     for so in so_2.get_descendants(include_self=True):
         for feature in so.features.all():
-            interp = feature.properties.filter(name__exact="interpretable")
-            if len(interp) > 0:
-                if not interp[0].value:
-                    # This feature is uninterpretable.
-                    uninterpretable_2.append((so, feature))
+            if feature.uninterpretable and feature.name not in exclude_generic:
+                # This feature is uninterpretable.
+                uninterpretable_2.append((so, feature))
 
     # Match and delete them.
     u_so: SyntacticObject

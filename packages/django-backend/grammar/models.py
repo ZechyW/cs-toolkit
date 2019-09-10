@@ -300,6 +300,13 @@ class DerivationStep(models.Model):
     # been processed.
     complete = models.BooleanField(default=False)
 
+    # Any sub-derivations that were triggered by this DerivationStep;
+    # They will be added to the timeline display of this DerivationStep's chain
+    # TODO: Get these out from ExternalMerge
+    sub_derivations = models.ManyToManyField(
+        "Derivation", related_name="trigger_steps"
+    )
+
     def lexical_array_friendly(self):
         """
         A user-friendly representation of the lexical array tail for this

@@ -66,6 +66,10 @@ class InternalMerge(Generator):
 
             # If we are still here, IM each child and all its children.
             for child in so.get_children():
+                # Don't re-merge copies
+                if child.is_copy:
+                    continue
+
                 # Create a new root SO, add clones of the current root and
                 # the IM-ed descendant as its children, and unify.
                 new_parent = SyntacticObject.objects.create()

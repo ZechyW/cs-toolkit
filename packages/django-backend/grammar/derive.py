@@ -57,10 +57,15 @@ def process_derivation_step(
     # We can manually disable short-circuits for debugging if necessary.
     quick_reprocess = True
     if quick_reprocess:
-        if step.status == DerivationStep.STATUS_PROCESSED:
+        if (
+            step.status == DerivationStep.STATUS_PROCESSED
+            and step.next_steps.count() > 0
+        ):
             # Our workers may have died halfway and processed this step but
             # not the next one(s) -- Keep processing through the chain just
             # in case.
+            # We also re-run the step if there are no `next_steps`, just to
+            # confirm the crash/convergence.
             logger.info("Re-processing DerivationStep: {}".format(step.id))
             return step.next_steps.all()
 

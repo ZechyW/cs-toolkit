@@ -12,6 +12,12 @@
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="10"></object><object pk="11"></object></field>
   </object>
+  <object model="lexicon.lexicalitem" pk="352f87b3-5754-417f-a878-a6a1c1fa5c31">
+    <field name="text" type="CharField">的</field>
+    <field name="language" type="CharField">zh</field>
+    <field name="description" type="TextField">Relative D</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="13"></object></field>
+  </object>
   <object model="lexicon.lexicalitem" pk="4bd5be35-af61-4523-8aa5-24a345d6e809">
     <field name="text" type="CharField">John</field>
     <field name="language" type="CharField">en</field>
@@ -23,6 +29,12 @@
     <field name="language" type="CharField">func</field>
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="12"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="5d53187d-5653-4798-8a62-f656a6cf5f43">
+    <field name="text" type="CharField">人</field>
+    <field name="language" type="CharField">zh</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="7"></object><object pk="14"></object></field>
   </object>
   <object model="lexicon.lexicalitem" pk="5f60d7be-82b8-4922-a621-da2c5bda78a6">
     <field name="text" type="CharField">约翰</field>
@@ -42,12 +54,6 @@
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
   </object>
-  <object model="lexicon.lexicalitem" pk="bd0a4f65-a4a3-4273-b60d-06c3cb3356cb">
-    <field name="text" type="CharField">d</field>
-    <field name="language" type="CharField">func</field>
-    <field name="description" type="TextField">Empty determiner head.</field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
-  </object>
   <object model="lexicon.lexicalitem" pk="cb624ab4-9843-44e9-b8f8-9ae4b2c554e6">
     <field name="text" type="CharField">Mary</field>
     <field name="language" type="CharField">en</field>
@@ -62,7 +68,7 @@
   </object>
   <object model="lexicon.feature" pk="4">
     <field name="name" type="CharField">Phi</field>
-    <field name="description" type="TextField">Phi-feature bundle: 3rd person, singular.</field>
+    <field name="description" type="TextField">Phi-feature bundle: 3rd person, singular</field>
     <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="4"></object><object pk="5"></object></field>
   </object>
   <object model="lexicon.feature" pk="7">
@@ -94,6 +100,16 @@
     <field name="name" type="CharField">PhaseHead</field>
     <field name="description" type="TextField">"For a strong phase HP with head, H, the domain of H is not accessible to operations outside HP; [but] H and its edge are accessible to such operations." (from Chomsky 2001, p. 13)</field>
     <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"></field>
+  </object>
+  <object model="lexicon.feature" pk="13">
+    <field name="name" type="CharField">Rel</field>
+    <field name="description" type="TextField">Relative feature</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"></field>
+  </object>
+  <object model="lexicon.feature" pk="14">
+    <field name="name" type="CharField">Phi</field>
+    <field name="description" type="TextField">Phi-feature bundle: 3rd person</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="4"></object></field>
   </object>
   <object model="lexicon.featureproperty" pk="1">
     <field name="name" type="CharField">interpretable</field>

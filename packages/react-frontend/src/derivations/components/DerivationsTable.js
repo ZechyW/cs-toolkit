@@ -123,7 +123,6 @@ function DerivationsTable(props) {
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Cell renderer
   function CompleteCellRenderer(props) {
-    console.log(props);
     return (
       <>
         {props.value ? (

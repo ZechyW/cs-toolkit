@@ -117,7 +117,8 @@ function DerivationTimelineTree(props) {
   // Calculate a reasonable size for the tree view container
   const treeContainerHeight =
     Config.derivationTreeNodeSize.y * treeData.height +
-    Config.derivationTreeLabelSize.height * 2;
+    Config.derivationTreeLabelSize.height * 2 +
+    120;
 
   /**
    * Sub-component for rendering node labels
@@ -139,11 +140,14 @@ function DerivationTimelineTree(props) {
       // Two possibilities: A non-terminal, or the only node in the tree.
       if (treeData.height) {
         // Non-terminal
-        labelStyle.top = `${Config.derivationTreeLabelSize.height}px`;
+        labelStyle.top = `${Config.derivationTreeLabelSize.height / 2}px`;
       } else {
         // Only node
         labelStyle.top = `${Config.derivationTreeLabelSize.height / 2}px`;
       }
+
+      // Override: Manually position the label for now
+      labelStyle.top = "-20px";
     } else {
       labelStyle.bottom = `0`;
     }
@@ -369,12 +373,13 @@ function DerivationTimelineTree(props) {
               orientation="vertical"
               translate={{
                 x: translateX,
-                y: Config.derivationTreeLabelSize.height
+                y: Config.derivationTreeLabelSize.height + 60
               }}
               pathFunc="straight"
               collapsible={false}
               scaleExtent={{ min: 0.5, max: 1.25 }}
               nodeSize={Config.derivationTreeNodeSize}
+              separation={{ siblings: 1, nonSiblings: 0.9 }}
               transitionDuration={0}
               allowForeignObjects
               onClick={handleNodeClick}

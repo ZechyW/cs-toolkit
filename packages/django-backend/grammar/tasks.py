@@ -5,23 +5,14 @@ import logging
 import time
 
 import dramatiq
-from dramatiq import group
-from dramatiq.brokers.redis import RedisBroker
-from dramatiq.results.backends import RedisBackend
-from dramatiq.results import Results
 
 from grammar.derive import process_derivation_step
 from grammar.models import DerivationStep
 
 logger = logging.getLogger("cs-toolkit-grammar")
 
-# result_backend = RedisBackend()
-# broker = RedisBroker()
-# broker.add_middleware(Results(backend=result_backend))
-# dramatiq.set_broker(broker)
 
-
-@dramatiq.actor(store_results=True)
+@dramatiq.actor
 def derivation_actor(step_id: str):
     """
     Main task for processing DerivationSteps.

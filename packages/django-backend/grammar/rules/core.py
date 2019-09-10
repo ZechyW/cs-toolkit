@@ -20,6 +20,10 @@ class CoreNoUninterpretable(Rule):
         uninterpretable_features = []
         this_so: SyntacticObject
         for this_so in root_so.get_descendants(include_self=True):
+            # No need to check copies
+            if this_so.is_copy:
+                continue
+
             for feature in this_so.features.all():
                 interp = feature.properties.filter(name__exact="interpretable")
                 if len(interp) > 0:

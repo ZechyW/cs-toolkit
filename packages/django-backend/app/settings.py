@@ -255,8 +255,3 @@ DRAMATIQ_BROKER = {
         "django_dramatiq.middleware.DbConnectionsMiddleware",
     ],
 }
-DRAMATIQ_RESULT_BACKEND = {
-    "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
-    "BACKEND_OPTIONS": {"url": "redis://localhost:6379"},
-    "MIDDLEWARE_OPTIONS": {"result_ttl": 60000},
-}

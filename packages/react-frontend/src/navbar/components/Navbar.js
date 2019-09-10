@@ -61,7 +61,6 @@ function Navbar(props) {
     onRest: () => {
       // The animation should be done.
       navbarRef.current.classList.remove("is-animating");
-      // console.log(brandMarginXExpanded, spring.brandMarginX);
     }
   });
   // Faster spring for the subtitle

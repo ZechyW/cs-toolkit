@@ -8,7 +8,7 @@ class WhiteNoisePathMiddleware(WhiteNoiseMiddleware):
 
     DEPRECATED: Only needed if we declare STATICFILES_DIRS with prefixes in
     `settings.py`, AND are serving the files directly ourselves (as opposed
-    to proxying requests to e.g. the React dev server).
+    to proxying requests to e.g. the React dev server, as is currently done).
     """
 
     def candidate_paths_for_url(self, url):
@@ -27,6 +27,4 @@ class WhiteNoisePathMiddleware(WhiteNoiseMiddleware):
             norm_url = "/" + url2pathname(url[1:])
         else:
             norm_url = url2pathname(url)
-        print(url)
-        print(norm_url)
         return super().candidate_paths_for_url(norm_url)
