@@ -119,6 +119,10 @@ class Derivation(NotifyModel):
         related_name="first_step_derivations",
     )
 
+    # Derivations are complete if all their possible chains have been
+    # processed to a crash/convergence
+    complete = models.BooleanField(default=False)
+
     # Record the final step in any related DerivationStep chain -- As a
     # final step, it either converged or crashed.
     converged_steps = models.ManyToManyField(
@@ -288,6 +292,13 @@ class DerivationStep(models.Model):
 
     # If this DerivationStep crashed, we should provide a reason.
     crash_reason = models.TextField(blank=True)
+
+    # Note the time when we first process this DerivationStep
+    processed_time = models.DateTimeField(null=True, blank=True)
+
+    # DerivationSteps are complete if they and all their next steps have
+    # been processed.
+    complete = models.BooleanField(default=False)
 
     def lexical_array_friendly(self):
         """

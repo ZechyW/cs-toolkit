@@ -19,9 +19,15 @@ from grammar.rules.base import DerivationFailed, RuleNonFatalError, Rule
 logger = logging.getLogger("cs-toolkit-grammar")
 
 
-def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
+def process_derivation_step(
+    step: DerivationStep, derivation_actor
+) -> List[DerivationStep]:
     """
     Idempotent function to process the given DerivationStep.
+
+    We also receive the Dramatiq actor itself, in case sub-components need
+    to dispatch requests directly.  Currently, this is used for
+    sub-derivations under ExternalMerge.
 
     Possible results:
     - This DerivationStep could crash the current derivational chain.
@@ -35,6 +41,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     - A List of the next DerivationSteps to process, if any.
 
     :param step:
+    :param derivation_actor:
     :return:
     """
 
@@ -47,7 +54,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     #       since we last processed this DerivationStep -- If so, we should
     #       always do a full re-run.
 
-    # Disable short-circuits for now.
+    # We can manually disable short-circuits for debugging if necessary.
     quick_reprocess = True
     if quick_reprocess:
         if step.status == DerivationStep.STATUS_PROCESSED:
@@ -103,6 +110,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
         # This Derivation chain has reached a bad end.
         step.status = DerivationStep.STATUS_CRASHED
         step.crash_reason = str(error)
+        step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=False)
         logger.info("DerivationStep {} crashed: {}".format(step.id, error))
@@ -119,6 +127,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     # Convergence check
     if not len(step.lexical_array_tail) and not len(rule_errors):
         step.status = DerivationStep.STATUS_CONVERGED
+        step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=True)
         logger.info("DerivationStep {} converged.".format(step.id))
@@ -146,7 +155,10 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
             grammar.generators, generator.generator_class
         )
         generator_defs: List[NextStepDef] = handler.generate(
-            step.root_so, step.lexical_array_tail, step_metadata
+            derivation_actor,
+            step.root_so,
+            step.lexical_array_tail,
+            step_metadata,
         )
         next_step_defs = next_step_defs + generator_defs
 
@@ -163,6 +175,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
     if not len(next_step_defs) and len(rule_errors):
         step.status = DerivationStep.STATUS_CRASHED
         step.crash_reason = crash_reason
+        step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=False)
         logger.info(
@@ -223,6 +236,7 @@ def process_derivation_step(step: DerivationStep) -> List[DerivationStep]:
 
     # Return the next DerivationSteps for processing.
     step.status = DerivationStep.STATUS_PROCESSED
+    step.processed_time = timezone.now()
     step.save()
     return next_steps
 
@@ -243,8 +257,17 @@ def mark_derivation_chain_ended(
         else:
             derivation.crashed_steps.add(step.id)
 
-        # Also update the last chain completion time if this is a new result.
-        if not reprocessing:
-            for derivation_request in derivation.derivation_requests.all():
+        # Also update the last chain completion time
+        for derivation_request in derivation.derivation_requests.all():
+            if not reprocessing:
+                # A new result: Use the current time
                 derivation_request.last_completion_time = timezone.now()
+                derivation_request.save()
+            elif (
+                not derivation_request.last_completion_time
+                or step.processed_time
+                > derivation_request.last_completion_time
+            ):
+                # An old result: Use the latest previous step completion time
+                derivation_request.last_completion_time = step.processed_time
                 derivation_request.save()

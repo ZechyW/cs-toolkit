@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import createSelector from "selectorator";
@@ -18,7 +18,7 @@ import DerivationTimelineTree from "./DerivationTimelineTree";
  * @constructor
  */
 function DerivationViewer(props) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!props.derivationDetails && props.selectedFrame !== -1) {
       // We don't have a Derivation currently selected.
       // Show the last frame the next time one is picked.
@@ -88,7 +88,7 @@ function DerivationViewer(props) {
 
   // If we are trying to render from an invalid state, fix it for the next
   // render.
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Selected frame is OOB for the selected chain.
     if (
       allChains[props.selectedChain] &&

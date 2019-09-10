@@ -28,7 +28,13 @@
     <field name="text" type="CharField">约翰</field>
     <field name="language" type="CharField">zh</field>
     <field name="description" type="TextField"></field>
-    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="7"></object><object pk="4"></object></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="8e354eaf-e902-410f-a5e2-cd7a5b25221c">
+    <field name="text" type="CharField">]</field>
+    <field name="language" type="CharField">sys</field>
+    <field name="description" type="TextField">Ends a sub-derivation.</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
   </object>
   <object model="lexicon.lexicalitem" pk="a6b8eb29-cae9-46b5-b420-cc3aba9fcbb5">
     <field name="text" type="CharField">loves</field>
@@ -47,6 +53,12 @@
     <field name="language" type="CharField">en</field>
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="4"></object><object pk="7"></object></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="cf606ce5-1047-4e1a-a274-2025341c1213">
+    <field name="text" type="CharField">[</field>
+    <field name="language" type="CharField">sys</field>
+    <field name="description" type="TextField">Starts a new sub-derivation.</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
   </object>
   <object model="lexicon.feature" pk="4">
     <field name="name" type="CharField">Phi</field>

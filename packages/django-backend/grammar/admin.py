@@ -41,7 +41,7 @@ class LexicalArrayInline(admin.TabularInline):
 class DerivationStepAdmin(AppModelAdmin):
     list_display = ["lexical_array_friendly"]
     inlines = [LexicalArrayInline]
-    readonly_fields = ["id"]
+    readonly_fields = ["id", "processed_time", "complete"]
     filter_horizontal = ["rules"]
 
 

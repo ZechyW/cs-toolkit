@@ -19,6 +19,7 @@ class InternalMerge(Generator):
 
     @staticmethod
     def generate(
+        derivation_actor,
         root_so: Optional[SyntacticObject],
         lexical_array_tail: Deque[LexicalItem],
         metadata: Optional[GeneratorMetadata] = None,

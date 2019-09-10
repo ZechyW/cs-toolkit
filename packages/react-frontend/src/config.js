@@ -25,7 +25,7 @@ class Config {
    * (Should match the corresponding setting on the backend)
    * @type {string}
    */
-  sysLanguage = "<SYS>";
+  sysLanguage = "sys";
 
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // React-grid-layout
@@ -124,6 +124,14 @@ class Config {
   // settings.
   derivationsColumnDefs = [
     { headerName: "Lexical Array", field: "lexicalArray", width: 250 },
+    {
+      headerName: "Complete",
+      field: "complete",
+      width: 110,
+      // Defined in `DerivationsTable.js`
+      cellRenderer: "completeCellRenderer",
+      cellStyle: { textAlign: "center" }
+    },
     { headerName: "Convergences", field: "convergedCount", width: 150 },
     { headerName: "Crashes", field: "crashedCount", width: 150 },
     { headerName: "Creation Time", field: "creationTime", width: 190 },

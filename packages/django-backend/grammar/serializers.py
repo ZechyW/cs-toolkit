@@ -175,6 +175,7 @@ class DerivationSerializer(serializers.ModelSerializer):
             "crashed_count",
             "converged_chains",
             "crashed_chains",
+            "complete",
         ]
 
     id = serializers.UUIDField()

@@ -10,10 +10,9 @@ class Generator:
     Base template for a syntactic generator.
     """
 
-    description = ""
-
     @staticmethod
     def generate(
+        derivation_actor,
         root_so: Optional[SyntacticObject],
         lexical_array_tail: Deque[LexicalItem],
         metadata: Optional["GeneratorMetadata"] = None,
@@ -27,6 +26,8 @@ class Generator:
         :return:
         """
         pass
+
+    description = ""
 
 
 @dataclass

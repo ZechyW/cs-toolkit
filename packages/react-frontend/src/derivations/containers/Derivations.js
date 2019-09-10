@@ -5,7 +5,12 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { GridItemWrapper } from "../../grid";
 import { actions as wsActions } from "../../websocket";
-import { saveColumnState, selectDerivation, selectRow } from "../actions";
+import {
+  reset,
+  saveColumnState,
+  selectDerivation,
+  selectRow
+} from "../actions";
 import DerivationsTable from "../components/DerivationsTable";
 import { getDerivationsAsList } from "../selectors";
 
@@ -92,7 +97,10 @@ const actionCreators = {
 
   // Selection for detailed view
   selectRow,
-  selectDerivation
+  selectDerivation,
+
+  // Reset table
+  resetTable: reset
 };
 
 Wrapped = connect(

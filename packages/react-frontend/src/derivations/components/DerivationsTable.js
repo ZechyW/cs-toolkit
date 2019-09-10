@@ -1,5 +1,9 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsAltH,
+  faMinusSquare,
+  faCheckCircle
+} from "@fortawesome/free-solid-svg-icons";
 import { AgGridReact } from "ag-grid-react";
 import classNames from "classnames";
 import { isEqual } from "lodash-es";
@@ -8,7 +12,7 @@ import rafSchd from "raf-schd";
 import React, { useRef } from "react";
 import Config from "../../config";
 
-library.add(faArrowsAltH);
+library.add(faArrowsAltH, faMinusSquare, faCheckCircle);
 
 /**
  * Presentational component for the derivation status tracker.
@@ -116,6 +120,25 @@ function DerivationsTable(props) {
     }
   }
 
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Cell renderer
+  function CompleteCellRenderer(props) {
+    console.log(props);
+    return (
+      <>
+        {props.value ? (
+          <span className="icon has-text-success">
+            <i className="fas fa-check-circle" />
+          </span>
+        ) : (
+          ""
+        )}
+      </>
+    );
+  }
+
+  // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+  // Main render
   return (
     <>
       <p className="has-margin-bottom-10">
@@ -130,6 +153,18 @@ function DerivationsTable(props) {
             <i className="fas fa-arrows-alt-h" />
           </span>
           <span>Fit columns to table</span>
+        </button>
+
+        <button
+          className="button"
+          onClick={() => {
+            props.resetTable();
+          }}
+        >
+          <span className="icon">
+            <i className="fas fa-minus-square" />
+          </span>
+          <span>Clear list</span>
         </button>
       </div>
 
@@ -148,6 +183,9 @@ function DerivationsTable(props) {
           // - Columns
           columnDefs={Config.derivationsColumnDefs}
           defaultColDef={Config.derivationsDefaultColDef}
+          frameworkComponents={{
+            completeCellRenderer: CompleteCellRenderer
+          }}
           // - Selection
           rowSelection="single"
           rowDeselection={true}
@@ -174,7 +212,9 @@ DerivationsTable.propTypes = {
   selectRow: PropTypes.func.isRequired,
   selectDerivation: PropTypes.func.isRequired,
 
-  selectedRow: PropTypes.string
+  selectedRow: PropTypes.string,
+
+  resetTable: PropTypes.func.isRequired
 };
 DerivationsTable.defaultProps = {
   columnState: [],

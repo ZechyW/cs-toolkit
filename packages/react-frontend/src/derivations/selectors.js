@@ -30,6 +30,7 @@ export const getDerivationsAsList = createSelector(
             requestId: request.id,
             derivationId: derivation.id,
             lexicalArray: derivation["first_step"],
+            complete: derivation["complete"],
             convergedCount: derivation["converged_count"],
             crashedCount: derivation["crashed_count"],
             creationTime: format(

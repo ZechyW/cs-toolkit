@@ -1,9 +1,11 @@
 import logging
+import time
 from typing import Deque, List, Optional
 
 from grammar.generators.base import Generator, GeneratorMetadata, NextStepDef
 from grammar.generators.unify.unify import unify
-from grammar.models import SyntacticObject
+from grammar.models import SyntacticObject, DerivationStep
+from grammar.util import get_derivation_by_lexical_array
 from lexicon.models import LexicalItem
 
 logger = logging.getLogger("cs-toolkit-grammar")
@@ -12,11 +14,13 @@ logger = logging.getLogger("cs-toolkit-grammar")
 class ExternalMerge(Generator):
     description = (
         "Pulls the next item from the Lexical Array tail and merges it to "
-        "the top of the current root Syntactic Object."
+        "the top of the current root Syntactic Object. "
+        "Handles sub-derivations (defined using square brackets)."
     )
 
     @staticmethod
     def generate(
+        derivation_actor,
         root_so: Optional[SyntacticObject],
         lexical_array_tail: Deque[LexicalItem],
         metadata: Optional[GeneratorMetadata] = None,
@@ -27,8 +31,34 @@ class ExternalMerge(Generator):
 
         # Pop an item from the lexical array.  We will create an SO that
         # inherits the LI's features.  (But not `deleted_features`,
-        # since the LI doesn't have any)
+        # since the LI doesn't inherently have any)
         next_item = lexical_array_tail.popleft()
+
+        # Special handling if `next_item` heralds a sub-derivation
+        if next_item.text == "[" and next_item.language == "sys":
+            sub_lexical_array = []
+            next_item = lexical_array_tail.popleft()
+            while not (next_item.text == "]" and next_item.language == "sys"):
+                sub_lexical_array.append(next_item)
+                next_item = lexical_array_tail.popleft()
+
+            sub_derivation = get_derivation_by_lexical_array(sub_lexical_array)
+            logger.info("Sub-derivation: {}".format(sub_derivation.id))
+            sub_step_id = sub_derivation.first_step.id
+            derivation_actor.send(str(sub_step_id))
+            complete = False
+            failsafe = 0
+            while (not complete) or failsafe > 1000:
+                complete = (
+                    DerivationStep.objects.filter(id=sub_step_id)
+                    .get()
+                    .complete
+                )
+                logger.info("Boop: {}".format(complete))
+                time.sleep(0.1)
+
+            logger.info("YEAAAH")
+            return []
 
         # Prepare the next root SO.
         if root_so is None:

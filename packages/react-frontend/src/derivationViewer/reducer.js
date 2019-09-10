@@ -1,4 +1,5 @@
 import { createReducer } from "redux-starter-kit";
+import { selectDerivation } from "../derivations/actions";
 import { flipChildren, reset, selectChain, selectFrame } from "./actions";
 
 const initialState = {
@@ -9,6 +10,17 @@ const initialState = {
 
 export default createReducer(initialState, {
   [reset]: () => initialState,
+
+  /**
+   * User selected a new Derivation to view.
+   * Reset the timeline frame (it will be set to the end of the displayed
+   * chain at run-time)
+   * @param state
+   * @param action
+   */
+  [selectDerivation]: (state, action) => {
+    state.selectedFrame = -1;
+  },
 
   /**
    * User selected a particular chain to view as a timeline.

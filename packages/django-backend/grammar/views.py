@@ -1,23 +1,15 @@
 import itertools
 import json
 import logging
+from typing import List
 
-from django.db.models import Count
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lexicon.models import LexicalItem
-from .models import (
-    Derivation,
-    DerivationRequest,
-    DerivationStep,
-    GeneratorDescription,
-    LexicalArrayItem,
-    RuleDescription,
-    SyntacticObject,
-)
+from .models import Derivation, DerivationRequest, SyntacticObject
 from .serializers import (
     DerivationInputSerializer,
     DerivationRequestSerializer,
@@ -25,6 +17,7 @@ from .serializers import (
     SyntacticObjectSerializer,
 )
 from .tasks import derivation_actor
+from .util import get_derivation_by_lexical_array
 
 logger = logging.getLogger("cs-toolkit")
 
@@ -76,25 +69,9 @@ class GenerateDerivation(APIView):
 
         # Retrieve/create corresponding Derivations.
         derivations = []
+        lexical_array: List[LexicalItem]
         for lexical_array in lexical_arrays:
-            # We have to add `.filter()` once per lexical item/order pair,
-            # because of the way ManyToMany filtering works.
-            # We also add a count annotation to make sure we don't pick up
-            # any Derivations that start with the same lexical items,
-            # but whose lexical arrays continue after.
-            existing = Derivation.objects.annotate(
-                count=Count("first_step__lexical_array_items")
-            ).filter(count=len(lexical_array))
-            for [idx, lexical_item] in enumerate(lexical_array):
-                existing = existing.filter(
-                    first_step__lexical_array_items__lexical_item=lexical_item,
-                    first_step__lexical_array_items__order=idx,
-                )
-
-            if len(existing) > 0:
-                derivations.append(existing.get())
-            else:
-                derivations.append(create_derivation(lexical_array))
+            derivations.append(get_derivation_by_lexical_array(lexical_array))
 
         # Create new DerivationRequest.
         if request.user.is_authenticated:
@@ -117,34 +94,6 @@ class GenerateDerivation(APIView):
         serializer = DerivationRequestSerializer(derivation_request)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-def create_derivation(lexical_array):
-    """
-    Given an array of LexicalItems, create a corresponding Derivation
-    :param lexical_array:
-    :return:
-    """
-    # Start with a DerivationStep
-    first_step = DerivationStep.objects.create()
-    for [idx, lexical_item] in enumerate(lexical_array):
-        LexicalArrayItem.objects.create(
-            derivation_step=first_step, lexical_item=lexical_item, order=idx
-        )
-
-    # For now, add all rules and generators
-    first_step.rules.set(RuleDescription.objects.all())
-    first_step.generators.set(GeneratorDescription.objects.all())
-
-    # External merge only variant
-    # first_step.generators.add(
-    #     GeneratorDescription.objects.get(name="external-merge")
-    # )
-
-    # Create and return a Derivation
-    derivation = Derivation.objects.create(first_step=first_step)
-    first_step.derivations.add(derivation)
-    return derivation
 
 
 class DerivationList(generics.ListAPIView):
