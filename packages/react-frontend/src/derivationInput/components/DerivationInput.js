@@ -94,6 +94,10 @@ function DerivationInput(props) {
         <br />
         <strong>Move</strong> items by dragging them around with the mouse.
       </p>
+      <p className="has-margin-bottom-10">
+        Use <strong>square brackets [ ]</strong> to group items into
+        sub-derivations if necessary.
+      </p>
       <form onSubmit={submitDerivationInput}>
         <div className="field">
           <div className="control is-expanded">
@@ -112,7 +116,7 @@ function DerivationInput(props) {
               autofocus={false}
               handleInputChange={() => setErrorText("")}
               minQueryLength={1}
-              autocomplete={true}
+              autocomplete={1}
               inline={false}
               allowUnique={false}
               classNames={{

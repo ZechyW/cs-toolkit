@@ -103,7 +103,7 @@ class Config {
   // Initial column definitions: Will be overwritten by individual users'
   // settings.
   lexicalItemsColumnDefs = [
-    { headerName: "Item", field: "text", width: 150 },
+    { headerName: "Item", field: "text", width: 150, sort: "asc" },
     { headerName: "Language", field: "language", width: 110 },
     { headerName: "Features", field: "features", width: 200 }
   ];
@@ -134,7 +134,12 @@ class Config {
     },
     { headerName: "Convergences", field: "convergedCount", width: 150 },
     { headerName: "Crashes", field: "crashedCount", width: 150 },
-    { headerName: "Creation Time", field: "creationTime", width: 190 },
+    {
+      headerName: "Creation Time",
+      field: "creationTime",
+      width: 190,
+      sort: "desc"
+    },
     {
       headerName: "Last Chain Time",
       field: "lastCompletionTime",

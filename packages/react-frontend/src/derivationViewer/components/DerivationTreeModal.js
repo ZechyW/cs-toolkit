@@ -26,36 +26,16 @@ function DerivationTreeModal(props) {
   const [translateX, setTranslateX] = useState(0);
   /** @type React.RefObject */
   const treeContainer = useRef(null);
+  const visible =
+    treeContainer.current && treeContainer.current.offsetWidth > 0;
   useLayoutEffect(() => {
-    // N.B.: Dynamically reading the tree SVG's width may be inaccurate
-    // because of the animations. Just snap the tree to the middle (-ish,
-    // one-third of the width from the left) for now.
-    if (treeContainer.current) {
+    // We only need to set the offset once, as soon as treeContainer's width
+    // is available and non-zero.
+    if (treeContainer.current && treeContainer.current.offsetWidth > 0) {
       let offset = treeContainer.current.offsetWidth / 3;
       setTranslateX(offset);
     }
-
-    // // We have a reference to the <div> containing the tree.
-    // const containerWidth = treeContainer.current.offsetWidth;
-    //
-    // // Get the actual bounding box of the tree SVG and figure out where
-    // // the centre should be.
-    // const treeSvgBbox = treeContainer.current.querySelector("svg").getBBox();
-    //
-    // let offset = (containerWidth - treeSvgBbox.width) / 2;
-    //
-    // // If the offset is negative, the tree is wider than its container.
-    // // Have at least the left edge of the tree visible.
-    // offset = Math.max(offset, 0);
-    //
-    // // The centre of the root node starts at (0,0), so the tree will initially
-    // // expand into the negative x direction.  Account for this and set the
-    // // final offset.
-    // offset +=
-    //   (Config.derivationTreeNodeSize.x + Config.derivationTreeLabelSize.width) /
-    //   2;
-    // setTranslateX(offset);
-  }, [chain, props.selectedFrame, treeContainer.current]);
+  }, [chain, props.selectedFrame, visible]);
 
   // Detect Esc key presses
   useLayoutEffect(() => {
