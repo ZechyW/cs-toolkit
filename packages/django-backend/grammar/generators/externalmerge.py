@@ -87,7 +87,8 @@ class ExternalMerge(Generator):
                         root_so=new_so,
                         lexical_array_tail=lexical_array_tail,
                         metadata=GeneratorMetadata(
-                            last_generator="ExternalMerge"
+                            last_generator="ExternalMerge",
+                            last_merged_node=str(sub_step.root_so.id),
                         ),
                     )
                 )
@@ -109,7 +110,8 @@ class ExternalMerge(Generator):
                         root_so=new_so,
                         lexical_array_tail=lexical_array_tail,
                         metadata=GeneratorMetadata(
-                            last_generator="ExternalMerge"
+                            last_generator="ExternalMerge",
+                            last_merged_node=str(sub_step.root_so.id),
                         ),
                     )
                 )

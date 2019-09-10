@@ -33,6 +33,7 @@ from typing import List
 from django.db import models
 from django.db.models import QuerySet
 from model_utils import FieldTracker
+from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
 
 from notify.models import NotifyModel
@@ -346,8 +347,26 @@ class LexicalArrayItem(models.Model):
 
 
 # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,
-# Models for syntactic objects.
-class SyntacticObject(MPTTModel):
+# Models for syntactic objects
+
+# These workarounds are needed for django-mptt to handle high concurrency
+# properly -- Hopefully we can deprecate them someday?
+# https://github.com/django-mptt/django-mptt/issues/555
+class AsyncSafeTreeManager(TreeManager):
+    def _get_next_tree_id(self):
+        return str(uuid.uuid4())
+
+
+class AsyncSafeMPTTModel(MPTTModel):
+
+    objects = AsyncSafeTreeManager()
+    tree_id = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class SyntacticObject(AsyncSafeMPTTModel):
     """
     A `django-mptt` model for representing SyntacticObjects hierarchically.
     Also includes a structured representation of the SO's value, in terms of
@@ -444,12 +463,13 @@ class SyntacticObject(MPTTModel):
         )
         new_so.features.set(self.features.all())
         new_so.deleted_features.set(self.deleted_features.all())
-        new_so.save()
 
         # Clone children
         children: List[SyntacticObject] = list(self.get_children())
         for child in children:
             child.create_clone(new_so, mark_copy)
+
+        new_so.save()
 
         return new_so
 

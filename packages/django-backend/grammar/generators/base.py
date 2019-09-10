@@ -52,3 +52,6 @@ class GeneratorMetadata:
 
     # The class name for the Generator that produced this step.
     last_generator: str
+
+    # The node ID of the last merged SyntacticObject
+    last_merged_node: Optional[str] = None

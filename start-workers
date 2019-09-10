@@ -34,7 +34,8 @@ esac
 # Set default options
 CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
 
-NUM_PROCESSES=${NUM_PROCESSES:-1}
+# There must be at least two threads running to process any sub-derivations.
+NUM_PROCESSES=${NUM_PROCESSES:-$CPU_COUNT}
 NUM_THREADS=${NUM_THREADS:-4}
 
 TASK_MODULES=${TASK_MODULES:-django_dramatiq.setup django_dramatiq.tasks grammar.tasks}

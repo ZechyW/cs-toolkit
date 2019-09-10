@@ -29,7 +29,6 @@ class InternalMerge(Generator):
             return []
 
         # Recursion limit: Don't allow multiple IMs consecutively.
-        # TODO: Make this configurable
         if metadata is not None and metadata.last_generator == "InternalMerge":
             return []
 
@@ -77,6 +76,7 @@ class InternalMerge(Generator):
                 root_so.create_clone(
                     new_parent=new_parent, mark_copy=str(child.id)
                 )
+                new_parent.save()
 
                 unify(new_parent)
 
@@ -85,7 +85,8 @@ class InternalMerge(Generator):
                         root_so=new_parent,
                         lexical_array_tail=lexical_array_tail,
                         metadata=GeneratorMetadata(
-                            last_generator="InternalMerge"
+                            last_generator="InternalMerge",
+                            last_merged_node=str(child.id),
                         ),
                     )
                 )
@@ -93,10 +94,15 @@ class InternalMerge(Generator):
                 merge_children(child)
 
         # Does not IM the direct children of `root_so` (anti-locality)
+        child_num = 0
         for descendant in root_so.get_descendants().filter(
             level=root_so.level + 1
         ):
+            child_num += 1
+            logger.info("Child_num: {}".format(child_num))
             merge_children(descendant)
+
+        logger.info("IM generated: {} steps".format(len(next_steps)))
 
         # top_child: SyntacticObject
         # for top_child in root_so.get_children():

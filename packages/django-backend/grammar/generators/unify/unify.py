@@ -1,8 +1,8 @@
 import logging
 import time
 
-from .case import assign_case
 from grammar.models import SyntacticObject
+from .case import assign_case
 
 logger = logging.getLogger("cs-toolkit-grammar")
 
@@ -45,8 +45,6 @@ def unify(parent_so: SyntacticObject) -> None:
     # Generic unify handler
     # Find uninterpretable features in the two SOs, except the ones named in
     # `exclude_generic`
-    uninterpretable_1 = []
-    uninterpretable_2 = []
     exclude_generic = ["Case"]
 
     so: SyntacticObject
@@ -54,29 +52,27 @@ def unify(parent_so: SyntacticObject) -> None:
         for feature in so.features.all():
             if feature.uninterpretable and feature.name not in exclude_generic:
                 # This feature is uninterpretable.
-                uninterpretable_1.append((so, feature))
+                for i_feature in so_2.features.all():
+                    if (
+                        not i_feature.uninterpretable
+                        and i_feature.name == feature.name
+                    ):
+                        so.features.remove(feature)
+                        so.deleted_features.add(feature)
+                        so.save()
 
     for so in so_2.get_descendants(include_self=True):
         for feature in so.features.all():
             if feature.uninterpretable and feature.name not in exclude_generic:
                 # This feature is uninterpretable.
-                uninterpretable_2.append((so, feature))
-
-    # Match and delete them.
-    u_so: SyntacticObject
-    for (u_so, u_feature) in uninterpretable_1:
-        for feature in so_2.features.all():
-            if not feature.uninterpretable and feature.name == u_feature.name:
-                u_so.features.remove(u_feature)
-                u_so.deleted_features.add(u_feature)
-                u_so.save()
-
-    for (u_so, u_feature) in uninterpretable_2:
-        for feature in so_1.features.all():
-            if not feature.uninterpretable and feature.name == u_feature.name:
-                u_so.features.remove(u_feature)
-                u_so.deleted_features.add(u_feature)
-                u_so.save()
+                for i_feature in so_1.features.all():
+                    if (
+                        not i_feature.uninterpretable
+                        and i_feature.name == feature.name
+                    ):
+                        so.features.remove(feature)
+                        so.deleted_features.add(feature)
+                        so.save()
 
     # Update the parent SO
     # TODO: Should defer to an explicit Labelling Algorithm, but for now,

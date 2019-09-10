@@ -118,7 +118,7 @@ def process_derivation_step(
         step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=False)
-        logger.info("DerivationStep {} crashed: {}".format(step.id, error))
+        logger.debug("DerivationStep {} crashed: {}".format(step.id, error))
         return []
 
     # Save the error messages to the DerivationStep
@@ -135,7 +135,7 @@ def process_derivation_step(
         step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=True)
-        logger.info("DerivationStep {} converged.".format(step.id))
+        logger.debug("DerivationStep {} converged.".format(step.id))
         return []
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -183,7 +183,7 @@ def process_derivation_step(
         step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=False)
-        logger.info(
+        logger.debug(
             "DerivationStep {} crashed: {}".format(step.id, crash_reason)
         )
         return []

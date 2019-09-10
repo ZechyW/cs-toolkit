@@ -56,6 +56,9 @@ def assign_case(
                 other_so.features.remove(other_so_uCase)
                 other_so.deleted_features.add(other_so_uCase)
 
+                so_1.save()
+                other_so.save()
+
                 break
 
     so_1_uCase = so_1.features.filter(name__exact="Case")
@@ -92,11 +95,11 @@ def assign_case(
                 other_so.features.remove(other_so_uPhi)
                 other_so.deleted_features.add(other_so_uPhi)
 
+                so_1.save()
+                other_so.save()
+
                 break
 
     # Second pass failsafe
     if not second_pass:
         assign_case(so_2, so_1, True)
-
-    so_1.save()
-    so_2.save()

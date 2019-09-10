@@ -2,6 +2,8 @@
 Handles `notify` topic PubSub connections.
 Lets clients know when some Django model has changed.
 """
+import time
+
 import backoff
 import logging
 
@@ -117,6 +119,7 @@ class SubscribeRequestHandler(base.Handler):
         :param event:
         :return:
         """
+        start_time = time.perf_counter()
         model = event.get("model")
         item_id = event.get("id")
 
@@ -166,6 +169,12 @@ class SubscribeRequestHandler(base.Handler):
                     }
                 )
                 self.last_sent_data[item] = data
+
+        logger.debug(
+            "Processed a change notification in {:.3f}s.".format(
+                time.perf_counter() - start_time
+            )
+        )
 
     def notify_delete(self, event):
         """

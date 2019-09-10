@@ -136,7 +136,9 @@ class NotifyModel(models.Model):
         # This model object has changed; let people know
         channel_layer = get_channel_layer()
 
-        logger.info("Model object created/updated: {}".format(self.model_name))
+        logger.debug(
+            "Model object created/updated: {}".format(self.model_name)
+        )
 
         async_to_sync(channel_layer.group_send)(
             "notify",
