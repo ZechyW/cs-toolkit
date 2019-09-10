@@ -68,5 +68,7 @@ def create_derivation(lexical_array: List[LexicalItem]) -> Derivation:
 
     # Create and return a Derivation
     derivation = Derivation.objects.create(first_step=first_step)
-    first_step.derivations.add(derivation)
+    first_step.derivation = derivation
+    first_step.save()
+
     return derivation

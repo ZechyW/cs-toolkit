@@ -57,15 +57,10 @@ def process_derivation_step(
     # We can manually disable short-circuits for debugging if necessary.
     quick_reprocess = True
     if quick_reprocess:
-        if (
-            step.status == DerivationStep.STATUS_PROCESSED
-            and step.next_steps.count() > 0
-        ):
+        if step.status == DerivationStep.STATUS_PROCESSED:
             # Our workers may have died halfway and processed this step but
             # not the next one(s) -- Keep processing through the chain just
             # in case.
-            # We also re-run the step if there are no `next_steps`, just to
-            # confirm the crash/convergence.
             logger.info("Re-processing DerivationStep: {}".format(step.id))
             return step.next_steps.all()
 
@@ -77,11 +72,15 @@ def process_derivation_step(
             return []
 
         if step.status == DerivationStep.STATUS_CRASHED:
-            # Whoo boy
+            # Woo boy
             mark_derivation_chain_ended(
                 step, converged=False, reprocessing=True
             )
             return []
+    else:
+        # Need to do clean-up if we're re-running the DerivationStep:
+        # - Delete any subsequent steps
+        pass
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 1: Rule checking
@@ -210,9 +209,8 @@ def process_derivation_step(
                 derivation_step=next_step, lexical_item=lexical_item, order=idx
             )
 
-        # Corresponding derivations
-        for derivation in step.derivations.all():
-            next_step.derivations.add(derivation)
+        # Corresponding derivation
+        next_step.derivation = step.derivation
 
         # Inherit rules and generators
         for rule in step.rules.all():
@@ -256,23 +254,23 @@ def mark_derivation_chain_ended(
     If `converged` is False, the chain is marked as crashed instead.
     :return:
     """
-    for derivation in step.derivations.all():
-        if converged:
-            derivation.converged_steps.add(step.id)
-        else:
-            derivation.crashed_steps.add(step.id)
+    if converged:
+        step.converged_derivation = step.derivation
+    else:
+        step.crashed_derivation = step.derivation
 
-        # Also update the last chain completion time
-        for derivation_request in derivation.derivation_requests.all():
-            if not reprocessing:
-                # A new result: Use the current time
-                derivation_request.last_completion_time = timezone.now()
-                derivation_request.save()
-            elif (
-                not derivation_request.last_completion_time
-                or step.processed_time
-                > derivation_request.last_completion_time
-            ):
-                # An old result: Use the latest previous step completion time
-                derivation_request.last_completion_time = step.processed_time
-                derivation_request.save()
+    step.save()
+
+    # Also update the last chain completion time
+    for derivation_request in step.derivation.derivation_requests.all():
+        if not reprocessing:
+            # A new result: Use the current time
+            derivation_request.last_completion_time = timezone.now()
+        elif (
+            not derivation_request.last_completion_time
+            or step.processed_time > derivation_request.last_completion_time
+        ):
+            # An old result: Use the latest previous step completion time
+            derivation_request.last_completion_time = step.processed_time
+
+        derivation_request.save()

@@ -74,6 +74,5 @@ def check_completion(step_id: str):
             check_completion(str(step.previous_step.id))
         else:
             # This is the first step in a Derivation
-            for derivation in step.derivations.all():
-                derivation.complete = True
-                derivation.save()
+            step.derivation.complete = True
+            step.derivation.save()

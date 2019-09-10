@@ -77,7 +77,7 @@ class DerivationRequest(NotifyModel):
 
     # Meta details
     creation_time = models.DateTimeField()
-    created_by = models.CharField(max_length=255, blank=True, null=True)
+    created_by = models.CharField(max_length=255, null=True, blank=True)
     # Each DerivationRequest is associated with one or more Derivations,
     # which may be associated with one or more DerivationStep chains.
     # Record the time the last chain converged/crashed.
@@ -109,29 +109,9 @@ class Derivation(NotifyModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
-    # The first DerivationStep is initialised with the list of fully-specified
-    # LexicalItems unique to the Derivation and an empty built-up
-    # SyntacticObject.
-    first_step = models.ForeignKey(
-        "DerivationStep",
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name="first_step_derivations",
-    )
-
     # Derivations are complete if all their possible chains have been
     # processed to a crash/convergence
     complete = models.BooleanField(default=False)
-
-    # Record the final step in any related DerivationStep chain -- As a
-    # final step, it either converged or crashed.
-    converged_steps = models.ManyToManyField(
-        "DerivationStep", related_name="converged_derivations"
-    )
-    crashed_steps = models.ManyToManyField(
-        "DerivationStep", related_name="crashed_derivations"
-    )
 
     @property
     def converged_count(self):
@@ -195,7 +175,10 @@ class Derivation(NotifyModel):
     serializer_class = "grammar.serializers.DerivationSerializer"
 
     def __str__(self):
-        return str(self.first_step)
+        if hasattr(self, "first_step"):
+            return str(self.first_step)
+        else:
+            return "<Invalid Derivation>"
 
 
 class DerivationStep(models.Model):
@@ -241,17 +224,43 @@ class DerivationStep(models.Model):
         max_length=10, choices=STATUSES, default=STATUS_PENDING
     )
 
-    # Multiple Derivations may include this particular DerivationStep (via
-    # fingerprinting and memoisation)
-    # TODO: Fingerprinting and memoisation
-    derivations = models.ManyToManyField("Derivation")
+    # Each DerivationStep is associated with only one Derivation...
+    # TODO: Maybe fingerprinting and memoisation of these in the future?
+    # CASCADE: When Derivations are deleted, delete all associated
+    # DerivationSteps
+    derivation = models.ForeignKey(
+        "Derivation", on_delete=models.CASCADE, null=True, blank=True
+    )
 
-    # Each DerivationStep has one unique root SyntacticObject,
-    # since SyntacticObjects encode specific hierarchical information --
-    # Different DerivationSteps will have different hierarchies,
-    # and therefore different sets of SyntacticObjects.
-    root_so = TreeOneToOneField(
-        "SyntacticObject", blank=True, null=True, on_delete=models.SET_NULL
+    # ... for which it may be the first step...
+    # (wherein it will be initialised with the list of fully-specified
+    # LexicalItems unique to the Derivation and an empty root SyntacticObject)
+    # CASCADE: When the associated Derivation is deleted, delete this
+    # DerivationStep
+    first_step_derivation = models.OneToOneField(
+        "Derivation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="first_step",
+    )
+
+    # ... and that it may cause to crash or converge
+    # CASCADE: When the Derivation is deleted, delete all associated
+    # DerivationSteps
+    converged_derivation = models.ForeignKey(
+        "Derivation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="converged_steps",
+    )
+    crashed_derivation = models.ForeignKey(
+        "Derivation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="crashed_steps",
     )
 
     # How the derivation proceeds depends on the remaining LexicalItems
@@ -283,11 +292,13 @@ class DerivationStep(models.Model):
 
     # If this isn't the first step in a Derivation, it should have a
     # reference to the previous step in the chain.
+    # CASCADE: When `previous_step` is deleted, delete this DerivationStep
+    # too.
     previous_step = models.ForeignKey(
         "self",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="next_steps",
     )
 
@@ -307,6 +318,25 @@ class DerivationStep(models.Model):
     sub_derivations = models.ManyToManyField(
         "Derivation", related_name="trigger_steps"
     )
+
+    # Each DerivationStep has one unique root SyntacticObject.
+    # (SyntacticObjects encode specific hierarchical information and
+    # different DerivationSteps have different hierarchies)
+    # CASCADE: When `root_so` is deleted, delete this DerivationStep too.
+    root_so: "SyntacticObject" = TreeOneToOneField(
+        "SyntacticObject", on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    def root_so_text(self):
+        """
+        Convenience function to return the label of the current root_so, if any
+        :return:
+        """
+        if self.root_so:
+            return self.root_so.text
+
+    root_so_text.short_description = "Root SO text"
+    root_so_text.admin_order_field = "root_so__text"
 
     def lexical_array_friendly(self):
         """
@@ -329,6 +359,9 @@ class LexicalArrayItem(models.Model):
     """
     An intermediary model for managing ordered lists of LexicalItems for
     DerivationSteps.
+
+    CASCADE: Deleting the associated DerivationStep or LexicalItem(!)
+    deletes this LexicalArrayItem too
     """
 
     derivation_step = models.ForeignKey(
@@ -372,6 +405,9 @@ class SyntacticObject(AsyncSafeMPTTModel):
     Also includes a structured representation of the SO's value, in terms of
     its text, current lexicon, and features.
     """
+
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Inherent properties
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
@@ -418,6 +454,9 @@ class SyntacticObject(AsyncSafeMPTTModel):
             self.text, self.current_language, self.feature_string()
         )
 
+    # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
+    # Relationships
+
     # MPTT parent
     parent = TreeForeignKey(
         "self",
@@ -432,6 +471,7 @@ class SyntacticObject(AsyncSafeMPTTModel):
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Model instance helpers and utilities
+
     def create_clone(
         self, new_parent: "SyntacticObject" = None, mark_copy: str = None
     ) -> "SyntacticObject":
