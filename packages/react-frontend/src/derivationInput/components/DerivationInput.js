@@ -112,7 +112,7 @@ function DerivationInput(props) {
               autofocus={false}
               handleInputChange={() => setErrorText("")}
               minQueryLength={1}
-              autocomplete={1}
+              autocomplete={true}
               inline={false}
               allowUnique={false}
               classNames={{

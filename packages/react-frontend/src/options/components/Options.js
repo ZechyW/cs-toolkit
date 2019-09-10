@@ -9,7 +9,7 @@ import "../styles/Options.scss";
 /**
  * Options modal for the UI
  * @param props
- * @return {*}
+ * @return {null|*}
  * @constructor
  */
 function Options(props) {

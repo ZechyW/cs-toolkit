@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import createSelector from "selectorator";
 import { DerivationInput } from "../../derivationInput";
 import { Derivations } from "../../derivations";
-import { DerivationViewer } from "../../derivationViewer";
+import { DerivationViewer, DerivationTreeModal } from "../../derivationViewer";
 import { Grid, GridItem } from "../../grid";
 import { LexicalItems } from "../../lexicalItems";
 import { Navbar } from "../../navbar/";
@@ -95,8 +95,12 @@ function App(props) {
     <>
       <Navbar />
       <Grid>{visibleGridItems}</Grid>
+
       {invisibleGridItems}
+
+      {/*Modals*/}
       <Options />
+      <DerivationTreeModal />
     </>
   );
 }

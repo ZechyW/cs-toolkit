@@ -1,5 +1,9 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faSearch
+} from "@fortawesome/free-solid-svg-icons";
 import { hierarchy } from "d3-hierarchy";
 import { cloneDeep, isEmpty } from "lodash-es";
 import PropTypes from "prop-types";
@@ -7,10 +11,12 @@ import RcSlider from "rc-slider";
 import "rc-slider/assets/index.css";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
+
 import Config from "../../config";
 import "../styles/DerivationTimelineTree.scss";
+import DerivationTreeNodeLabel from "./DerivationTreeNodeLabel";
 
-library.add(faAngleLeft, faAngleRight);
+library.add(faAngleLeft, faAngleRight, faSearch);
 
 const createSliderWithTooltip = RcSlider.createSliderWithTooltip;
 const Slider = createSliderWithTooltip(RcSlider);
@@ -120,90 +126,6 @@ function DerivationTimelineTree(props) {
     Config.derivationTreeLabelSize.height * 2 +
     120;
 
-  /**
-   * Sub-component for rendering node labels
-   * - Above the node position for non-terminal nodes.
-   * - Below the node position for terminal nodes.
-   * - (More-or-less) centred at the node position for trees with only one node.
-   * @param props
-   * @returns {*}
-   * @constructor
-   */
-  function NodeLabel(props) {
-    const { nodeData } = props;
-    const isLeaf = !nodeData.children;
-    const isPlaceholder = nodeData.placeholder;
-
-    const labelStyle = {};
-    // Figure out where to position the label
-    if (isLeaf) {
-      // Two possibilities: A non-terminal, or the only node in the tree.
-      if (treeData.height) {
-        // Non-terminal
-        labelStyle.top = `${Config.derivationTreeLabelSize.height / 2}px`;
-      } else {
-        // Only node
-        labelStyle.top = `${Config.derivationTreeLabelSize.height / 2}px`;
-      }
-
-      // Override: Manually position the label for now
-      labelStyle.top = "-20px";
-    } else {
-      labelStyle.bottom = `0`;
-    }
-
-    let labelContents;
-    if (isPlaceholder) {
-      // Placeholder text is in obligatory `.name` property
-      labelContents = nodeData.name;
-    } else {
-      // Pull raw data from node
-      const {
-        text,
-        current_language,
-        is_copy,
-        feature_string,
-        deleted_feature_string
-      } = nodeData;
-      labelContents = (
-        <div
-          style={{
-            opacity: is_copy ? "0.5" : "1"
-          }}
-        >
-          <span className="has-text-weight-bold	">{text} </span>(
-          <span className="is-italic">{current_language}</span>)
-          {feature_string ? (
-            <>
-              <br /> <span>{feature_string}</span>
-            </>
-          ) : (
-            ""
-          )}
-          {deleted_feature_string ? (
-            <>
-              <br />
-              <span
-                style={{ textDecoration: "line-through" }}
-                className="has-text-grey-light"
-              >
-                {deleted_feature_string}
-              </span>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="has-text-centered node-label" style={labelStyle}>
-        {labelContents}
-      </div>
-    );
-  }
-
   // -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
   // Details view
   const {
@@ -275,6 +197,20 @@ function DerivationTimelineTree(props) {
       ) : (
         ""
       )}
+
+      <div className="has-margin-top-20 buttons">
+        <button
+          className="button is-primary"
+          onClick={() => {
+            props.showModal();
+          }}
+        >
+          <span className="icon">
+            <i className="fas fa-search" />
+          </span>
+          <span>Enlarge tree view</span>
+        </button>
+      </div>
     </>
   );
 
@@ -361,7 +297,12 @@ function DerivationTimelineTree(props) {
               data={root_so}
               nodeSvgShape={{ shape: "none" }}
               nodeLabelComponent={{
-                render: <NodeLabel className="myLabelComponentInSvg" />,
+                render: (
+                  <DerivationTreeNodeLabel
+                    className="myLabelComponentInSvg"
+                    onlyNode={!treeData.height}
+                  />
+                ),
                 foreignObjectWrapper: {
                   x: -Config.derivationTreeLabelSize.width / 2,
                   y: -Config.derivationTreeLabelSize.height,
@@ -410,7 +351,8 @@ DerivationTimelineTree.propTypes = {
   flippedChildren: PropTypes.object.isRequired,
 
   selectFrame: PropTypes.func.isRequired,
-  flipChildren: PropTypes.func.isRequired
+  flipChildren: PropTypes.func.isRequired,
+  showModal: PropTypes.func.isRequired
 };
 
 DerivationTimelineTree.defaultProps = {

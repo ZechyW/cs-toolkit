@@ -13,3 +13,9 @@ export const selectFrame = createAction("derivationViewer/selectFrame");
 
 // Ordering of the children of a given node
 export const flipChildren = createAction("derivationViewer/flipChildren");
+
+// -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,_
+// Modal view for the derivation tree
+
+export const showModal = createAction("derivationViewer/showModal");
+export const hideModal = createAction("derivationViewer/hideModal");

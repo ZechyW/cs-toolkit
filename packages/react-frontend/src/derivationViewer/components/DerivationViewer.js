@@ -5,7 +5,7 @@ import Select from "react-select";
 import createSelector from "selectorator";
 
 import { GridItemWrapper } from "../../grid";
-import { flipChildren, selectChain, selectFrame } from "../actions";
+import { flipChildren, selectChain, selectFrame, showModal } from "../actions";
 import { derivationDetails } from "../selectors";
 import DerivationTimelineTree from "./DerivationTimelineTree";
 
@@ -73,7 +73,7 @@ function DerivationViewer(props) {
       };
 
       // Was this the last selected option?
-      convergedOptions.push(option);
+      crashedOptions.push(option);
       if (props.selectedChain === currentIndex) {
         selectedOption = option;
       }
@@ -150,6 +150,7 @@ function DerivationViewer(props) {
           selectFrame={props.selectFrame}
           flippedChildren={props.flippedChildren}
           flipChildren={props.flipChildren}
+          showModal={props.showModal}
         />
       </div>
 
@@ -184,7 +185,8 @@ Wrapped = GridItemWrapper(Wrapped);
 const actionCreators = {
   selectChain,
   selectFrame,
-  flipChildren
+  flipChildren,
+  showModal
 };
 
 Wrapped = connect(

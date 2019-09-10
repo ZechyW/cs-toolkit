@@ -19,3 +19,31 @@ export const derivationDetails = createSelector(
     }
   }
 );
+
+/**
+ * Returns all the chains in the selected derivation
+ */
+export const allChains = createSelector(
+  [derivationDetails],
+  (derivationDetails) => {
+    if (!derivationDetails) return [];
+
+    const allChains = [];
+    let currentIndex = 0;
+
+    // Converged chains
+    // eslint-disable-next-line no-unused-vars
+    for (const chain of derivationDetails["converged_chains"]) {
+      allChains[currentIndex] = chain;
+      currentIndex += 1;
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    for (const chain of derivationDetails["crashed_chains"]) {
+      allChains[currentIndex] = chain;
+      currentIndex += 1;
+    }
+
+    return allChains;
+  }
+);

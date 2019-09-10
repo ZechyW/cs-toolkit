@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import createSelector from "selectorator";
+
 import { actions as optionsActions } from "../../options";
 import { useMedia } from "../../util";
 import {

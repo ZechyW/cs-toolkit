@@ -1,11 +1,19 @@
 import { createReducer } from "redux-starter-kit";
 import { selectDerivation } from "../derivations/actions";
-import { flipChildren, reset, selectChain, selectFrame } from "./actions";
+import {
+  flipChildren,
+  hideModal,
+  reset,
+  selectChain,
+  selectFrame,
+  showModal
+} from "./actions";
 
 const initialState = {
   selectedChain: null,
   selectedFrame: 0,
-  flippedChildren: {}
+  flippedChildren: {},
+  treeModalActive: false
 };
 
 export default createReducer(initialState, {
@@ -58,5 +66,16 @@ export default createReducer(initialState, {
     } else {
       state.flippedChildren[nodeId] = true;
     }
+  },
+
+  /**
+   * Controls the visibility of the derivation tree modal
+   * @param state
+   */
+  [showModal]: (state) => {
+    state.treeModalActive = true;
+  },
+  [hideModal]: (state) => {
+    state.treeModalActive = false;
   }
 });
