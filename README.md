@@ -44,6 +44,8 @@ If you are running the server on a Windows machine, specify the `windows` extra 
 poetry install --extras "windows"
 ```
 
+**Note**: As of April 2020, some of the project dependencies do not support Python 3.8, so Python 3.7 is the latest compatible version. 
+
 ### Start Redis server
 
 In order for the Channels portion of the backend to work properly, the project expects a Redis server to be accessible (on `127.0.0.1:6379` by default).  An easy way to do this is to install Docker (https://www.docker.com/), then run:
@@ -63,8 +65,10 @@ docker container start redis
 In addition, the backend uses a Postgres server for data storage (on `127.0.0.1:5432` by default).  If you have Docker installed, you can spin up a local Postgres instance with:
 
 ```bash
-docker run -p 5432:5432 --name postgres -d postgres
+docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=<password here> -d postgres
 ```
+
+(The `POSTGRES_PASSWORD` variable will have to be set for a completely new container, or it will not start.)
 
 You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be `cs_toolkit`.  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
 
