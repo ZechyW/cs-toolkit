@@ -54,9 +54,7 @@ class SubscribeRequestHandler(base.Handler):
         try:
             Model = getattr(frontend.subscribe_models, model)
         except AttributeError:
-            logger.warning(
-                "SubscribeRequest made for invalid model: {}".format(model)
-            )
+            logger.warning("SubscribeRequest made for invalid model: {}".format(model))
             return self.send_error({"model": model, "error": "Invalid model."})
 
         # Check if a valid instance id was specified
@@ -105,11 +103,7 @@ class SubscribeRequestHandler(base.Handler):
         :return:
         """
         self.consumer.send_to_client(
-            {
-                "type": "subscribe/error",
-                "payload": error_payload,
-                "error": True,
-            }
+            {"type": "subscribe/error", "payload": error_payload, "error": True,}
         )
 
     def notify_change(self, event):
@@ -127,8 +121,7 @@ class SubscribeRequestHandler(base.Handler):
             Model = getattr(frontend.subscribe_models, model)
         except AttributeError:
             logger.warning(
-                "Subscribe:notify_change called with invalid model: {}"
-                "".format(model)
+                "Subscribe:notify_change called with invalid model: {}" "".format(model)
             )
             return
 
@@ -161,11 +154,7 @@ class SubscribeRequestHandler(base.Handler):
                 self.consumer.send_to_client(
                     {
                         "type": "subscribe/change",
-                        "payload": {
-                            "model": model,
-                            "id": item_id,
-                            "data": data,
-                        },
+                        "payload": {"model": model, "id": item_id, "data": data,},
                     }
                 )
                 self.last_sent_data[item] = data
@@ -190,8 +179,7 @@ class SubscribeRequestHandler(base.Handler):
             Model = getattr(frontend.subscribe_models, model)
         except AttributeError:
             logger.warning(
-                "Subscribe:notify_delete called with invalid model: "
-                "{}".format(model)
+                "Subscribe:notify_delete called with invalid model: " "{}".format(model)
             )
             return
 
@@ -200,10 +188,7 @@ class SubscribeRequestHandler(base.Handler):
         # Model-level subscriptions
         if model in self.watched_items:
             self.consumer.send_to_client(
-                {
-                    "type": "subscribe/delete",
-                    "payload": {"model": model, "data": data},
-                }
+                {"type": "subscribe/delete", "payload": {"model": model, "data": data},}
             )
 
         # Instance-level subscriptions

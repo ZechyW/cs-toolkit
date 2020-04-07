@@ -15,9 +15,7 @@ from .models import (
 )
 
 
-def get_derivation_by_lexical_array(
-    lexical_array: List[LexicalItem]
-) -> Derivation:
+def get_derivation_by_lexical_array(lexical_array: List[LexicalItem]) -> Derivation:
     """
     Creates or retrieves the Derivation associated with a unique array of
     LexicalItems.

@@ -84,9 +84,7 @@ class ReactDevProtocol(WebSocketClientProtocol):
         if isBinary:
             ensureDeferred(self.factory.consumer.send(bytes_data=payload))
         else:
-            ensureDeferred(
-                self.factory.consumer.send(text_data=payload.decode("utf8"))
-            )
+            ensureDeferred(self.factory.consumer.send(text_data=payload.decode("utf8")))
 
 
 class ReactDevFactory(WebSocketClientFactory):

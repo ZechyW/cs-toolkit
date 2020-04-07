@@ -118,9 +118,7 @@ class DerivationStepSerializer(serializers.ModelSerializer):
     crash_reason = serializers.CharField(required=False)
 
     rule_errors = serializers.SerializerMethodField("add_rule_errors")
-    generator_metadata = serializers.SerializerMethodField(
-        "add_generator_metadata"
-    )
+    generator_metadata = serializers.SerializerMethodField("add_generator_metadata")
 
     @staticmethod
     def add_rule_errors(obj):

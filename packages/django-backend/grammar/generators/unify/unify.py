@@ -53,10 +53,7 @@ def unify(parent_so: SyntacticObject) -> None:
             if feature.uninterpretable and feature.name not in exclude_generic:
                 # This feature is uninterpretable.
                 for i_feature in so_2.features.all():
-                    if (
-                        not i_feature.uninterpretable
-                        and i_feature.name == feature.name
-                    ):
+                    if not i_feature.uninterpretable and i_feature.name == feature.name:
                         so.features.remove(feature)
                         so.deleted_features.add(feature)
                         so.save()
@@ -66,10 +63,7 @@ def unify(parent_so: SyntacticObject) -> None:
             if feature.uninterpretable and feature.name not in exclude_generic:
                 # This feature is uninterpretable.
                 for i_feature in so_1.features.all():
-                    if (
-                        not i_feature.uninterpretable
-                        and i_feature.name == feature.name
-                    ):
+                    if not i_feature.uninterpretable and i_feature.name == feature.name:
                         so.features.remove(feature)
                         so.deleted_features.add(feature)
                         so.save()
@@ -83,9 +77,6 @@ def unify(parent_so: SyntacticObject) -> None:
 
     logger.debug(
         "Unified {}: {}/{} ({:.3f}s)".format(
-            parent_so.text,
-            so_1.text,
-            so_2.text,
-            time.perf_counter() - start_time,
+            parent_so.text, so_1.text, so_2.text, time.perf_counter() - start_time,
         )
     )

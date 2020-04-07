@@ -6,8 +6,7 @@ from .base import Rule, DerivationFailed, RuleNonFatalError
 
 class CoreNoUninterpretable(Rule):
     description = (
-        "There should be no uninterpretable values left on the syntactic "
-        "object."
+        "There should be no uninterpretable values left on the syntactic " "object."
     )
 
     @staticmethod
@@ -30,9 +29,7 @@ class CoreNoUninterpretable(Rule):
                     if not interp[0].value:
                         # This feature is uninterpretable.
                         uninterpretable_features.append(
-                            "Uninterpretable feature {} on {}.".format(
-                                feature, this_so
-                            )
+                            "Uninterpretable feature {} on {}.".format(feature, this_so)
                         )
 
         return uninterpretable_features

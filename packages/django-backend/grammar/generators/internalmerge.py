@@ -73,9 +73,7 @@ class InternalMerge(Generator):
                 # the IM-ed descendant as its children, and unify.
                 new_parent = SyntacticObject.objects.create()
                 child.create_clone(new_parent=new_parent)
-                root_so.create_clone(
-                    new_parent=new_parent, mark_copy=str(child.id)
-                )
+                root_so.create_clone(new_parent=new_parent, mark_copy=str(child.id))
                 new_parent.save()
 
                 unify(new_parent)
@@ -95,9 +93,7 @@ class InternalMerge(Generator):
 
         # Does not IM the direct children of `root_so` (anti-locality)
         child_num = 0
-        for descendant in root_so.get_descendants().filter(
-            level=root_so.level + 1
-        ):
+        for descendant in root_so.get_descendants().filter(level=root_so.level + 1):
             child_num += 1
             logger.info("Child_num: {}".format(child_num))
             merge_children(descendant)

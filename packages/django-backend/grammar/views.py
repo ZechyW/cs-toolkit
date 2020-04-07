@@ -35,9 +35,7 @@ class GenerateDerivation(APIView):
         # Validate request
         serializer = DerivationInputSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         derivation_input = serializer.validated_data["derivation_input"]
 
@@ -45,18 +43,13 @@ class GenerateDerivation(APIView):
         lexical_item_sets = []
         for lexical_skeleton in derivation_input:
             lexical_item_set = LexicalItem.objects.filter(
-                text=lexical_skeleton["text"],
-                language=lexical_skeleton["language"],
+                text=lexical_skeleton["text"], language=lexical_skeleton["language"],
             )
 
             # Reject request if there are invalid items
             if len(lexical_item_set) == 0:
                 return Response(
-                    {
-                        "derivation_input": [
-                            "Lexical array contained invalid items."
-                        ]
-                    },
+                    {"derivation_input": ["Lexical array contained invalid items."]},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

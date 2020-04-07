@@ -24,9 +24,7 @@ def assign_case(
     """
     # Explicitly make sure so_1's Phi feature does not have an EPP property.
     so_1_Case = so_1.features.filter(name__exact="Case")
-    so_1_uPhi = so_1.features.filter(name__exact="Phi").exclude(
-        properties__name="EPP"
-    )
+    so_1_uPhi = so_1.features.filter(name__exact="Phi").exclude(properties__name="EPP")
     if (
         len(so_1_Case) > 0
         and len(so_1_uPhi) > 0

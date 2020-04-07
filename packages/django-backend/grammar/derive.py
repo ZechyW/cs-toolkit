@@ -66,16 +66,12 @@ def process_derivation_step(
 
         if step.status == DerivationStep.STATUS_CONVERGED:
             # If we are the last in a converged chain, mark completion
-            mark_derivation_chain_ended(
-                step, converged=True, reprocessing=True
-            )
+            mark_derivation_chain_ended(step, converged=True, reprocessing=True)
             return []
 
         if step.status == DerivationStep.STATUS_CRASHED:
             # Woo boy
-            mark_derivation_chain_ended(
-                step, converged=False, reprocessing=True
-            )
+            mark_derivation_chain_ended(step, converged=False, reprocessing=True)
             return []
     else:
         # Need to do clean-up if we're re-running the DerivationStep:
@@ -106,9 +102,7 @@ def process_derivation_step(
     try:
         for rule in step.rules.all():
             handler: Rule = getattr(grammar.rules, rule.rule_class)
-            this_rule_errors = handler.apply(
-                step.root_so, step.lexical_array_tail
-            )
+            this_rule_errors = handler.apply(step.root_so, step.lexical_array_tail)
             rule_errors = rule_errors + this_rule_errors
     except DerivationFailed as error:
         # This Derivation chain has reached a bad end.
@@ -124,9 +118,7 @@ def process_derivation_step(
     step.rule_errors_json = json.dumps(rule_errors)
     step.save()
 
-    logger.debug(
-        "Rule checking took {:.3f}s.".format(time.perf_counter() - start_time)
-    )
+    logger.debug("Rule checking took {:.3f}s.".format(time.perf_counter() - start_time))
 
     # Convergence check
     if not len(step.lexical_array_tail) and not len(rule_errors):
@@ -155,20 +147,13 @@ def process_derivation_step(
 
     for generator in step.generators.all():
         # Get next step definitions from each Generator.
-        handler: Generator = getattr(
-            grammar.generators, generator.generator_class
-        )
+        handler: Generator = getattr(grammar.generators, generator.generator_class)
         generator_defs: List[NextStepDef] = handler.generate(
-            derivation_actor,
-            step.root_so,
-            step.lexical_array_tail,
-            step_metadata,
+            derivation_actor, step.root_so, step.lexical_array_tail, step_metadata,
         )
         next_step_defs = next_step_defs + generator_defs
 
-    logger.debug(
-        "Generation took {:.3f}s.".format(time.perf_counter() - start_time)
-    )
+    logger.debug("Generation took {:.3f}s.".format(time.perf_counter() - start_time))
 
     # Crash check: If we have no next steps generated but still have Rule
     # errors, we have crashed.
@@ -182,9 +167,7 @@ def process_derivation_step(
         step.processed_time = timezone.now()
         step.save()
         mark_derivation_chain_ended(step, converged=False)
-        logger.debug(
-            "DerivationStep {} crashed: {}".format(step.id, crash_reason)
-        )
+        logger.debug("DerivationStep {} crashed: {}".format(step.id, crash_reason))
         return []
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
@@ -199,9 +182,7 @@ def process_derivation_step(
 
     next_steps: List[DerivationStep] = []
     for next_step_def in next_step_defs:
-        next_step = DerivationStep.objects.create(
-            root_so=next_step_def.root_so
-        )
+        next_step = DerivationStep.objects.create(root_so=next_step_def.root_so)
 
         # Lexical array tail
         for [idx, lexical_item] in enumerate(next_step_def.lexical_array_tail):
@@ -230,9 +211,7 @@ def process_derivation_step(
 
         next_steps.append(next_step)
 
-    logger.debug(
-        "Cleanup took {:.3f}s.".format(time.perf_counter() - start_time)
-    )
+    logger.debug("Cleanup took {:.3f}s.".format(time.perf_counter() - start_time))
 
     # -'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-.,__,.-'~'-
     # Phase 4: Dispatch

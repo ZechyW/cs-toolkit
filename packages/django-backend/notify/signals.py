@@ -30,6 +30,4 @@ def notify_m2m(instance=None, action="", reverse=None, **kwargs):
 
     # Yes.
     instance.notify_changes()
-    logger.debug(
-        "M2M notify: {:.3f}s".format(time.perf_counter() - start_time)
-    )
+    logger.debug("M2M notify: {:.3f}s".format(time.perf_counter() - start_time))

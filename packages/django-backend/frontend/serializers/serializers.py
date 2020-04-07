@@ -45,7 +45,5 @@ class EchoMessageSerializer(serializers.Serializer):
     @staticmethod
     def validate_type(value):
         if not value == "message":
-            raise serializers.ValidationError(
-                "Client sent non-message request."
-            )
+            raise serializers.ValidationError("Client sent non-message request.")
         return value

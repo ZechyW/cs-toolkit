@@ -139,14 +139,8 @@ AUTH_PASSWORD_VALIDATORS = [
         ".UserAttributeSimilarityValidator"
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {
-        "NAME": "django.contrib.auth.password_validation"
-        ".CommonPasswordValidator"
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation"
-        ".NumericPasswordValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation" ".CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation" ".NumericPasswordValidator"},
 ]
 
 # Internationalization
@@ -171,9 +165,7 @@ AUTH_USER_MODEL = "app_auth.AppUser"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {
-        "console": {"level": "DEBUG", "class": "logging.StreamHandler"}
-    },
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
     "loggers": {
         # We might not want super-verbose logging on the server when
         # developing, so this can be set to a higher level than `INFO`
@@ -244,9 +236,7 @@ DJANGO_PORT = os.environ.get("DJANGO_PORT") or 8080
 DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {
-        "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL)
-    },
+    "OPTIONS": {"connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL)},
     "MIDDLEWARE": [
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",

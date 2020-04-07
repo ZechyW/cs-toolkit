@@ -41,15 +41,11 @@ class Migration(migrations.Migration):
                     "created_by",
                     models.CharField(blank=True, max_length=255, null=True),
                 ),
-                (
-                    "last_completion_time",
-                    models.DateTimeField(blank=True, null=True),
-                ),
+                ("last_completion_time", models.DateTimeField(blank=True, null=True),),
                 (
                     "derivations",
                     models.ManyToManyField(
-                        related_name="derivation_requests",
-                        to="grammar.Derivation",
+                        related_name="derivation_requests", to="grammar.Derivation",
                     ),
                 ),
             ],
@@ -80,10 +76,7 @@ class Migration(migrations.Migration):
                 ("rule_errors_json", models.TextField(blank=True)),
                 ("generator_metadata_json", models.TextField(blank=True)),
                 ("crash_reason", models.TextField(blank=True)),
-                (
-                    "processed_time",
-                    models.DateTimeField(blank=True, null=True),
-                ),
+                ("processed_time", models.DateTimeField(blank=True, null=True),),
                 ("complete", models.BooleanField(default=False)),
                 (
                     "converged_derivation",
@@ -197,24 +190,13 @@ class Migration(migrations.Migration):
                 ("text", models.CharField(max_length=100)),
                 ("current_language", models.CharField(max_length=50)),
                 ("is_copy", models.BooleanField(default=False)),
-                (
-                    "level",
-                    models.PositiveIntegerField(db_index=True, editable=False),
-                ),
-                (
-                    "lft",
-                    models.PositiveIntegerField(db_index=True, editable=False),
-                ),
-                (
-                    "rght",
-                    models.PositiveIntegerField(db_index=True, editable=False),
-                ),
+                ("level", models.PositiveIntegerField(db_index=True, editable=False),),
+                ("lft", models.PositiveIntegerField(db_index=True, editable=False),),
+                ("rght", models.PositiveIntegerField(db_index=True, editable=False),),
                 (
                     "deleted_features",
                     models.ManyToManyField(
-                        blank=True,
-                        related_name="so_deleted_set",
-                        to="lexicon.Feature",
+                        blank=True, related_name="so_deleted_set", to="lexicon.Feature",
                     ),
                 ),
                 (
@@ -239,9 +221,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="derivationstep",
             name="generators",
-            field=models.ManyToManyField(
-                blank=True, to="grammar.GeneratorDescription"
-            ),
+            field=models.ManyToManyField(blank=True, to="grammar.GeneratorDescription"),
         ),
         migrations.AddField(
             model_name="derivationstep",
@@ -267,9 +247,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="derivationstep",
             name="rules",
-            field=models.ManyToManyField(
-                blank=True, to="grammar.RuleDescription"
-            ),
+            field=models.ManyToManyField(blank=True, to="grammar.RuleDescription"),
         ),
         migrations.AddField(
             model_name="derivationstep",

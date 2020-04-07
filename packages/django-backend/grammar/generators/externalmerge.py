@@ -53,9 +53,7 @@ class ExternalMerge(Generator):
             while (not complete) and failsafe < 100:
                 failsafe += 1
                 complete = (
-                    Derivation.objects.filter(id=sub_derivation.id)
-                    .get()
-                    .complete
+                    Derivation.objects.filter(id=sub_derivation.id).get().complete
                 )
                 time.sleep(0.1)
 
@@ -131,9 +129,7 @@ class ExternalMerge(Generator):
             # the current root as its children.
             new_so = SyntacticObject.objects.create()
             next_so: SyntacticObject = SyntacticObject.objects.create(
-                text=next_item.text,
-                current_language=next_item.language,
-                parent=new_so,
+                text=next_item.text, current_language=next_item.language, parent=new_so,
             )
             next_so.features.set(next_item.features.all())
             root_so.create_clone(new_parent=new_so)

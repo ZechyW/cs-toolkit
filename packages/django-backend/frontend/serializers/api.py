@@ -24,7 +24,5 @@ class ApiRequestSerializer(serializers.Serializer):
         allowed_methods = ["get", "post", "put", "patch", "delete"]
         value = value.lower()
         if value not in allowed_methods:
-            raise serializers.ValidationError(
-                "API request has invalid method."
-            )
+            raise serializers.ValidationError("API request has invalid method.")
         return value

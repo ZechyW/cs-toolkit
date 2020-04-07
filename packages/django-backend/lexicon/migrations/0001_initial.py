@@ -68,10 +68,7 @@ class Migration(migrations.Migration):
                 ("text", models.CharField(max_length=100)),
                 ("language", models.CharField(max_length=50)),
                 ("description", models.TextField(blank=True)),
-                (
-                    "features",
-                    models.ManyToManyField(blank=True, to="lexicon.Feature"),
-                ),
+                ("features", models.ManyToManyField(blank=True, to="lexicon.Feature"),),
             ],
             options={"abstract": False},
         ),

@@ -220,9 +220,7 @@ class DerivationStep(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
-    status = models.CharField(
-        max_length=10, choices=STATUSES, default=STATUS_PENDING
-    )
+    status = models.CharField(max_length=10, choices=STATUSES, default=STATUS_PENDING)
 
     # Each DerivationStep is associated with only one Derivation...
     # TODO: Maybe fingerprinting and memoisation of these in the future?
@@ -315,9 +313,7 @@ class DerivationStep(models.Model):
     # Any sub-derivations that were triggered by this DerivationStep;
     # They will be added to the timeline display of this DerivationStep's chain
     # TODO: Get these out from ExternalMerge
-    sub_derivations = models.ManyToManyField(
-        "Derivation", related_name="trigger_steps"
-    )
+    sub_derivations = models.ManyToManyField("Derivation", related_name="trigger_steps")
 
     # Each DerivationStep has one unique root SyntacticObject.
     # (SyntacticObjects encode specific hierarchical information and
@@ -365,9 +361,7 @@ class LexicalArrayItem(models.Model):
     """
 
     derivation_step = models.ForeignKey(
-        "DerivationStep",
-        on_delete=models.CASCADE,
-        related_name="lexical_array_items",
+        "DerivationStep", on_delete=models.CASCADE, related_name="lexical_array_items",
     )
     lexical_item = models.ForeignKey(
         "lexicon.LexicalItem", on_delete=models.CASCADE, related_name="+"
@@ -436,10 +430,7 @@ class SyntacticObject(AsyncSafeMPTTModel):
 
     def deleted_feature_string(self):
         return ", ".join(
-            [
-                str(feature)
-                for feature in sorted(self.deleted_features.all(), key=str)
-            ]
+            [str(feature) for feature in sorted(self.deleted_features.all(), key=str)]
         )
 
     feature_string.short_description = "Features"

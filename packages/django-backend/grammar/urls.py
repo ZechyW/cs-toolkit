@@ -8,9 +8,7 @@ urlpatterns = [
     path("derivations/", views.DerivationList.as_view()),
     path("derivations/<uuid:pk>/", views.DerivationDetail.as_view()),
     path("syntactic_objects/", views.SyntacticObjectList.as_view()),
-    path(
-        "syntactic_objects/<uuid:pk>/", views.SyntacticObjectDetail.as_view()
-    ),
+    path("syntactic_objects/<uuid:pk>/", views.SyntacticObjectDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=["json", "html"])

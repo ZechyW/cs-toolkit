@@ -136,17 +136,11 @@ class NotifyModel(models.Model):
         # This model object has changed; let people know
         channel_layer = get_channel_layer()
 
-        logger.debug(
-            "Model object created/updated: {}".format(self.model_name)
-        )
+        logger.debug("Model object created/updated: {}".format(self.model_name))
 
         async_to_sync(channel_layer.group_send)(
             "notify",
-            {
-                "type": "notify.change",
-                "model": self.model_name,
-                "id": str(self.id),
-            },
+            {"type": "notify.change", "model": self.model_name, "id": str(self.id),},
         )
 
     def notify_delete(self):
@@ -161,11 +155,7 @@ class NotifyModel(models.Model):
         logger.info("Model object deleted: {}".format(self.model_name))
         async_to_sync(channel_layer.group_send)(
             "notify",
-            {
-                "type": "notify.delete",
-                "model": self.model_name,
-                "id": str(self.id),
-            },
+            {"type": "notify.delete", "model": self.model_name, "id": str(self.id),},
         )
 
     @property
@@ -185,7 +175,5 @@ class NotifyModel(models.Model):
         model (as provided by the model-specific `serializer_class`)
         :return:
         """
-        serializer = import_string(cls.serializer_class)(
-            cls.objects.all(), many=True
-        )
+        serializer = import_string(cls.serializer_class)(cls.objects.all(), many=True)
         return serializer.data

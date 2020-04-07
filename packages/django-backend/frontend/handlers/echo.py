@@ -37,9 +37,7 @@ class EchoHandler(Handler):
         # Free the username
         if self.username:
             EchoHandler.usernames.remove(self.username)
-            self.send_to_group(
-                {"type": "echo.del_user", "del_user": self.username}
-            )
+            self.send_to_group({"type": "echo.del_user", "del_user": self.username})
 
     def handle(self, content):
         """
@@ -76,11 +74,7 @@ class EchoHandler(Handler):
             # Sending to the consumer directly doesn't broadcast the message to
             # the entire group
             self.consumer.send_to_client(
-                {
-                    "topic": "echo",
-                    "type": "error",
-                    "message": "username-in-use",
-                }
+                {"topic": "echo", "type": "error", "message": "username-in-use",}
             )
             return
 
@@ -94,9 +88,7 @@ class EchoHandler(Handler):
 
         # Let everyone (including ourselves) know that the subscription was
         # successful
-        self.send_to_group(
-            {"type": "echo.new_user", "new_user": self.username}
-        )
+        self.send_to_group({"type": "echo.new_user", "new_user": self.username})
 
         self.subscribed = True
 

@@ -16,8 +16,7 @@ class Rule:
 
     @staticmethod
     def apply(
-        root_so: Optional[SyntacticObject],
-        lexical_array_tail: Deque[LexicalItem],
+        root_so: Optional[SyntacticObject], lexical_array_tail: Deque[LexicalItem],
     ) -> List[RuleNonFatalError]:
         """
         Given the currently built-up syntactic object and the remainder of

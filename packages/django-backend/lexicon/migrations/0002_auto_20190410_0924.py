@@ -11,8 +11,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="feature",
             name="properties",
-            field=models.ManyToManyField(
-                blank=True, to="lexicon.FeatureProperty"
-            ),
+            field=models.ManyToManyField(blank=True, to="lexicon.FeatureProperty"),
         )
     ]

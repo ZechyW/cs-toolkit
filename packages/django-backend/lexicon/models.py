@@ -69,9 +69,7 @@ class LexicalItem(NotifyModel):
         )
 
     def __str__(self):
-        return "{} ({}) {}".format(
-            self.text, self.language, self.features_string()
-        )
+        return "{} ({}) {}".format(self.text, self.language, self.features_string())
 
 
 class Feature(models.Model):
@@ -172,11 +170,7 @@ class FeatureProperty(models.Model):
     #: A few standard types for the FeatureProperty, for cleaning/validation
     type = models.CharField(
         max_length=10,
-        choices=[
-            ["Boolean", "Boolean"],
-            ["Text", "Text"],
-            ["Integer", "Integer"],
-        ],
+        choices=[["Boolean", "Boolean"], ["Text", "Text"], ["Integer", "Integer"],],
     )
 
     #: The raw value associated with this FeatureProperty.

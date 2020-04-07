@@ -121,9 +121,7 @@ class ReduxConsumer(JsonWebsocketConsumer):
         client.
         """
         super().send(
-            bytes_data=zlib.compress(
-                self.encode_json(content).encode("utf-8")
-            ),
+            bytes_data=zlib.compress(self.encode_json(content).encode("utf-8")),
             close=close,
         )
 

@@ -20,9 +20,7 @@ class WhiteNoisePathMiddleware(WhiteNoiseMiddleware):
         """
         # Keep static prefix and root backslash, normalise rest of the url
         if url.startswith(self.static_prefix):
-            norm_url = self.static_prefix + url2pathname(
-                url[len(self.static_prefix) :]
-            )
+            norm_url = self.static_prefix + url2pathname(url[len(self.static_prefix) :])
         elif url.startswith("/"):
             norm_url = "/" + url2pathname(url[1:])
         else:
