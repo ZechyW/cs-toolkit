@@ -172,6 +172,8 @@ class DerivationSerializer(serializers.ModelSerializer):
             "first_step",
             "converged_count",
             "crashed_count",
+            "converged_chains",
+            "crashed_chains",
             "complete",
         ]
 
