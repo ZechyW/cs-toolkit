@@ -60,11 +60,23 @@
     <field name="description" type="TextField">Ends a sub-derivation.</field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
   </object>
+  <object model="lexicon.lexicalitem" pk="a28243f8-30f9-4934-ad76-797391ce5fa1">
+    <field name="text" type="CharField">who</field>
+    <field name="language" type="CharField">en</field>
+    <field name="description" type="TextField">Relative D</field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="13"></object></field>
+  </object>
   <object model="lexicon.lexicalitem" pk="a6b8eb29-cae9-46b5-b420-cc3aba9fcbb5">
     <field name="text" type="CharField">loves</field>
     <field name="language" type="CharField">en</field>
     <field name="description" type="TextField"></field>
     <field name="features" rel="ManyToManyRel" to="lexicon.feature"></field>
+  </object>
+  <object model="lexicon.lexicalitem" pk="c64ffb2b-d5f7-4a29-a48b-7ba012b3f584">
+    <field name="text" type="CharField">people</field>
+    <field name="language" type="CharField">en</field>
+    <field name="description" type="TextField"></field>
+    <field name="features" rel="ManyToManyRel" to="lexicon.feature"><object pk="15"></object><object pk="7"></object></field>
   </object>
   <object model="lexicon.lexicalitem" pk="cb624ab4-9843-44e9-b8f8-9ae4b2c554e6">
     <field name="text" type="CharField">Mary</field>
@@ -123,6 +135,11 @@
     <field name="description" type="TextField">Phi-feature bundle: 3rd person</field>
     <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="4"></object></field>
   </object>
+  <object model="lexicon.feature" pk="15">
+    <field name="name" type="CharField">Phi</field>
+    <field name="description" type="TextField">Phi-feature bundle: 3rd person, singular</field>
+    <field name="properties" rel="ManyToManyRel" to="lexicon.featureproperty"><object pk="4"></object><object pk="8"></object></field>
+  </object>
   <object model="lexicon.featureproperty" pk="1">
     <field name="name" type="CharField">interpretable</field>
     <field name="type" type="CharField">Boolean</field>
@@ -164,5 +181,11 @@
     <field name="type" type="CharField">Boolean</field>
     <field name="raw_value" type="CharField">True</field>
     <field name="description" type="TextField">Case feature: Nominative</field>
+  </object>
+  <object model="lexicon.featureproperty" pk="8">
+    <field name="name" type="CharField">number</field>
+    <field name="type" type="CharField">Text</field>
+    <field name="raw_value" type="CharField">plural</field>
+    <field name="description" type="TextField">Phi-feature: Plural number</field>
   </object>
 </django-objects>

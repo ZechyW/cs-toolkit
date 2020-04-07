@@ -186,7 +186,7 @@ description = "Responsive Theme for Django Admin With Sidebar Menu (Django 1.11)
 name = "bootstrap-admin"
 optional = false
 python-versions = "*"
-version = "0.4.0"
+version = "0.4.2"
 
 [[package]]
 category = "main"
@@ -1146,7 +1146,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 windows = ["pywin32"]
 
 [metadata]
-content-hash = "0ec8c48769dbe3efcada1b6c2fd7a6b919ad533c801a0ac651749b29014ea3ce"
+content-hash = "dc2fdbd52999958f6f7507bcc5189de20c9811fb1b4774f0848ddb8774dc9d2d"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -1211,8 +1211,8 @@ black = [
     {file = "black-19.10b0.tar.gz", hash = "sha256:c2edb73a08e9e0e6f65a0e6af18b059b8b1cdd5bef997d7a0b181df93dc81539"},
 ]
 bootstrap-admin = [
-    {file = "bootstrap_admin-0.4.0-py3-none-any.whl", hash = "sha256:68e8e3f9465e5462a7285039ba8c5982eb8182e67ffa40f4d8851ba534ec20fa"},
-    {file = "bootstrap_admin-0.4.0.tar.gz", hash = "sha256:21747448e7bd71ac45b0534596b45f3226cacd7db85c948b944a36b2cd107a17"},
+    {file = "bootstrap_admin-0.4.2-py3-none-any.whl", hash = "sha256:70073be5185d38ba523153fda5b8d00471ed49bac96ad927374a9a29b7fe2b1a"},
+    {file = "bootstrap_admin-0.4.2.tar.gz", hash = "sha256:6d82363607ba055f471ef5b1fbe52a01c453d21d7ede80afa9c4c6801f47333b"},
 ]
 certifi = [
     {file = "certifi-2020.4.5.1-py2.py3-none-any.whl", hash = "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304"},

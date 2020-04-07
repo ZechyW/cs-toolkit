@@ -162,6 +162,8 @@ class DerivationStepSerializer(serializers.ModelSerializer):
 class DerivationSerializer(serializers.ModelSerializer):
     """
     For serializing a Derivation
+    TODO: Remove actual chain data, which can be very expensive to update
+    over the wire
     """
 
     class Meta:
@@ -178,6 +180,24 @@ class DerivationSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField()
     first_step = serializers.StringRelatedField()
+    converged_chains = serializers.ListField(
+        child=serializers.ListField(child=DerivationStepSerializer())
+    )
+    crashed_chains = serializers.ListField(
+        child=serializers.ListField(child=DerivationStepSerializer())
+    )
+
+
+class DerivationChainSerializer(serializers.ModelSerializer):
+    """
+    For serializing all the derivational chains associated with a Derivation
+    """
+
+    class Meta:
+        model = Derivation
+        fields = ["id", "converged_chains", "crashed_chains"]
+
+    id = serializers.UUIDField()
     converged_chains = serializers.ListField(
         child=serializers.ListField(child=DerivationStepSerializer())
     )

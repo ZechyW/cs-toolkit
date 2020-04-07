@@ -18,7 +18,7 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/django-backend/static" />
       <excludeFolder url="file://$MODULE_DIR$/packages/react-frontend/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (cs-toolkit-DoOSOAw--py3.7)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (cs-toolkit-h8ZSo1r3-py3.7)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/react" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />

@@ -15,6 +15,7 @@ from .serializers import (
     DerivationRequestSerializer,
     DerivationSerializer,
     SyntacticObjectSerializer,
+    DerivationChainSerializer,
 )
 from .tasks import derivation_actor
 from .util import get_derivation_by_lexical_array
@@ -97,6 +98,16 @@ class DerivationList(generics.ListAPIView):
 class DerivationDetail(generics.RetrieveAPIView):
     queryset = Derivation.objects.all()
     serializer_class = DerivationSerializer
+
+
+class DerivationChainList(generics.ListAPIView):
+    queryset = Derivation.objects.all()
+    serializer_class = DerivationChainSerializer
+
+
+class DerivationChainDetail(generics.RetrieveAPIView):
+    queryset = Derivation.objects.all()
+    serializer_class = DerivationChainSerializer
 
 
 class SyntacticObjectList(generics.ListAPIView):

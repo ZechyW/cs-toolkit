@@ -2,32 +2,19 @@
 Custom template tags:
 Brings back the ordered sidebar_menu that was removed from the bootstrap_admin library
 """
+from functools import reduce
 
+from bootstrap_admin.templatetags.bootstrap_admin_template_tags import (
+    sidebar_menu_setting,
+)
 from django import VERSION as DJANGO_VERSION, template
 from django.apps import apps
 from django.conf import settings
 from django.contrib.admin import site
 from django.core.exceptions import ImproperlyConfigured
+from django.urls import NoReverseMatch, reverse
 from django.utils import six
 from django.utils.text import capfirst
-
-# Depending on you python version, reduce has been moved to functools
-try:
-    from functools import reduce
-except ImportError:
-    pass
-
-# Depending on your django version, `reverse` and `NoReverseMatch` has been
-# moved.
-# From django 2.0 they've been moved to `django.urls`
-try:
-    from django.urls import reverse, NoReverseMatch
-except ImportError:
-    from django.core.urlresolvers import reverse, NoReverseMatch
-
-from bootstrap_admin.templatetags.bootstrap_admin_template_tags import (
-    sidebar_menu_setting,
-)
 
 from app.admin import model_order
 
@@ -35,6 +22,14 @@ register = template.Library()
 
 
 def render_menu_app_list(context):
+    """
+    TODO: Copied from django-admin-bootstrap 0.4.2 until we can fix it more
+    permanently
+    https://github.com/douglasmiranda/django-admin-bootstrap/commit
+    /1eeade05f44b7d2bb59975103114c049406df0c4
+    :param context:
+    :return:
+    """
     show_global_menu = sidebar_menu_setting()
     if not show_global_menu:
         return {"app_list": ""}

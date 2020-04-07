@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "scripts": {
     "backup-generators": "poetry run python manage.py dumpdata grammar.GeneratorDescription --format xml --indent 2 > grammar/fixtures/generators.xml",
-    "backup-lexicon": "poetry run python manage.py dumpdata lexicon --format xml --indent 2 > lexicon/fixtures/lexicon.xml",
+    "backup-lexicon": "cross-env PYTHONIOENCODING=utf_8 poetry run python manage.py dumpdata lexicon --format xml --indent 2 > lexicon/fixtures/lexicon.xml",
     "backup-rules": "poetry run python manage.py dumpdata grammar.RuleDescription --format xml --indent 2 > grammar/fixtures/rules.xml",
     "backup-users": "poetry run python manage.py dumpdata app_auth.AppUser --format xml --indent 2 > app_auth/fixtures/users.xml",
     "build": "poetry run python manage.py collectstatic --clear --noinput",

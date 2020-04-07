@@ -61,8 +61,5 @@
       <option name="workingDir" value="$ProjectFileDir$" />
       <envs />
     </TaskOptions>
-    <enabled-global>
-      <option value="Black" />
-    </enabled-global>
   </component>
 </project>
