@@ -162,8 +162,7 @@ class DerivationStepSerializer(serializers.ModelSerializer):
 class DerivationSerializer(serializers.ModelSerializer):
     """
     For serializing a Derivation
-    TODO: Remove actual chain data, which can be very expensive to update
-    over the wire
+    TODO: Remove actual chain data, which can be very expensive to update over the wire
     """
 
     class Meta:
@@ -173,8 +172,6 @@ class DerivationSerializer(serializers.ModelSerializer):
             "first_step",
             "converged_count",
             "crashed_count",
-            "converged_chains",
-            "crashed_chains",
             "complete",
         ]
 

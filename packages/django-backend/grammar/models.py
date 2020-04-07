@@ -385,7 +385,6 @@ class AsyncSafeTreeManager(TreeManager):
 
 
 class AsyncSafeMPTTModel(MPTTModel):
-
     objects = AsyncSafeTreeManager()
     tree_id = models.CharField(max_length=255, blank=True)
 

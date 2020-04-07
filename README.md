@@ -72,7 +72,9 @@ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=<password here> -d 
 
 You will also need to create a login role and database for the system.  By default, the database name, username, and password are all assumed to be `cs_toolkit`.  To specify different database connection parameters, use the `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` environmental variables.
 
-### PgBouncer
+### Deprecated: PgBouncer
+
+(**Note:** As of April 2020, PgBouncer is no longer used by default, to prevent instability with too many database connections kept open.) 
 
 By default, the backend also expects PgBouncer to be running on port `6432` as a connection pooler for the Postgres database.
 
