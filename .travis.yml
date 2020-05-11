@@ -2,8 +2,9 @@
 dist: xenial
 language: python
 python: "3.7"
-node_js:
-  - "lts/*"
+
+env:
+  - TRAVIS_NODE_VERSION="lts/*"
 
 # Dependencies
 services:
@@ -18,6 +19,7 @@ cache:
   directories:
     - "~/.cache/"
     - "~/virtualenv/"
+    - "node_modules"
 
 before_install:
   - sudo apt-get update
@@ -34,6 +36,7 @@ before_install:
 install:
   - poetry install
   - poetry show -v
+  - nvm install $TRAVIS_NODE_VERSION
   - yarn --prod
 
 before_script:
